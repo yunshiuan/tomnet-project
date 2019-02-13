@@ -21,7 +21,7 @@ class DataHandler(object):
         all_data = np.empty([10,12,12,45])
         all_labels = np.empty([1])
         for file in files:
-            print('parsing file', file)
+            #print('parsing file', file)
             traj, goal = self.parse_trajectory(directory + file)
             all_data = np.vstack((all_data,traj))
             for step in traj:

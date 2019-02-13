@@ -1,9 +1,9 @@
 import tensorflow as tf
 import numpy as np
-from params import *
 from tensorflow.contrib import rnn
 
 BN_EPSILON = 0.001
+WEIGHT_DECAY = 0.0002
 
 def activation_summary(x):
     tensor_name = x.op.name
@@ -11,7 +11,7 @@ def activation_summary(x):
     tf.summary.scalar(tensor_name + '/sparsity', tf.nn.zero_fraction(x))
 
 def create_variables(name, shape, is_fc_layer, initializer=tf.contrib.layers.xavier_initializer()):
-    regularizer = tf.contrib.layers.l2_regularizer(scale=FLAGS.weight_decay)
+    regularizer = tf.contrib.layers.l2_regularizer(scale=WEIGHT_DECAY)
     new_variables = tf.get_variable(name, shape=shape, initializer=initializer, regularizer=regularizer)
     return new_variables
 
