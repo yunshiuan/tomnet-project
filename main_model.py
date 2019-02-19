@@ -10,11 +10,13 @@ import resnet as rn
 import data_handler as dh
 from tensorflow.contrib import rnn
 
+
+
 class Model:
   HEIGHT = 12
   WIDTH = 12
   DEPTH = 45
-  LABEL_LENGTH = 38
+  LABEL_LENGTH = 4
   BATCH_SIZE_TRAIN = 32
   BATCH_SIZE_VAL = 32
   BATCH_SIZE_TEST = 32
@@ -30,7 +32,7 @@ class Model:
   DECAY_STEP_0 = 40000
   DECAY_STEP_1 = 60000
   
-  NUM_CLASS = 38
+  NUM_CLASS = 4
 
   use_ckpt = False
   ckpt_path = 'cache/logs/model.ckpt'
@@ -73,7 +75,7 @@ class Model:
         
   def train(self):
     #Load data from tfrecord
-    dir = os.getcwd() + '/S001a/'
+    dir = os.getcwd() + '/S002a/'
     data_handler = dh.DataHandler(dir)
 
     all_data, all_labels = data_handler.parse_all_trajectories(dir)

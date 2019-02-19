@@ -21,7 +21,7 @@ class DataHandler(object):
         all_data = np.empty([10,12,12,45])
         all_labels = np.empty([1])
         for file in files:
-            #print('parsing file', file)
+            print('parsing file', file)
             traj, goal = self.parse_trajectory(directory + file)
             all_data = np.vstack((all_data,traj))
             for step in traj:
@@ -42,7 +42,6 @@ class DataHandler(object):
         steps = []
         output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH, self.MAX_TRAJECTORY_SIZE))
         label = ''
-
         with open(filename) as fp:
             lines = list(fp)
             maze = lines[2:14]
@@ -150,8 +149,8 @@ class DataHandler(object):
 
 if __name__ == "__main__":
     #This will get the trajectory of the specified file and plot a sequence of images showing the result of the parse.
-    dir = os.getcwd() + '/S001a/'
-    file = 'S001_1'
+    dir = os.getcwd() + '/S002a/'
+    file = 'S002_1'
     dh = DataHandler(dir)
     data, labels = dh.parse_all_trajectories(dir)
     #out, label = dh.parse_trajectory(dir + file + '.txt')
