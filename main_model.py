@@ -16,7 +16,7 @@ class Model:
   HEIGHT = 12
   WIDTH = 12
   DEPTH = 45
-  LABEL_LENGTH = 4
+  LABEL_LENGTH = 6
   BATCH_SIZE_TRAIN = 32
   BATCH_SIZE_VAL = 32
   BATCH_SIZE_TEST = 32
@@ -32,7 +32,7 @@ class Model:
   DECAY_STEP_0 = 40000
   DECAY_STEP_1 = 60000
   
-  NUM_CLASS = 4
+  NUM_CLASS = 6
 
   use_ckpt = False
   ckpt_path = 'cache_S003a/logs/model.ckpt'
