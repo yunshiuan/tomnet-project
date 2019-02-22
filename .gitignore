@@ -3,4 +3,5 @@ S001a
 .DS_Store
 *.pyc
 *.ipynb
+nohup.out
 
