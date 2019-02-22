@@ -1,4 +1,6 @@
 from main_model import Model
+
+PATH_TESTING_DATA = 
 test_model = Model()
-model.test()
+test_model.test()
     
