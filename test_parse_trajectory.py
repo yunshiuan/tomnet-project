@@ -7,7 +7,7 @@ import test_data_handler as tdh
 
 
 #File Constants
-PATH_ROOT='/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/Social Network Simulation Data (24 agents)'
+PATH_ROOT='/Users/vimchiz/bitbucket_local/observer_model_group/test_data'
 FILE_TEST = path.join(PATH_ROOT,'S008_28552.txt')
 #FILE_TEST = path.join(PATH_ROOT,'S001_18.txt')
 #FILE_TEST = path.join(PATH_ROOT,'S012_16728.txt') #Exceed MAX_TRAJECTORY_SIZE
