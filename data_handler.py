@@ -2,6 +2,7 @@ import os
 import sys
 import numpy as np
 from utils import plot_trajectory
+import re
 
 class DataHandler(object):
 
@@ -17,7 +18,12 @@ class DataHandler(object):
     def parse_all_trajectories(self, directory):
         #Make a trajectory with each step same label
         print('Loading data from txt files...')
+
+        #Filter out the csv file (only read the txt files)
         files = os.listdir(directory)
+        r = re.compile(".*.txt")
+        files = list(filter(r.match, files)) # Read Note    
+        
         all_data = np.empty([10,12,12,45])
         all_labels = np.empty([1])
         for file in files:

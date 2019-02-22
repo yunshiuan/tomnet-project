@@ -1,2 +1,6 @@
 resources
 S001a
+.DS_Store
+*.pyc
+*.ipynb
+
