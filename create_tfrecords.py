@@ -14,7 +14,7 @@ def _int64_feat_array(value):
     return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
 
 def createDataRecord(out_filename, addrs):
-    dir = os.getcwd() + '/S003a/'
+    dir = os.getcwd() + '/S004a/'
     handler = dh.DataHandler(dir)
     start = time.time()
     writer = tf.python_io.TFRecordWriter(out_filename)
@@ -54,7 +54,7 @@ def createDataRecord(out_filename, addrs):
     print('Elapsed time', end-start)
 
 #Import data
-addrs = glob.glob('S003a/*')
+addrs = glob.glob('S004a/*')
 shuffle(addrs)
 
 #Divide data into 60% train, 20% validation and 20% test
