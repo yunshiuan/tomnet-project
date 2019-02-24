@@ -16,13 +16,13 @@ class Model:
   HEIGHT = 12
   WIDTH = 12
   DEPTH = 45
-  LABEL_LENGTH = 15
+  LABEL_LENGTH = 4
   BATCH_SIZE_TRAIN = 32
   BATCH_SIZE_VAL = 32
   BATCH_SIZE_TEST = 32
   NUM_RESIDUAL_BLOCKS = 5
   TRAIN_EMA_DECAY = 0.95
-  TRAIN_STEPS = 80000
+  TRAIN_STEPS = 40000
   EPOCH_SIZE = 100 
   
   REPORT_FREQ = 100
@@ -32,11 +32,11 @@ class Model:
   DECAY_STEP_0 = 40000
   DECAY_STEP_1 = 60000
   
-  NUM_CLASS = 15
+  NUM_CLASS = 4
 
   use_ckpt = False
-  ckpt_path = 'cache_S004a_2/logs/model.ckpt'
-  train_path = 'cache_S004a_2/train/'
+  ckpt_path = 'cache_S002a_40000steps/logs/model.ckpt'
+  train_path = 'cache_S002a_40000steps/train/'
 
   def __init__(self):
     #The data points must be given one by one here
@@ -75,7 +75,7 @@ class Model:
         
   def train(self):
     #Load data from tfrecord
-    dir = os.getcwd() + '/S004a/'
+    dir = os.getcwd() + '/S002a/'
     data_handler = dh.DataHandler(dir)
 
     all_data, all_labels = data_handler.parse_all_trajectories(dir)
