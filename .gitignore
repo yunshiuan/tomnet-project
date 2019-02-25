@@ -1,6 +1,7 @@
 resources
 S001a
-.DS_Store
+*.DS_Store
 *.pyc
 *.ipynb
-
+*.GIBMsBMLabServer
+nohup.out
