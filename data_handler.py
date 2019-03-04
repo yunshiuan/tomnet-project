@@ -1,13 +1,15 @@
 import os
 import sys
 import numpy as np
+from random import shuffle
 from utils import plot_trajectory
 
 class DataHandler(object):
 
     MAZE_WIDTH = 12
     MAZE_HEIGHT = 12
-    MAZE_DEPTH = 45
+    #MAZE_DEPTH = 45
+    MAZE_DEPTH = 11
     MAX_TRAJECTORY_SIZE = 10
 
     def __init__(self, dir):
@@ -16,22 +18,48 @@ class DataHandler(object):
 
     def parse_all_trajectories(self, directory):
         #Make a trajectory with each step same label
-        print('Loading data from txt files...')
         files = os.listdir(directory)
-        all_data = np.empty([10,12,12,45])
+        print('Found', len(files), 'files in', directory)
+        
+        #Shuffle the filenames
+        shuffle(files)
+
+        #Start testing with a 70-15-15 ratio
+        train_files = files[0:int(len(files)*0.7)]
+        vali_files = files[int(len(files)*0.7):int(len(files)*0.85)]
+        test_files = files[int(0.85*len(files)):len(files)]
+
+        print('Parsing training data')
+        train_data, train_labels = self.parse_subset(directory, train_files)
+        print('Parsing validation data')
+        vali_data, vali_labels = self.parse_subset(directory, vali_files)
+        print('Parsing testing data')
+        test_data, test_labels = self.parse_subset(directory, test_files)
+        
+        return train_data, vali_data, test_data, train_labels, vali_labels, test_labels
+
+    def parse_subset(self, directory, files):
+        all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH])
         all_labels = np.empty([1])
+        
+        i = 0
+        j = 0
         for file in files:
-            #print('parsing file', file)
+            i += 1
+            if i > j*len(files)/100:
+                print('Parsed ' + str(j) + '%')
+                j+=10
             traj, goal = self.parse_trajectory(directory + file)
             all_data = np.vstack((all_data,traj))
             for step in traj:
                 all_labels = np.hstack((all_labels,np.array(goal)))
+        print('Parsed ' + str(j) + '%')
         for i in range(10):
             all_data = np.delete(all_data,(0), axis=0)
         all_labels = np.delete(all_labels,(0), axis=0)
-        #print(all_labels)
-        print('Got data points of shape ' + str(all_data.shape))
+        print('Got ' + str(all_data.shape) + ' datapoints')
         return all_data, all_labels
+
 
     def parse_trajectory(self, filename):
         '''
@@ -66,7 +94,8 @@ class DataHandler(object):
             np_agent = np.where(np_maze == 'S', 1, 0).astype(np.int8)
 
             #Planes for each possible goal
-            targets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m']
+            #targets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m']
+            targets = ['C','D','E','F']
             np_targets = np.repeat(np_maze[:, :, np.newaxis], len(targets), axis=2)
             for target, i in zip(targets, range(len(targets))):
                 np_targets[:,:,i] = np.where(np_maze == target, 1, 0)
@@ -124,7 +153,7 @@ class DataHandler(object):
             
             #Zeroes pre-padding to max length
             if pad_size > 0:
-                np_pad = np.zeros((12,12,45), dtype=np.int8)
+                np_pad = np.zeros((self.MAZE_HEIGHT,self.MAZE_WIDTH,self.MAZE_DEPTH), dtype=np.int8)
                 for i in range(pad_size):
                     output = np.insert(output, 0, np_pad, axis=0)
             
@@ -153,7 +182,7 @@ if __name__ == "__main__":
     dir = os.getcwd() + '/S001a/'
     file = 'S001_1'
     dh = DataHandler(dir)
-    data, labels = dh.parse_all_trajectories(dir)
+    dh.parse_all_trajectories(dir)
     #out, label = dh.parse_trajectory(dir + file + '.txt')
     #print(out.shape)
     #print(label)
