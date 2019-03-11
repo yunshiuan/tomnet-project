@@ -1,0 +1,1 @@
+/home/robot/observer_model/resnet/cifar10_train.py

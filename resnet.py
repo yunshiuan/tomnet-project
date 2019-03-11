@@ -51,23 +51,23 @@ def average_pooling_layer(input_layer):
     pooled_input = tf.nn.avg_pool(input_layer, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
     return pooled_input
 
-def lstm_layer(input_layer, mode):
+def lstm_layer(input_layer, mode, num_classes):
     num_hidden = 64
-    num_classes = 38
     batch_size = 32
-    out_channels = 45
+    out_channels = 11 #TODO: Change to depth of maze
     output_keep_prob = 0.8
 
+    #Show the shape of the LSTM input layer
+    #print(input_layer.get_shape().as_list())
+
     _, feature_h, feature_w, _ = input_layer.get_shape().as_list()
-    print('\nfeature_h: {}, feature_w: {}'.format(feature_h, feature_w))
     
     lstm_input = tf.transpose(input_layer,[0,2,1,3])
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
-
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
-    if mode == 'train':
-        cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
+    #if mode == 'train':
+    #    cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     #if mode == 'train':
@@ -104,7 +104,7 @@ def output_layer(input_layer, num_labels):
 
     return fc_h
 
-def build_charnet(input_tensor, n, reuse, train):
+def build_charnet(input_tensor, n, num_classes, reuse, train):
     layers = []
        
     #Append the input tensor as first layer
@@ -113,7 +113,7 @@ def build_charnet(input_tensor, n, reuse, train):
     #Add n residual layers
     for i in range(n):
         with tf.variable_scope('conv_%d' %i, reuse=reuse):
-            block = residual_block(layers[-1], 45)
+            block = residual_block(layers[-1], 11) #TODO: Change here to the depth of the maze
             activation_summary(block)
             layers.append(block)
     
@@ -122,28 +122,19 @@ def build_charnet(input_tensor, n, reuse, train):
         avg_pool = average_pooling_layer(block)
         layers.append(avg_pool)
     
-    #Wrap each layer in time distributed for LSTM
-        #for i in range(len(layers)):
-        #    layers[i] = tf.keras.layers.TimeDistributed(layers[i], input_shape=(batch_size, time_steps, 14, 14, 45))
-
+    #Add LSTM layer
     with tf.variable_scope('LSTM', reuse=reuse):
-        #Add LSTM layer
-        lstm = lstm_layer(layers[-1], train)
+        lstm = lstm_layer(layers[-1], train, num_classes)
         layers.append(lstm)
         
-    #One convolutional layer
+    #TODO:One convolutional layer
 
 
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
-        in_channel = layers[-1].get_shape().as_list()[-1]
-        #bn_layer = batch_normalization_layer(layers[-1], in_channel)
-        #print('bn layer', bn_layer)
-        #relu_layer = tf.nn.relu(bn_layer)
-        #print('relu_layer', relu_layer)
         global_pool = tf.reduce_mean(layers[-1], [1])
-        assert global_pool.get_shape().as_list()[-1:] == [38] #Originally 64, 45 without LSTM
-        output = output_layer(global_pool, 38)
+        assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+        output = output_layer(global_pool, num_classes)
         layers.append(output)
     
     return layers[-1]
