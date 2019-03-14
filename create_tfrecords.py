@@ -34,7 +34,7 @@ def createDataRecord(out_filename, addrs):
         #Labels are one hot-encoded vectors with size = range(goals) [38x1]
         traj, label = handler.parse_trajectory(addrs[i])
         flat_traj = traj.flatten()
-        labelbytes = str.encode(''.join(str(e) for e in label))
+        #labelbytes = str.encode(''.join(str(e) for e in label))
         #Create a feature
         feature = {
             'steps': _int64_feature(traj.shape[0]),
@@ -42,7 +42,7 @@ def createDataRecord(out_filename, addrs):
             'width': _int64_feature(traj.shape[2]),
             'depth': _int64_feature(traj.shape[3]),
             'raw_trajectory': _int64_feat_array(flat_traj),
-            'label': _int64_feat_array(label),
+            'label': _int64_feature(label),
         }
 
         example = tf.train.Example(features=tf.train.Features(feature=feature))

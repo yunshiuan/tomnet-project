@@ -7,6 +7,11 @@ import tensorflow as tf
 from utils import plot_trajectory
 
 class TFRecordExtractor:
+    MAZE_WIDTH = 12
+    MAZE_HEIGHT = 12
+    MAZE_DEPTH = 11
+    MAX_TRAJECTORY_SIZE = 10
+    
     def __init__(self, tfrecord_file):
         self.tfrecord_file = os.path.abspath(tfrecord_file)
         
@@ -17,8 +22,8 @@ class TFRecordExtractor:
             'height': tf.FixedLenFeature([], tf.int64),
             'width': tf.FixedLenFeature([], tf.int64),
             'depth': tf.FixedLenFeature([], tf.int64),
-            'raw_trajectory': tf.FixedLenFeature([64800], tf.int64),
-            'label': tf.FixedLenFeature([38], tf.int64)
+            'raw_trajectory': tf.FixedLenFeature([self.MAZE_WIDTH*self.MAZE_HEIGHT*self.MAZE_DEPTH*self.MAX_TRAJECTORY_SIZE], tf.int64),
+            'label': tf.FixedLenFeature([], tf.int64)
         }
         sample = tf.parse_single_example(tfrecord, features)
         
@@ -41,7 +46,7 @@ class TFRecordExtractor:
             try:
                 while True:
                     traj, label = sess.run(next_traj)
-                    print(traj.shape, label.shape)
+                    print(traj.shape, label)
             except:
                 pass
 

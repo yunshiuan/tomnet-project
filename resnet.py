@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow.contrib import rnn
 
 BN_EPSILON = 0.001
-WEIGHT_DECAY = 0.0002
+WEIGHT_DECAY = 0.00002
 
 def activation_summary(x):
     tensor_name = x.op.name
@@ -53,7 +53,7 @@ def average_pooling_layer(input_layer):
 
 def lstm_layer(input_layer, mode, num_classes):
     num_hidden = 64
-    batch_size = 32
+    batch_size = 16
     out_channels = 11 #TODO: Change to depth of maze
     output_keep_prob = 0.8
 
@@ -66,8 +66,8 @@ def lstm_layer(input_layer, mode, num_classes):
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
-    #if mode == 'train':
-    #    cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
+    if mode == 'train':
+        cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     #if mode == 'train':
