@@ -1,5 +1,10 @@
 resources
 S001a
+S001b
+S001c
+__pycache__
+cache
+resnet
 *.DS_Store
 *.pyc
 *.ipynb
