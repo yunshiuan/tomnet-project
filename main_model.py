@@ -1,14 +1,15 @@
 import os
 import sys
 import time
+import math
 import datetime
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import tensorflow.contrib.slim as slim
 import resnet as rn
 import data_handler as dh
-from tensorflow.contrib import rnn
+import argparse
+import itertools
 
 
 
@@ -16,20 +17,19 @@ class Model:
   HEIGHT = 12
   WIDTH = 12
   DEPTH = 11
-  BATCH_SIZE_TRAIN = 32
-  BATCH_SIZE_VAL = 32
-  BATCH_SIZE_TEST = 32
+  BATCH_SIZE_TRAIN = 16
+  BATCH_SIZE_VAL = 16
+  BATCH_SIZE_TEST = 16
   NUM_RESIDUAL_BLOCKS = 5
   TRAIN_EMA_DECAY = 0.95
   TRAIN_STEPS = 10000
-  EPOCH_SIZE = 100 
+  EPOCH_SIZE = 100
   
   REPORT_FREQ = 100
   FULL_VALIDATION = False
-  INIT_LR = 0.05
-
-  DECAY_STEP_0 = 4000
-  DECAY_STEP_1 = 8000
+  INIT_LR = 0.00001
+  DECAY_STEP_0 = 10000
+  DECAY_STEP_1 = 15000
   
   NUM_CLASS = 4
 
@@ -37,14 +37,20 @@ class Model:
   ckpt_path = 'cache_S002a_80000steps_3/logs/model.ckpt'
   train_path = 'cache_S002a_80000steps_3/train/'
 
-  def __init__(self):
-    #The data points must be given one by one here
+  def __init__(self, args):
+    #The data points must be given one by one here?
     #But the whole trajectory must be given to the LSTM
     self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
     self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
     self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH])
     self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
+
+    #Load data
+    dir = os.getcwd() + '/S001a/'
+    data_handler = dh.DataHandler(dir)
+    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
+    
             
   def _create_graphs(self):
     global_step = tf.Variable(0, trainable=False)
@@ -61,24 +67,18 @@ class Model:
     predictions = tf.nn.softmax(logits)
     self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
 
-    # Validation loss and error
+    #Validation loss and error
     self.vali_loss = self.loss(vali_logits, self.vali_goal_placeholder)
     vali_predictions = tf.nn.softmax(vali_logits)
     self.vali_top1_error = self.top_k_error(vali_predictions, self.vali_goal_placeholder, 1)
 
-    # Define operations
+    #Define operations
     self.train_op, self.train_ema_op = self.train_operation(global_step, self.full_loss, self.train_top1_error)
     self.val_op = self.validation_op(validation_step, self.vali_top1_error, self.vali_loss)
     
     return
         
   def train(self):
-    #Load data from tfrecord
-    dir = os.getcwd() + '/S002a/'
-    data_handler = dh.DataHandler(dir)
-
-    train_data, vali_data, test_data, train_labels, vali_labels, test_labels = data_handler.parse_all_trajectories(dir)
-
     #Build graphs
     self._create_graphs()
 
@@ -109,8 +109,8 @@ class Model:
 
     for step in range(self.TRAIN_STEPS):
       #Generate batches for training and validation
-      train_batch_data, train_batch_labels = self.generate_augment_train_batch(train_data, train_labels, self.BATCH_SIZE_TRAIN)
-      validation_batch_data, validation_batch_labels = self.generate_vali_batch(vali_data, vali_labels, self.BATCH_SIZE_VAL)
+      train_batch_data, train_batch_labels = self.generate_train_batch(self.train_data, self.train_labels, self.BATCH_SIZE_TRAIN)
+      validation_batch_data, validation_batch_labels = self.generate_vali_batch(self.vali_data, self.vali_labels, self.BATCH_SIZE_VAL)
 
       #Validate first?
       if step % self.REPORT_FREQ == 0:
@@ -164,15 +164,14 @@ class Model:
                           'validation_error': val_error_list})
           df.to_csv(self.train_path + '_error.csv')
 
-    #model.test(test_data, test_labels)
-
-  def test(self, test_trajectories, test_labels):
+  def test(self):
     '''
     This function is used to evaluate the test data. Please finish pre-precessing in advance
     :param test_image_array: 4D numpy array with shape [num_test_traj_steps, maze_height, maze_width, maze_depth]
     :return: the softmax probability with shape [num_test_traj_steps, num_labels]
     '''
-    num_test_trajs = len(test_trajectories)
+
+    num_test_trajs = len(self.test_data)
     num_batches = num_test_trajs // self.BATCH_SIZE_TEST
     remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
     print('%i test batches in total...' %num_batches)
@@ -181,15 +180,18 @@ class Model:
     self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TEST, self.HEIGHT, self.WIDTH, self.DEPTH])
 
     # Build the test graph
-    logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
+    if args.mode == 'all':
+      logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
+    else:
+      logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=False)
     predictions = tf.nn.softmax(logits)
 
     # Initialize a new session and restore a checkpoint
     saver = tf.train.Saver(tf.all_variables())
     sess = tf.Session()
 
-    saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-9999'))
-    print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-9999'))
+    saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+    print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
 
     prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
 
@@ -198,7 +200,7 @@ class Model:
       if step % 10 == 0:
           print('%i batches finished!' %step)
       offset = step * self.BATCH_SIZE_TEST
-      test_traj_batch = test_trajectories[offset:offset+self.BATCH_SIZE_TEST, ...]
+      test_traj_batch = self.test_data[offset:offset+self.BATCH_SIZE_TEST, ...]
 
       batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
       prediction_array = np.concatenate((prediction_array, batch_prediction_array))
@@ -218,15 +220,34 @@ class Model:
       prediction_array = np.concatenate((prediction_array, batch_prediction_array))
     '''
     
-    matches = 0
     rounded_array = np.around(prediction_array,2).tolist()
     length = num_batches*self.BATCH_SIZE_TEST  
-    for i in range(length):
-      if(int(test_labels[i]+1) == rounded_array[i].index(max(rounded_array[i]))):
-        matches += 1
-    print('matches:', matches, '/', length)
+    self.match_estimation(self.test_labels, rounded_array, length)
     
     return prediction_array
+  
+  def match_estimation(self, labels, predictions, length):
+    
+    #Initialize zeroes for each possible arrangement
+    matches = [0 for item in range(math.factorial(self.NUM_CLASS))]
+    
+    for i in range(length):
+      #Initialize a 2d zeroes array
+      test = [[0 for item in range(self.NUM_CLASS)] for item in range(math.factorial(self.NUM_CLASS))]
+      combinations = list(itertools.permutations(range(self.NUM_CLASS),self.NUM_CLASS))
+      for j in range(math.factorial(self.NUM_CLASS)):
+        for k in range(self.NUM_CLASS):
+          test[j][k] = predictions[i][combinations[j][k]]
+      
+      for j in range(math.factorial(self.NUM_CLASS)):
+        if int(labels[i]) == test[j].index(max(test[j])):
+          matches[j] += 1
+
+    best = matches.index(max(matches))
+    print('Combination with best matches was ' + str(combinations[best]))
+    print('Matches: ' + str(matches[best]) + '/' + str(length))
+    print('Accuracy: ' + str(round(matches[best]*100/length,2)) + '%')
+    
   
   def loss(self, logits, labels):
     '''
@@ -273,8 +294,8 @@ class Model:
     tf.summary.scalar('train_top1_error_avg', ema.average(top1_error))
     tf.summary.scalar('train_loss_avg', ema.average(total_loss))
 
-    opt = tf.train.MomentumOptimizer(learning_rate=self.lr_placeholder, momentum=0.9)
-    train_op = opt.minimize(total_loss, global_step=global_step)
+    opt = tf.train.AdamOptimizer(learning_rate=self.lr_placeholder)
+    train_op = opt.minimize(total_loss)
     return train_op, train_ema_op
 
   def validation_op(self, validation_step, top1_error, loss):
@@ -322,7 +343,7 @@ class Model:
 
     return vali_data_batch, vali_label_batch
 
-  def generate_augment_train_batch(self, train_data, train_labels, train_batch_size):
+  def generate_train_batch(self, train_data, train_labels, train_batch_size):
     '''
     This function helps generate a batch of train data
     :param train_data: 4D numpy array
@@ -371,6 +392,15 @@ class Model:
 
 
 if __name__ == "__main__":
-    model = Model()
-    model.train()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
+    parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
+    
+    args = parser.parse_args()	
+    model = Model(args)
+    
+    if args.mode == 'train' or args.mode == 'all':
+      model.train()
+    if args.mode == 'test' or args.mode == 'all':
+      model.test()
     

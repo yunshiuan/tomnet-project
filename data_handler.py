@@ -9,7 +9,6 @@ class DataHandler(object):
 
     MAZE_WIDTH = 12
     MAZE_HEIGHT = 12
-    #MAZE_DEPTH = 45
     MAZE_DEPTH = 11
     MAX_TRAJECTORY_SIZE = 10
 
@@ -17,25 +16,37 @@ class DataHandler(object):
         #self.find_max_path(dir)
         pass
 
-    def parse_all_trajectories(self, directory):
+    def parse_trajectories(self, directory, mode, shuf):
         #Make a trajectory with each step same label
         files = os.listdir(directory)
         print('Found', len(files), 'files in', directory)
         
         #Shuffle the filenames
-        shuffle(files)
+        if shuf:
+            shuffle(files)
 
-        #Start testing with a 70-15-15 ratio
-        train_files = files[0:int(len(files)*0.7)]
-        vali_files = files[int(len(files)*0.7):int(len(files)*0.85)]
-        test_files = files[int(0.85*len(files)):len(files)]
+        #Start testing with a 50-25-25 ratio
+        train_files = files[0:int(len(files)*0.8)]
+        vali_files = files[int(len(files)*0.8):int(len(files)*0.9)]
+        test_files = files[int(0.9*len(files)):len(files)]
 
-        print('Parsing training data')
-        train_data, train_labels = self.parse_subset(directory, train_files)
-        print('Parsing validation data')
-        vali_data, vali_labels = self.parse_subset(directory, vali_files)
-        print('Parsing testing data')
-        test_data, test_labels = self.parse_subset(directory, test_files)
+        #Initialize empty arrays for data
+        train_data = []
+        train_labels = []
+        vali_data = []
+        vali_labels =[]
+        test_data = []
+        test_labels=[]
+        
+        if mode == 'train' or mode == 'all':
+            print('Parsing training data')
+            train_data, train_labels = self.parse_subset(directory, train_files)
+            print('Parsing validation data')
+            vali_data, vali_labels = self.parse_subset(directory, vali_files)
+        
+        if mode == 'test' or mode == 'all':
+            print('Parsing testing data')
+            test_data, test_labels = self.parse_subset(directory, test_files)
         
         return train_data, vali_data, test_data, train_labels, vali_labels, test_labels
 
@@ -182,7 +193,7 @@ if __name__ == "__main__":
     dir = os.getcwd() + '/S002a/'
     file = 'S002_1'
     dh = DataHandler(dir)
-    dh.parse_all_trajectories(dir)
+    dh.parse_trajectories(dir, mode='all', shuf=False)
     #out, label = dh.parse_trajectory(dir + file + '.txt')
     #print(out.shape)
     #print(label)
