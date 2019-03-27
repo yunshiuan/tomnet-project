@@ -190,8 +190,8 @@ class DataHandler(object):
 
 if __name__ == "__main__":
     #This will get the trajectory of the specified file and plot a sequence of images showing the result of the parse.
-    dir = os.getcwd() + '/S001a/'
-    file = 'S001_1'
+    dir = os.getcwd() + '/S002a/'
+    file = 'S002_1'
     dh = DataHandler(dir)
     dh.parse_trajectories(dir, mode='all', shuf=False)
     #out, label = dh.parse_trajectory(dir + file + '.txt')

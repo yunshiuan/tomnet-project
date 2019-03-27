@@ -32,8 +32,8 @@ class Model:
   NUM_CLASS = 4
 
   use_ckpt = False
-  ckpt_path = 'cache/logs/model.ckpt'
-  train_path = 'cache/train/'
+  ckpt_path = 'cache_S002a/logs/model.ckpt'
+  train_path = 'cache_S002a/train/'
 
   def __init__(self, args):
     #The data points must be given one by one here?
@@ -45,7 +45,7 @@ class Model:
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
 
     #Load data
-    dir = os.getcwd() + '/S001a/'
+    dir = os.getcwd() + '/S002a/'
     data_handler = dh.DataHandler(dir)
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
     
