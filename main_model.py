@@ -11,6 +11,8 @@ import data_handler as dh
 import argparse
 import itertools
 
+
+
 class Model:
   HEIGHT = 12
   WIDTH = 12

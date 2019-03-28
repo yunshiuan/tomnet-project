@@ -1,0 +1,2345 @@
+nohup: ignoring input
+]0;IPython: AIRobo/observer_model_v2Loading data from txt files...
+parsing file S002_438.txt
+parsing file S002_184.txt
+parsing file S002_85.txt
+parsing file S002_684.txt
+parsing file S002_320.txt
+parsing file S002_304.txt
+parsing file S002_847.txt
+parsing file S002_520.txt
+parsing file S002_126.txt
+parsing file S002_572.txt
+parsing file S002_488.txt
+parsing file S002_14.txt
+parsing file S002_553.txt
+parsing file S002_838.txt
+parsing file S002_988.txt
+parsing file S002_430.txt
+parsing file S002_421.txt
+parsing file S002_387.txt
+parsing file S002_685.txt
+parsing file S002_867.txt
+parsing file S002_433.txt
+parsing file S002_255.txt
+parsing file S002_502.txt
+parsing file S002_845.txt
+parsing file S002_228.txt
+parsing file S002_786.txt
+parsing file S002_858.txt
+parsing file S002_78.txt
+parsing file S002_692.txt
+parsing file S002_567.txt
+parsing file S002_69.txt
+parsing file S002_798.txt
+parsing file S002_726.txt
+parsing file S002_165.txt
+parsing file S002_775.txt
+parsing file S002_759.txt
+parsing file S002_497.txt
+parsing file S002_298.txt
+parsing file S002_698.txt
+parsing file S002_569.txt
+parsing file S002_65.txt
+parsing file S002_794.txt
+parsing file S002_416.txt
+parsing file S002_486.txt
+parsing file S002_617.txt
+parsing file S002_864.txt
+parsing file S002_479.txt
+parsing file S002_799.txt
+parsing file S002_219.txt
+parsing file S002_802.txt
+parsing file S002_811.txt
+parsing file S002_977.txt
+parsing file S002_504.txt
+parsing file S002_135.txt
+parsing file S002_339.txt
+parsing file S002_101.txt
+parsing file S002_495.txt
+parsing file S002_299.txt
+parsing file S002_461.txt
+parsing file S002_376.txt
+parsing file S002_856.txt
+parsing file S002_618.txt
+parsing file S002_642.txt
+parsing file S002_146.txt
+parsing file S002_975.txt
+parsing file S002_666.txt
+parsing file S002_384.txt
+parsing file S002_88.txt
+parsing file S002_327.txt
+parsing file S002_742.txt
+parsing file S002_884.txt
+parsing file S002_385.txt
+parsing file S002_177.txt
+parsing file S002_273.txt
+parsing file S002_769.txt
+parsing file S002_573.txt
+parsing file S002_997.txt
+parsing file S002_688.txt
+parsing file S002_969.txt
+parsing file S002_582.txt
+parsing file S002_887.txt
+parsing file S002_54.txt
+parsing file S002_362.txt
+parsing file S002_552.txt
+parsing file S002_980.txt
+parsing file S002_510.txt
+parsing file S002_392.txt
+parsing file S002_966.txt
+parsing file S002_301.txt
+parsing file S002_745.txt
+parsing file S002_669.txt
+parsing file S002_577.txt
+parsing file S002_783.txt
+parsing file S002_909.txt
+parsing file S002_852.txt
+parsing file S002_636.txt
+parsing file S002_586.txt
+parsing file S002_30.txt
+parsing file S002_643.txt
+parsing file S002_958.txt
+parsing file S002_527.txt
+parsing file S002_469.txt
+parsing file S002_829.txt
+parsing file S002_831.txt
+parsing file S002_575.txt
+parsing file S002_11.txt
+parsing file S002_370.txt
+parsing file S002_312.txt
+parsing file S002_795.txt
+parsing file S002_409.txt
+parsing file S002_766.txt
+parsing file S002_94.txt
+parsing file S002_333.txt
+parsing file S002_695.txt
+parsing file S002_143.txt
+parsing file S002_46.txt
+parsing file S002_361.txt
+parsing file S002_330.txt
+parsing file S002_928.txt
+parsing file S002_62.txt
+parsing file S002_706.txt
+parsing file S002_323.txt
+parsing file S002_156.txt
+parsing file S002_391.txt
+parsing file S002_503.txt
+parsing file S002_755.txt
+parsing file S002_210.txt
+parsing file S002_4.txt
+parsing file S002_466.txt
+parsing file S002_490.txt
+parsing file S002_665.txt
+parsing file S002_621.txt
+parsing file S002_44.txt
+parsing file S002_519.txt
+parsing file S002_398.txt
+parsing file S002_862.txt
+parsing file S002_982.txt
+parsing file S002_99.txt
+parsing file S002_661.txt
+parsing file S002_496.txt
+parsing file S002_72.txt
+parsing file S002_689.txt
+parsing file S002_724.txt
+parsing file S002_812.txt
+parsing file S002_140.txt
+parsing file S002_951.txt
+parsing file S002_789.txt
+parsing file S002_805.txt
+parsing file S002_591.txt
+parsing file S002_713.txt
+parsing file S002_833.txt
+parsing file S002_717.txt
+parsing file S002_865.txt
+parsing file S002_274.txt
+parsing file S002_992.txt
+parsing file S002_489.txt
+parsing file S002_397.txt
+parsing file S002_599.txt
+parsing file S002_462.txt
+parsing file S002_671.txt
+parsing file S002_659.txt
+parsing file S002_159.txt
+parsing file S002_965.txt
+parsing file S002_170.txt
+parsing file S002_800.txt
+parsing file S002_326.txt
+parsing file S002_999.txt
+parsing file S002_386.txt
+parsing file S002_93.txt
+parsing file S002_214.txt
+parsing file S002_272.txt
+parsing file S002_660.txt
+parsing file S002_730.txt
+parsing file S002_311.txt
+parsing file S002_243.txt
+parsing file S002_565.txt
+parsing file S002_644.txt
+parsing file S002_801.txt
+parsing file S002_127.txt
+parsing file S002_792.txt
+parsing file S002_259.txt
+parsing file S002_814.txt
+parsing file S002_220.txt
+parsing file S002_514.txt
+parsing file S002_913.txt
+parsing file S002_153.txt
+parsing file S002_702.txt
+parsing file S002_222.txt
+parsing file S002_761.txt
+parsing file S002_147.txt
+parsing file S002_500.txt
+parsing file S002_534.txt
+parsing file S002_822.txt
+parsing file S002_350.txt
+parsing file S002_996.txt
+parsing file S002_476.txt
+parsing file S002_283.txt
+parsing file S002_670.txt
+parsing file S002_649.txt
+parsing file S002_935.txt
+parsing file S002_26.txt
+parsing file S002_554.txt
+parsing file S002_192.txt
+parsing file S002_441.txt
+parsing file S002_130.txt
+parsing file S002_562.txt
+parsing file S002_588.txt
+parsing file S002_793.txt
+parsing file S002_970.txt
+parsing file S002_647.txt
+parsing file S002_581.txt
+parsing file S002_871.txt
+parsing file S002_816.txt
+parsing file S002_133.txt
+parsing file S002_753.txt
+parsing file S002_467.txt
+parsing file S002_933.txt
+parsing file S002_53.txt
+parsing file S002_45.txt
+parsing file S002_295.txt
+parsing file S002_746.txt
+parsing file S002_707.txt
+parsing file S002_426.txt
+parsing file S002_291.txt
+parsing file S002_878.txt
+parsing file S002_846.txt
+parsing file S002_48.txt
+parsing file S002_954.txt
+parsing file S002_66.txt
+parsing file S002_340.txt
+parsing file S002_839.txt
+parsing file S002_912.txt
+parsing file S002_674.txt
+parsing file S002_86.txt
+parsing file S002_628.txt
+parsing file S002_841.txt
+parsing file S002_987.txt
+parsing file S002_767.txt
+parsing file S002_700.txt
+parsing file S002_475.txt
+parsing file S002_859.txt
+parsing file S002_257.txt
+parsing file S002_691.txt
+parsing file S002_778.txt
+parsing file S002_595.txt
+parsing file S002_718.txt
+parsing file S002_870.txt
+parsing file S002_381.txt
+parsing file S002_457.txt
+parsing file S002_529.txt
+parsing file S002_924.txt
+parsing file S002_244.txt
+parsing file S002_639.txt
+parsing file S002_324.txt
+parsing file S002_68.txt
+parsing file S002_877.txt
+parsing file S002_193.txt
+parsing file S002_187.txt
+parsing file S002_487.txt
+parsing file S002_694.txt
+parsing file S002_356.txt
+parsing file S002_993.txt
+parsing file S002_423.txt
+parsing file S002_832.txt
+parsing file S002_42.txt
+parsing file S002_557.txt
+parsing file S002_528.txt
+parsing file S002_989.txt
+parsing file S002_920.txt
+parsing file S002_524.txt
+parsing file S002_768.txt
+parsing file S002_893.txt
+parsing file S002_710.txt
+parsing file S002_505.txt
+parsing file S002_456.txt
+parsing file S002_791.txt
+parsing file S002_100.txt
+parsing file S002_366.txt
+parsing file S002_122.txt
+parsing file S002_598.txt
+parsing file S002_967.txt
+parsing file S002_6.txt
+parsing file S002_83.txt
+parsing file S002_950.txt
+parsing file S002_310.txt
+parsing file S002_701.txt
+parsing file S002_35.txt
+parsing file S002_318.txt
+parsing file S002_634.txt
+parsing file S002_631.txt
+parsing file S002_346.txt
+parsing file S002_388.txt
+parsing file S002_748.txt
+parsing file S002_463.txt
+parsing file S002_129.txt
+parsing file S002_604.txt
+parsing file S002_979.txt
+parsing file S002_615.txt
+parsing file S002_319.txt
+parsing file S002_343.txt
+parsing file S002_445.txt
+parsing file S002_41.txt
+parsing file S002_79.txt
+parsing file S002_286.txt
+parsing file S002_939.txt
+parsing file S002_104.txt
+parsing file S002_719.txt
+parsing file S002_985.txt
+parsing file S002_626.txt
+parsing file S002_9.txt
+parsing file S002_633.txt
+parsing file S002_898.txt
+parsing file S002_225.txt
+parsing file S002_40.txt
+parsing file S002_515.txt
+parsing file S002_896.txt
+parsing file S002_216.txt
+parsing file S002_585.txt
+parsing file S002_821.txt
+parsing file S002_590.txt
+parsing file S002_436.txt
+parsing file S002_447.txt
+parsing file S002_723.txt
+parsing file S002_468.txt
+parsing file S002_58.txt
+parsing file S002_940.txt
+parsing file S002_29.txt
+parsing file S002_559.txt
+parsing file S002_558.txt
+parsing file S002_196.txt
+parsing file S002_546.txt
+parsing file S002_926.txt
+parsing file S002_459.txt
+parsing file S002_650.txt
+parsing file S002_345.txt
+parsing file S002_448.txt
+parsing file S002_512.txt
+parsing file S002_823.txt
+parsing file S002_860.txt
+parsing file S002_953.txt
+parsing file S002_889.txt
+parsing file S002_946.txt
+parsing file S002_880.txt
+parsing file S002_67.txt
+parsing file S002_943.txt
+parsing file S002_181.txt
+parsing file S002_704.txt
+parsing file S002_285.txt
+parsing file S002_401.txt
+parsing file S002_972.txt
+parsing file S002_932.txt
+parsing file S002_464.txt
+parsing file S002_213.txt
+parsing file S002_735.txt
+parsing file S002_200.txt
+parsing file S002_857.txt
+parsing file S002_36.txt
+parsing file S002_442.txt
+parsing file S002_25.txt
+parsing file S002_579.txt
+parsing file S002_360.txt
+parsing file S002_923.txt
+parsing file S002_378.txt
+parsing file S002_89.txt
+parsing file S002_903.txt
+parsing file S002_868.txt
+parsing file S002_974.txt
+parsing file S002_682.txt
+parsing file S002_226.txt
+parsing file S002_406.txt
+parsing file S002_90.txt
+parsing file S002_349.txt
+parsing file S002_439.txt
+parsing file S002_851.txt
+parsing file S002_797.txt
+parsing file S002_281.txt
+parsing file S002_418.txt
+parsing file S002_506.txt
+parsing file S002_796.txt
+parsing file S002_545.txt
+parsing file S002_771.txt
+parsing file S002_917.txt
+parsing file S002_895.txt
+parsing file S002_106.txt
+parsing file S002_937.txt
+parsing file S002_901.txt
+parsing file S002_667.txt
+parsing file S002_446.txt
+parsing file S002_245.txt
+parsing file S002_325.txt
+parsing file S002_351.txt
+parsing file S002_408.txt
+parsing file S002_738.txt
+parsing file S002_808.txt
+parsing file S002_358.txt
+parsing file S002_651.txt
+parsing file S002_329.txt
+parsing file S002_561.txt
+parsing file S002_697.txt
+parsing file S002_493.txt
+parsing file S002_396.txt
+parsing file S002_379.txt
+parsing file S002_369.txt
+parsing file S002_763.txt
+parsing file S002_289.txt
+parsing file S002_137.txt
+parsing file S002_925.txt
+parsing file S002_910.txt
+parsing file S002_853.txt
+parsing file S002_994.txt
+parsing file S002_948.txt
+parsing file S002_732.txt
+parsing file S002_491.txt
+parsing file S002_96.txt
+parsing file S002_390.txt
+parsing file S002_716.txt
+parsing file S002_597.txt
+parsing file S002_71.txt
+parsing file S002_905.txt
+parsing file S002_429.txt
+parsing file S002_828.txt
+parsing file S002_874.txt
+parsing file S002_194.txt
+parsing file S002_807.txt
+parsing file S002_686.txt
+parsing file S002_75.txt
+parsing file S002_174.txt
+parsing file S002_309.txt
+parsing file S002_492.txt
+parsing file S002_754.txt
+parsing file S002_95.txt
+parsing file S002_622.txt
+parsing file S002_653.txt
+parsing file S002_521.txt
+parsing file S002_344.txt
+parsing file S002_892.txt
+parsing file S002_382.txt
+parsing file S002_762.txt
+parsing file S002_307.txt
+parsing file S002_533.txt
+parsing file S002_296.txt
+parsing file S002_452.txt
+parsing file S002_420.txt
+parsing file S002_302.txt
+parsing file S002_548.txt
+parsing file S002_458.txt
+parsing file S002_776.txt
+parsing file S002_596.txt
+parsing file S002_154.txt
+parsing file S002_679.txt
+parsing file S002_680.txt
+parsing file S002_873.txt
+parsing file S002_765.txt
+parsing file S002_593.txt
+parsing file S002_929.txt
+parsing file S002_984.txt
+parsing file S002_74.txt
+parsing file S002_784.txt
+parsing file S002_322.txt
+parsing file S002_673.txt
+parsing file S002_560.txt
+parsing file S002_640.txt
+parsing file S002_819.txt
+parsing file S002_971.txt
+parsing file S002_229.txt
+parsing file S002_728.txt
+parsing file S002_736.txt
+parsing file S002_715.txt
+parsing file S002_539.txt
+parsing file S002_414.txt
+parsing file S002_43.txt
+parsing file S002_199.txt
+parsing file S002_522.txt
+parsing file S002_453.txt
+parsing file S002_24.txt
+parsing file S002_675.txt
+parsing file S002_855.txt
+parsing file S002_899.txt
+parsing file S002_733.txt
+parsing file S002_960.txt
+parsing file S002_576.txt
+parsing file S002_826.txt
+parsing file S002_785.txt
+parsing file S002_342.txt
+parsing file S002_481.txt
+parsing file S002_407.txt
+parsing file S002_743.txt
+parsing file S002_282.txt
+parsing file S002_750.txt
+parsing file S002_508.txt
+parsing file S002_171.txt
+parsing file S002_60.txt
+parsing file S002_825.txt
+parsing file S002_875.txt
+parsing file S002_3.txt
+parsing file S002_629.txt
+parsing file S002_355.txt
+parsing file S002_614.txt
+parsing file S002_886.txt
+parsing file S002_550.txt
+parsing file S002_480.txt
+parsing file S002_348.txt
+parsing file S002_354.txt
+parsing file S002_97.txt
+parsing file S002_729.txt
+parsing file S002_607.txt
+parsing file S002_551.txt
+parsing file S002_417.txt
+parsing file S002_367.txt
+parsing file S002_235.txt
+parsing file S002_523.txt
+parsing file S002_8.txt
+parsing file S002_513.txt
+parsing file S002_942.txt
+parsing file S002_537.txt
+parsing file S002_848.txt
+parsing file S002_549.txt
+parsing file S002_38.txt
+parsing file S002_308.txt
+parsing file S002_224.txt
+parsing file S002_930.txt
+parsing file S002_303.txt
+parsing file S002_109.txt
+parsing file S002_779.txt
+parsing file S002_474.txt
+parsing file S002_612.txt
+parsing file S002_364.txt
+parsing file S002_305.txt
+parsing file S002_919.txt
+parsing file S002_616.txt
+parsing file S002_620.txt
+parsing file S002_587.txt
+parsing file S002_227.txt
+parsing file S002_425.txt
+parsing file S002_321.txt
+parsing file S002_206.txt
+parsing file S002_963.txt
+parsing file S002_879.txt
+parsing file S002_806.txt
+parsing file S002_432.txt
+parsing file S002_624.txt
+parsing file S002_574.txt
+parsing file S002_284.txt
+parsing file S002_277.txt
+parsing file S002_872.txt
+parsing file S002_189.txt
+parsing file S002_315.txt
+parsing file S002_676.txt
+parsing file S002_564.txt
+parsing file S002_611.txt
+parsing file S002_603.txt
+parsing file S002_757.txt
+parsing file S002_623.txt
+parsing file S002_922.txt
+parsing file S002_316.txt
+parsing file S002_538.txt
+parsing file S002_687.txt
+parsing file S002_610.txt
+parsing file S002_151.txt
+parsing file S002_424.txt
+parsing file S002_63.txt
+parsing file S002_377.txt
+parsing file S002_70.txt
+parsing file S002_727.txt
+parsing file S002_266.txt
+parsing file S002_383.txt
+parsing file S002_494.txt
+parsing file S002_944.txt
+parsing file S002_253.txt
+parsing file S002_440.txt
+parsing file S002_583.txt
+parsing file S002_915.txt
+parsing file S002_455.txt
+parsing file S002_37.txt
+parsing file S002_556.txt
+parsing file S002_609.txt
+parsing file S002_725.txt
+parsing file S002_638.txt
+parsing file S002_956.txt
+parsing file S002_818.txt
+parsing file S002_780.txt
+parsing file S002_400.txt
+parsing file S002_419.txt
+parsing file S002_699.txt
+parsing file S002_403.txt
+parsing file S002_215.txt
+parsing file S002_300.txt
+parsing file S002_744.txt
+parsing file S002_64.txt
+parsing file S002_73.txt
+parsing file S002_568.txt
+parsing file S002_861.txt
+parsing file S002_983.txt
+parsing file S002_815.txt
+parsing file S002_869.txt
+parsing file S002_178.txt
+parsing file S002_756.txt
+parsing file S002_938.txt
+parsing file S002_115.txt
+parsing file S002_541.txt
+parsing file S002_571.txt
+parsing file S002_882.txt
+parsing file S002_613.txt
+parsing file S002_176.txt
+parsing file S002_824.txt
+parsing file S002_906.txt
+parsing file S002_454.txt
+parsing file S002_278.txt
+parsing file S002_781.txt
+parsing file S002_890.txt
+parsing file S002_280.txt
+parsing file S002_600.txt
+parsing file S002_434.txt
+parsing file S002_774.txt
+parsing file S002_61.txt
+parsing file S002_19.txt
+parsing file S002_198.txt
+parsing file S002_714.txt
+parsing file S002_635.txt
+parsing file S002_84.txt
+parsing file S002_654.txt
+parsing file S002_428.txt
+parsing file S002_28.txt
+parsing file S002_371.txt
+parsing file S002_662.txt
+parsing file S002_995.txt
+parsing file S002_842.txt
+parsing file S002_450.txt
+parsing file S002_47.txt
+parsing file S002_394.txt
+parsing file S002_422.txt
+parsing file S002_117.txt
+parsing file S002_849.txt
+parsing file S002_961.txt
+parsing file S002_112.txt
+parsing file S002_530.txt
+parsing file S002_770.txt
+parsing file S002_703.txt
+parsing file S002_415.txt
+parsing file S002_709.txt
+parsing file S002_934.txt
+parsing file S002_32.txt
+parsing file S002_991.txt
+parsing file S002_904.txt
+parsing file S002_897.txt
+parsing file S002_936.txt
+parsing file S002_655.txt
+parsing file S002_566.txt
+parsing file S002_804.txt
+parsing file S002_921.txt
+parsing file S002_535.txt
+parsing file S002_410.txt
+parsing file S002_536.txt
+parsing file S002_121.txt
+parsing file S002_570.txt
+parsing file S002_437.txt
+parsing file S002_443.txt
+parsing file S002_803.txt
+parsing file S002_760.txt
+parsing file S002_998.txt
+parsing file S002_658.txt
+parsing file S002_517.txt
+parsing file S002_372.txt
+parsing file S002_941.txt
+parsing file S002_656.txt
+parsing file S002_978.txt
+parsing file S002_741.txt
+parsing file S002_964.txt
+parsing file S002_482.txt
+parsing file S002_854.txt
+parsing file S002_338.txt
+parsing file S002_124.txt
+parsing file S002_907.txt
+parsing file S002_908.txt
+parsing file S002_986.txt
+parsing file S002_412.txt
+parsing file S002_544.txt
+parsing file S002_739.txt
+parsing file S002_242.txt
+parsing file S002_380.txt
+parsing file S002_751.txt
+parsing file S002_900.txt
+parsing file S002_584.txt
+parsing file S002_810.txt
+parsing file S002_731.txt
+parsing file S002_663.txt
+parsing file S002_478.txt
+parsing file S002_413.txt
+parsing file S002_92.txt
+parsing file S002_863.txt
+parsing file S002_256.txt
+parsing file S002_499.txt
+parsing file S002_275.txt
+parsing file S002_722.txt
+parsing file S002_608.txt
+parsing file S002_840.txt
+parsing file S002_34.txt
+parsing file S002_813.txt
+parsing file S002_449.txt
+parsing file S002_711.txt
+parsing file S002_543.txt
+parsing file S002_332.txt
+parsing file S002_335.txt
+parsing file S002_526.txt
+parsing file S002_693.txt
+parsing file S002_98.txt
+parsing file S002_891.txt
+parsing file S002_518.txt
+parsing file S002_293.txt
+parsing file S002_516.txt
+parsing file S002_532.txt
+parsing file S002_470.txt
+parsing file S002_540.txt
+parsing file S002_894.txt
+parsing file S002_850.txt
+parsing file S002_5.txt
+parsing file S002_485.txt
+parsing file S002_314.txt
+parsing file S002_962.txt
+parsing file S002_172.txt
+parsing file S002_477.txt
+parsing file S002_59.txt
+parsing file S002_405.txt
+parsing file S002_589.txt
+parsing file S002_555.txt
+parsing file S002_498.txt
+parsing file S002_777.txt
+parsing file S002_119.txt
+parsing file S002_451.txt
+parsing file S002_341.txt
+parsing file S002_374.txt
+parsing file S002_373.txt
+parsing file S002_681.txt
+parsing file S002_270.txt
+parsing file S002_888.txt
+parsing file S002_646.txt
+parsing file S002_981.txt
+parsing file S002_747.txt
+parsing file S002_139.txt
+parsing file S002_976.txt
+parsing file S002_764.txt
+parsing file S002_973.txt
+parsing file S002_20.txt
+parsing file S002_690.txt
+parsing file S002_844.txt
+parsing file S002_947.txt
+parsing file S002_637.txt
+parsing file S002_56.txt
+parsing file S002_836.txt
+parsing file S002_959.txt
+parsing file S002_55.txt
+parsing file S002_317.txt
+parsing file S002_431.txt
+parsing file S002_402.txt
+parsing file S002_525.txt
+parsing file S002_395.txt
+parsing file S002_652.txt
+parsing file S002_328.txt
+parsing file S002_218.txt
+parsing file S002_657.txt
+parsing file S002_788.txt
+parsing file S002_914.txt
+parsing file S002_357.txt
+parsing file S002_254.txt
+parsing file S002_473.txt
+parsing file S002_471.txt
+parsing file S002_696.txt
+parsing file S002_393.txt
+parsing file S002_817.txt
+parsing file S002_49.txt
+parsing file S002_276.txt
+parsing file S002_632.txt
+parsing file S002_460.txt
+parsing file S002_261.txt
+parsing file S002_773.txt
+parsing file S002_91.txt
+parsing file S002_883.txt
+parsing file S002_827.txt
+parsing file S002_17.txt
+parsing file S002_927.txt
+parsing file S002_837.txt
+parsing file S002_677.txt
+parsing file S002_672.txt
+parsing file S002_7.txt
+parsing file S002_830.txt
+parsing file S002_375.txt
+parsing file S002_118.txt
+parsing file S002_949.txt
+parsing file S002_334.txt
+parsing file S002_782.txt
+parsing file S002_294.txt
+parsing file S002_260.txt
+parsing file S002_876.txt
+parsing file S002_952.txt
+parsing file S002_664.txt
+parsing file S002_57.txt
+parsing file S002_352.txt
+parsing file S002_484.txt
+parsing file S002_105.txt
+parsing file S002_683.txt
+parsing file S002_734.txt
+parsing file S002_279.txt
+parsing file S002_347.txt
+parsing file S002_465.txt
+parsing file S002_916.txt
+parsing file S002_885.txt
+parsing file S002_288.txt
+parsing file S002_627.txt
+parsing file S002_368.txt
+parsing file S002_141.txt
+parsing file S002_749.txt
+parsing file S002_13.txt
+parsing file S002_509.txt
+parsing file S002_990.txt
+parsing file S002_708.txt
+parsing file S002_204.txt
+parsing file S002_606.txt
+parsing file S002_39.txt
+parsing file S002_51.txt
+parsing file S002_531.txt
+parsing file S002_15.txt
+parsing file S002_248.txt
+parsing file S002_77.txt
+parsing file S002_179.txt
+parsing file S002_435.txt
+parsing file S002_957.txt
+parsing file S002_313.txt
+parsing file S002_712.txt
+parsing file S002_602.txt
+parsing file S002_630.txt
+parsing file S002_337.txt
+parsing file S002_542.txt
+parsing file S002_740.txt
+parsing file S002_758.txt
+parsing file S002_33.txt
+parsing file S002_648.txt
+parsing file S002_31.txt
+parsing file S002_547.txt
+parsing file S002_578.txt
+parsing file S002_444.txt
+parsing file S002_678.txt
+parsing file S002_182.txt
+parsing file S002_752.txt
+parsing file S002_507.txt
+parsing file S002_605.txt
+parsing file S002_186.txt
+parsing file S002_365.txt
+parsing file S002_76.txt
+parsing file S002_911.txt
+parsing file S002_353.txt
+parsing file S002_809.txt
+parsing file S002_82.txt
+parsing file S002_287.txt
+parsing file S002_511.txt
+parsing file S002_866.txt
+parsing file S002_331.txt
+parsing file S002_191.txt
+parsing file S002_705.txt
+parsing file S002_290.txt
+parsing file S002_102.txt
+parsing file S002_230.txt
+parsing file S002_563.txt
+parsing file S002_835.txt
+parsing file S002_931.txt
+parsing file S002_625.txt
+parsing file S002_87.txt
+parsing file S002_404.txt
+parsing file S002_902.txt
+parsing file S002_720.txt
+parsing file S002_427.txt
+parsing file S002_881.txt
+parsing file S002_619.txt
+parsing file S002_601.txt
+parsing file S002_645.txt
+parsing file S002_389.txt
+parsing file S002_306.txt
+parsing file S002_81.txt
+parsing file S002_834.txt
+parsing file S002_145.txt
+parsing file S002_843.txt
+parsing file S002_594.txt
+parsing file S002_501.txt
+parsing file S002_359.txt
+parsing file S002_641.txt
+parsing file S002_772.txt
+parsing file S002_580.txt
+parsing file S002_721.txt
+parsing file S002_968.txt
+parsing file S002_267.txt
+parsing file S002_737.txt
+parsing file S002_249.txt
+parsing file S002_52.txt
+parsing file S002_918.txt
+parsing file S002_790.txt
+parsing file S002_292.txt
+parsing file S002_955.txt
+parsing file S002_787.txt
+parsing file S002_80.txt
+parsing file S002_483.txt
+parsing file S002_399.txt
+parsing file S002_241.txt
+parsing file S002_820.txt
+parsing file S002_50.txt
+parsing file S002_945.txt
+parsing file S002_363.txt
+parsing file S002_336.txt
+parsing file S002_592.txt
+parsing file S002_411.txt
+parsing file S002_208.txt
+parsing file S002_668.txt
+parsing file S002_472.txt
+parsing file S002_297.txt
+Got data points of shape (9120, 12, 12, 45)
+Loading data from txt files...
+parsing file S002_438.txt
+parsing file S002_184.txt
+parsing file S002_85.txt
+parsing file S002_684.txt
+parsing file S002_320.txt
+parsing file S002_304.txt
+parsing file S002_847.txt
+parsing file S002_520.txt
+parsing file S002_126.txt
+parsing file S002_572.txt
+parsing file S002_488.txt
+parsing file S002_14.txt
+parsing file S002_553.txt
+parsing file S002_838.txt
+parsing file S002_988.txt
+parsing file S002_430.txt
+parsing file S002_421.txt
+parsing file S002_387.txt
+parsing file S002_685.txt
+parsing file S002_867.txt
+parsing file S002_433.txt
+parsing file S002_255.txt
+parsing file S002_502.txt
+parsing file S002_845.txt
+parsing file S002_228.txt
+parsing file S002_786.txt
+parsing file S002_858.txt
+parsing file S002_78.txt
+parsing file S002_692.txt
+parsing file S002_567.txt
+parsing file S002_69.txt
+parsing file S002_798.txt
+parsing file S002_726.txt
+parsing file S002_165.txt
+parsing file S002_775.txt
+parsing file S002_759.txt
+parsing file S002_497.txt
+parsing file S002_298.txt
+parsing file S002_698.txt
+parsing file S002_569.txt
+parsing file S002_65.txt
+parsing file S002_794.txt
+parsing file S002_416.txt
+parsing file S002_486.txt
+parsing file S002_617.txt
+parsing file S002_864.txt
+parsing file S002_479.txt
+parsing file S002_799.txt
+parsing file S002_219.txt
+parsing file S002_802.txt
+parsing file S002_811.txt
+parsing file S002_977.txt
+parsing file S002_504.txt
+parsing file S002_135.txt
+parsing file S002_339.txt
+parsing file S002_101.txt
+parsing file S002_495.txt
+parsing file S002_299.txt
+parsing file S002_461.txt
+parsing file S002_376.txt
+parsing file S002_856.txt
+parsing file S002_618.txt
+parsing file S002_642.txt
+parsing file S002_146.txt
+parsing file S002_975.txt
+parsing file S002_666.txt
+parsing file S002_384.txt
+parsing file S002_88.txt
+parsing file S002_327.txt
+parsing file S002_742.txt
+parsing file S002_884.txt
+parsing file S002_385.txt
+parsing file S002_177.txt
+parsing file S002_273.txt
+parsing file S002_769.txt
+parsing file S002_573.txt
+parsing file S002_997.txt
+parsing file S002_688.txt
+parsing file S002_969.txt
+parsing file S002_582.txt
+parsing file S002_887.txt
+parsing file S002_54.txt
+parsing file S002_362.txt
+parsing file S002_552.txt
+parsing file S002_980.txt
+parsing file S002_510.txt
+parsing file S002_392.txt
+parsing file S002_966.txt
+parsing file S002_301.txt
+parsing file S002_745.txt
+parsing file S002_669.txt
+parsing file S002_577.txt
+parsing file S002_783.txt
+parsing file S002_909.txt
+parsing file S002_852.txt
+parsing file S002_636.txt
+parsing file S002_586.txt
+parsing file S002_30.txt
+parsing file S002_643.txt
+parsing file S002_958.txt
+parsing file S002_527.txt
+parsing file S002_469.txt
+parsing file S002_829.txt
+parsing file S002_831.txt
+parsing file S002_575.txt
+parsing file S002_11.txt
+parsing file S002_370.txt
+parsing file S002_312.txt
+parsing file S002_795.txt
+parsing file S002_409.txt
+parsing file S002_766.txt
+parsing file S002_94.txt
+parsing file S002_333.txt
+parsing file S002_695.txt
+parsing file S002_143.txt
+parsing file S002_46.txt
+parsing file S002_361.txt
+parsing file S002_330.txt
+parsing file S002_928.txt
+parsing file S002_62.txt
+parsing file S002_706.txt
+parsing file S002_323.txt
+parsing file S002_156.txt
+parsing file S002_391.txt
+parsing file S002_503.txt
+parsing file S002_755.txt
+parsing file S002_210.txt
+parsing file S002_4.txt
+parsing file S002_466.txt
+parsing file S002_490.txt
+parsing file S002_665.txt
+parsing file S002_621.txt
+parsing file S002_44.txt
+parsing file S002_519.txt
+parsing file S002_398.txt
+parsing file S002_862.txt
+parsing file S002_982.txt
+parsing file S002_99.txt
+parsing file S002_661.txt
+parsing file S002_496.txt
+parsing file S002_72.txt
+parsing file S002_689.txt
+parsing file S002_724.txt
+parsing file S002_812.txt
+parsing file S002_140.txt
+parsing file S002_951.txt
+parsing file S002_789.txt
+parsing file S002_805.txt
+parsing file S002_591.txt
+parsing file S002_713.txt
+parsing file S002_833.txt
+parsing file S002_717.txt
+parsing file S002_865.txt
+parsing file S002_274.txt
+parsing file S002_992.txt
+parsing file S002_489.txt
+parsing file S002_397.txt
+parsing file S002_599.txt
+parsing file S002_462.txt
+parsing file S002_671.txt
+parsing file S002_659.txt
+parsing file S002_159.txt
+parsing file S002_965.txt
+parsing file S002_170.txt
+parsing file S002_800.txt
+parsing file S002_326.txt
+parsing file S002_999.txt
+parsing file S002_386.txt
+parsing file S002_93.txt
+parsing file S002_214.txt
+parsing file S002_272.txt
+parsing file S002_660.txt
+parsing file S002_730.txt
+parsing file S002_311.txt
+parsing file S002_243.txt
+parsing file S002_565.txt
+parsing file S002_644.txt
+parsing file S002_801.txt
+parsing file S002_127.txt
+parsing file S002_792.txt
+parsing file S002_259.txt
+parsing file S002_814.txt
+parsing file S002_220.txt
+parsing file S002_514.txt
+parsing file S002_913.txt
+parsing file S002_153.txt
+parsing file S002_702.txt
+parsing file S002_222.txt
+parsing file S002_761.txt
+parsing file S002_147.txt
+parsing file S002_500.txt
+parsing file S002_534.txt
+parsing file S002_822.txt
+parsing file S002_350.txt
+parsing file S002_996.txt
+parsing file S002_476.txt
+parsing file S002_283.txt
+parsing file S002_670.txt
+parsing file S002_649.txt
+parsing file S002_935.txt
+parsing file S002_26.txt
+parsing file S002_554.txt
+parsing file S002_192.txt
+parsing file S002_441.txt
+parsing file S002_130.txt
+parsing file S002_562.txt
+parsing file S002_588.txt
+parsing file S002_793.txt
+parsing file S002_970.txt
+parsing file S002_647.txt
+parsing file S002_581.txt
+parsing file S002_871.txt
+parsing file S002_816.txt
+parsing file S002_133.txt
+parsing file S002_753.txt
+parsing file S002_467.txt
+parsing file S002_933.txt
+parsing file S002_53.txt
+parsing file S002_45.txt
+parsing file S002_295.txt
+parsing file S002_746.txt
+parsing file S002_707.txt
+parsing file S002_426.txt
+parsing file S002_291.txt
+parsing file S002_878.txt
+parsing file S002_846.txt
+parsing file S002_48.txt
+parsing file S002_954.txt
+parsing file S002_66.txt
+parsing file S002_340.txt
+parsing file S002_839.txt
+parsing file S002_912.txt
+parsing file S002_674.txt
+parsing file S002_86.txt
+parsing file S002_628.txt
+parsing file S002_841.txt
+parsing file S002_987.txt
+parsing file S002_767.txt
+parsing file S002_700.txt
+parsing file S002_475.txt
+parsing file S002_859.txt
+parsing file S002_257.txt
+parsing file S002_691.txt
+parsing file S002_778.txt
+parsing file S002_595.txt
+parsing file S002_718.txt
+parsing file S002_870.txt
+parsing file S002_381.txt
+parsing file S002_457.txt
+parsing file S002_529.txt
+parsing file S002_924.txt
+parsing file S002_244.txt
+parsing file S002_639.txt
+parsing file S002_324.txt
+parsing file S002_68.txt
+parsing file S002_877.txt
+parsing file S002_193.txt
+parsing file S002_187.txt
+parsing file S002_487.txt
+parsing file S002_694.txt
+parsing file S002_356.txt
+parsing file S002_993.txt
+parsing file S002_423.txt
+parsing file S002_832.txt
+parsing file S002_42.txt
+parsing file S002_557.txt
+parsing file S002_528.txt
+parsing file S002_989.txt
+parsing file S002_920.txt
+parsing file S002_524.txt
+parsing file S002_768.txt
+parsing file S002_893.txt
+parsing file S002_710.txt
+parsing file S002_505.txt
+parsing file S002_456.txt
+parsing file S002_791.txt
+parsing file S002_100.txt
+parsing file S002_366.txt
+parsing file S002_122.txt
+parsing file S002_598.txt
+parsing file S002_967.txt
+parsing file S002_6.txt
+parsing file S002_83.txt
+parsing file S002_950.txt
+parsing file S002_310.txt
+parsing file S002_701.txt
+parsing file S002_35.txt
+parsing file S002_318.txt
+parsing file S002_634.txt
+parsing file S002_631.txt
+parsing file S002_346.txt
+parsing file S002_388.txt
+parsing file S002_748.txt
+parsing file S002_463.txt
+parsing file S002_129.txt
+parsing file S002_604.txt
+parsing file S002_979.txt
+parsing file S002_615.txt
+parsing file S002_319.txt
+parsing file S002_343.txt
+parsing file S002_445.txt
+parsing file S002_41.txt
+parsing file S002_79.txt
+parsing file S002_286.txt
+parsing file S002_939.txt
+parsing file S002_104.txt
+parsing file S002_719.txt
+parsing file S002_985.txt
+parsing file S002_626.txt
+parsing file S002_9.txt
+parsing file S002_633.txt
+parsing file S002_898.txt
+parsing file S002_225.txt
+parsing file S002_40.txt
+parsing file S002_515.txt
+parsing file S002_896.txt
+parsing file S002_216.txt
+parsing file S002_585.txt
+parsing file S002_821.txt
+parsing file S002_590.txt
+parsing file S002_436.txt
+parsing file S002_447.txt
+parsing file S002_723.txt
+parsing file S002_468.txt
+parsing file S002_58.txt
+parsing file S002_940.txt
+parsing file S002_29.txt
+parsing file S002_559.txt
+parsing file S002_558.txt
+parsing file S002_196.txt
+parsing file S002_546.txt
+parsing file S002_926.txt
+parsing file S002_459.txt
+parsing file S002_650.txt
+parsing file S002_345.txt
+parsing file S002_448.txt
+parsing file S002_512.txt
+parsing file S002_823.txt
+parsing file S002_860.txt
+parsing file S002_953.txt
+parsing file S002_889.txt
+parsing file S002_946.txt
+parsing file S002_880.txt
+parsing file S002_67.txt
+parsing file S002_943.txt
+parsing file S002_181.txt
+parsing file S002_704.txt
+parsing file S002_285.txt
+parsing file S002_401.txt
+parsing file S002_972.txt
+parsing file S002_932.txt
+parsing file S002_464.txt
+parsing file S002_213.txt
+parsing file S002_735.txt
+parsing file S002_200.txt
+parsing file S002_857.txt
+parsing file S002_36.txt
+parsing file S002_442.txt
+parsing file S002_25.txt
+parsing file S002_579.txt
+parsing file S002_360.txt
+parsing file S002_923.txt
+parsing file S002_378.txt
+parsing file S002_89.txt
+parsing file S002_903.txt
+parsing file S002_868.txt
+parsing file S002_974.txt
+parsing file S002_682.txt
+parsing file S002_226.txt
+parsing file S002_406.txt
+parsing file S002_90.txt
+parsing file S002_349.txt
+parsing file S002_439.txt
+parsing file S002_851.txt
+parsing file S002_797.txt
+parsing file S002_281.txt
+parsing file S002_418.txt
+parsing file S002_506.txt
+parsing file S002_796.txt
+parsing file S002_545.txt
+parsing file S002_771.txt
+parsing file S002_917.txt
+parsing file S002_895.txt
+parsing file S002_106.txt
+parsing file S002_937.txt
+parsing file S002_901.txt
+parsing file S002_667.txt
+parsing file S002_446.txt
+parsing file S002_245.txt
+parsing file S002_325.txt
+parsing file S002_351.txt
+parsing file S002_408.txt
+parsing file S002_738.txt
+parsing file S002_808.txt
+parsing file S002_358.txt
+parsing file S002_651.txt
+parsing file S002_329.txt
+parsing file S002_561.txt
+parsing file S002_697.txt
+parsing file S002_493.txt
+parsing file S002_396.txt
+parsing file S002_379.txt
+parsing file S002_369.txt
+parsing file S002_763.txt
+parsing file S002_289.txt
+parsing file S002_137.txt
+parsing file S002_925.txt
+parsing file S002_910.txt
+parsing file S002_853.txt
+parsing file S002_994.txt
+parsing file S002_948.txt
+parsing file S002_732.txt
+parsing file S002_491.txt
+parsing file S002_96.txt
+parsing file S002_390.txt
+parsing file S002_716.txt
+parsing file S002_597.txt
+parsing file S002_71.txt
+parsing file S002_905.txt
+parsing file S002_429.txt
+parsing file S002_828.txt
+parsing file S002_874.txt
+parsing file S002_194.txt
+parsing file S002_807.txt
+parsing file S002_686.txt
+parsing file S002_75.txt
+parsing file S002_174.txt
+parsing file S002_309.txt
+parsing file S002_492.txt
+parsing file S002_754.txt
+parsing file S002_95.txt
+parsing file S002_622.txt
+parsing file S002_653.txt
+parsing file S002_521.txt
+parsing file S002_344.txt
+parsing file S002_892.txt
+parsing file S002_382.txt
+parsing file S002_762.txt
+parsing file S002_307.txt
+parsing file S002_533.txt
+parsing file S002_296.txt
+parsing file S002_452.txt
+parsing file S002_420.txt
+parsing file S002_302.txt
+parsing file S002_548.txt
+parsing file S002_458.txt
+parsing file S002_776.txt
+parsing file S002_596.txt
+parsing file S002_154.txt
+parsing file S002_679.txt
+parsing file S002_680.txt
+parsing file S002_873.txt
+parsing file S002_765.txt
+parsing file S002_593.txt
+parsing file S002_929.txt
+parsing file S002_984.txt
+parsing file S002_74.txt
+parsing file S002_784.txt
+parsing file S002_322.txt
+parsing file S002_673.txt
+parsing file S002_560.txt
+parsing file S002_640.txt
+parsing file S002_819.txt
+parsing file S002_971.txt
+parsing file S002_229.txt
+parsing file S002_728.txt
+parsing file S002_736.txt
+parsing file S002_715.txt
+parsing file S002_539.txt
+parsing file S002_414.txt
+parsing file S002_43.txt
+parsing file S002_199.txt
+parsing file S002_522.txt
+parsing file S002_453.txt
+parsing file S002_24.txt
+parsing file S002_675.txt
+parsing file S002_855.txt
+parsing file S002_899.txt
+parsing file S002_733.txt
+parsing file S002_960.txt
+parsing file S002_576.txt
+parsing file S002_826.txt
+parsing file S002_785.txt
+parsing file S002_342.txt
+parsing file S002_481.txt
+parsing file S002_407.txt
+parsing file S002_743.txt
+parsing file S002_282.txt
+parsing file S002_750.txt
+parsing file S002_508.txt
+parsing file S002_171.txt
+parsing file S002_60.txt
+parsing file S002_825.txt
+parsing file S002_875.txt
+parsing file S002_3.txt
+parsing file S002_629.txt
+parsing file S002_355.txt
+parsing file S002_614.txt
+parsing file S002_886.txt
+parsing file S002_550.txt
+parsing file S002_480.txt
+parsing file S002_348.txt
+parsing file S002_354.txt
+parsing file S002_97.txt
+parsing file S002_729.txt
+parsing file S002_607.txt
+parsing file S002_551.txt
+parsing file S002_417.txt
+parsing file S002_367.txt
+parsing file S002_235.txt
+parsing file S002_523.txt
+parsing file S002_8.txt
+parsing file S002_513.txt
+parsing file S002_942.txt
+parsing file S002_537.txt
+parsing file S002_848.txt
+parsing file S002_549.txt
+parsing file S002_38.txt
+parsing file S002_308.txt
+parsing file S002_224.txt
+parsing file S002_930.txt
+parsing file S002_303.txt
+parsing file S002_109.txt
+parsing file S002_779.txt
+parsing file S002_474.txt
+parsing file S002_612.txt
+parsing file S002_364.txt
+parsing file S002_305.txt
+parsing file S002_919.txt
+parsing file S002_616.txt
+parsing file S002_620.txt
+parsing file S002_587.txt
+parsing file S002_227.txt
+parsing file S002_425.txt
+parsing file S002_321.txt
+parsing file S002_206.txt
+parsing file S002_963.txt
+parsing file S002_879.txt
+parsing file S002_806.txt
+parsing file S002_432.txt
+parsing file S002_624.txt
+parsing file S002_574.txt
+parsing file S002_284.txt
+parsing file S002_277.txt
+parsing file S002_872.txt
+parsing file S002_189.txt
+parsing file S002_315.txt
+parsing file S002_676.txt
+parsing file S002_564.txt
+parsing file S002_611.txt
+parsing file S002_603.txt
+parsing file S002_757.txt
+parsing file S002_623.txt
+parsing file S002_922.txt
+parsing file S002_316.txt
+parsing file S002_538.txt
+parsing file S002_687.txt
+parsing file S002_610.txt
+parsing file S002_151.txt
+parsing file S002_424.txt
+parsing file S002_63.txt
+parsing file S002_377.txt
+parsing file S002_70.txt
+parsing file S002_727.txt
+parsing file S002_266.txt
+parsing file S002_383.txt
+parsing file S002_494.txt
+parsing file S002_944.txt
+parsing file S002_253.txt
+parsing file S002_440.txt
+parsing file S002_583.txt
+parsing file S002_915.txt
+parsing file S002_455.txt
+parsing file S002_37.txt
+parsing file S002_556.txt
+parsing file S002_609.txt
+parsing file S002_725.txt
+parsing file S002_638.txt
+parsing file S002_956.txt
+parsing file S002_818.txt
+parsing file S002_780.txt
+parsing file S002_400.txt
+parsing file S002_419.txt
+parsing file S002_699.txt
+parsing file S002_403.txt
+parsing file S002_215.txt
+parsing file S002_300.txt
+parsing file S002_744.txt
+parsing file S002_64.txt
+parsing file S002_73.txt
+parsing file S002_568.txt
+parsing file S002_861.txt
+parsing file S002_983.txt
+parsing file S002_815.txt
+parsing file S002_869.txt
+parsing file S002_178.txt
+parsing file S002_756.txt
+parsing file S002_938.txt
+parsing file S002_115.txt
+parsing file S002_541.txt
+parsing file S002_571.txt
+parsing file S002_882.txt
+parsing file S002_613.txt
+parsing file S002_176.txt
+parsing file S002_824.txt
+parsing file S002_906.txt
+parsing file S002_454.txt
+parsing file S002_278.txt
+parsing file S002_781.txt
+parsing file S002_890.txt
+parsing file S002_280.txt
+parsing file S002_600.txt
+parsing file S002_434.txt
+parsing file S002_774.txt
+parsing file S002_61.txt
+parsing file S002_19.txt
+parsing file S002_198.txt
+parsing file S002_714.txt
+parsing file S002_635.txt
+parsing file S002_84.txt
+parsing file S002_654.txt
+parsing file S002_428.txt
+parsing file S002_28.txt
+parsing file S002_371.txt
+parsing file S002_662.txt
+parsing file S002_995.txt
+parsing file S002_842.txt
+parsing file S002_450.txt
+parsing file S002_47.txt
+parsing file S002_394.txt
+parsing file S002_422.txt
+parsing file S002_117.txt
+parsing file S002_849.txt
+parsing file S002_961.txt
+parsing file S002_112.txt
+parsing file S002_530.txt
+parsing file S002_770.txt
+parsing file S002_703.txt
+parsing file S002_415.txt
+parsing file S002_709.txt
+parsing file S002_934.txt
+parsing file S002_32.txt
+parsing file S002_991.txt
+parsing file S002_904.txt
+parsing file S002_897.txt
+parsing file S002_936.txt
+parsing file S002_655.txt
+parsing file S002_566.txt
+parsing file S002_804.txt
+parsing file S002_921.txt
+parsing file S002_535.txt
+parsing file S002_410.txt
+parsing file S002_536.txt
+parsing file S002_121.txt
+parsing file S002_570.txt
+parsing file S002_437.txt
+parsing file S002_443.txt
+parsing file S002_803.txt
+parsing file S002_760.txt
+parsing file S002_998.txt
+parsing file S002_658.txt
+parsing file S002_517.txt
+parsing file S002_372.txt
+parsing file S002_941.txt
+parsing file S002_656.txt
+parsing file S002_978.txt
+parsing file S002_741.txt
+parsing file S002_964.txt
+parsing file S002_482.txt
+parsing file S002_854.txt
+parsing file S002_338.txt
+parsing file S002_124.txt
+parsing file S002_907.txt
+parsing file S002_908.txt
+parsing file S002_986.txt
+parsing file S002_412.txt
+parsing file S002_544.txt
+parsing file S002_739.txt
+parsing file S002_242.txt
+parsing file S002_380.txt
+parsing file S002_751.txt
+parsing file S002_900.txt
+parsing file S002_584.txt
+parsing file S002_810.txt
+parsing file S002_731.txt
+parsing file S002_663.txt
+parsing file S002_478.txt
+parsing file S002_413.txt
+parsing file S002_92.txt
+parsing file S002_863.txt
+parsing file S002_256.txt
+parsing file S002_499.txt
+parsing file S002_275.txt
+parsing file S002_722.txt
+parsing file S002_608.txt
+parsing file S002_840.txt
+parsing file S002_34.txt
+parsing file S002_813.txt
+parsing file S002_449.txt
+parsing file S002_711.txt
+parsing file S002_543.txt
+parsing file S002_332.txt
+parsing file S002_335.txt
+parsing file S002_526.txt
+parsing file S002_693.txt
+parsing file S002_98.txt
+parsing file S002_891.txt
+parsing file S002_518.txt
+parsing file S002_293.txt
+parsing file S002_516.txt
+parsing file S002_532.txt
+parsing file S002_470.txt
+parsing file S002_540.txt
+parsing file S002_894.txt
+parsing file S002_850.txt
+parsing file S002_5.txt
+parsing file S002_485.txt
+parsing file S002_314.txt
+parsing file S002_962.txt
+parsing file S002_172.txt
+parsing file S002_477.txt
+parsing file S002_59.txt
+parsing file S002_405.txt
+parsing file S002_589.txt
+parsing file S002_555.txt
+parsing file S002_498.txt
+parsing file S002_777.txt
+parsing file S002_119.txt
+parsing file S002_451.txt
+parsing file S002_341.txt
+parsing file S002_374.txt
+parsing file S002_373.txt
+parsing file S002_681.txt
+parsing file S002_270.txt
+parsing file S002_888.txt
+parsing file S002_646.txt
+parsing file S002_981.txt
+parsing file S002_747.txt
+parsing file S002_139.txt
+parsing file S002_976.txt
+parsing file S002_764.txt
+parsing file S002_973.txt
+parsing file S002_20.txt
+parsing file S002_690.txt
+parsing file S002_844.txt
+parsing file S002_947.txt
+parsing file S002_637.txt
+parsing file S002_56.txt
+parsing file S002_836.txt
+parsing file S002_959.txt
+parsing file S002_55.txt
+parsing file S002_317.txt
+parsing file S002_431.txt
+parsing file S002_402.txt
+parsing file S002_525.txt
+parsing file S002_395.txt
+parsing file S002_652.txt
+parsing file S002_328.txt
+parsing file S002_218.txt
+parsing file S002_657.txt
+parsing file S002_788.txt
+parsing file S002_914.txt
+parsing file S002_357.txt
+parsing file S002_254.txt
+parsing file S002_473.txt
+parsing file S002_471.txt
+parsing file S002_696.txt
+parsing file S002_393.txt
+parsing file S002_817.txt
+parsing file S002_49.txt
+parsing file S002_276.txt
+parsing file S002_632.txt
+parsing file S002_460.txt
+parsing file S002_261.txt
+parsing file S002_773.txt
+parsing file S002_91.txt
+parsing file S002_883.txt
+parsing file S002_827.txt
+parsing file S002_17.txt
+parsing file S002_927.txt
+parsing file S002_837.txt
+parsing file S002_677.txt
+parsing file S002_672.txt
+parsing file S002_7.txt
+parsing file S002_830.txt
+parsing file S002_375.txt
+parsing file S002_118.txt
+parsing file S002_949.txt
+parsing file S002_334.txt
+parsing file S002_782.txt
+parsing file S002_294.txt
+parsing file S002_260.txt
+parsing file S002_876.txt
+parsing file S002_952.txt
+parsing file S002_664.txt
+parsing file S002_57.txt
+parsing file S002_352.txt
+parsing file S002_484.txt
+parsing file S002_105.txt
+parsing file S002_683.txt
+parsing file S002_734.txt
+parsing file S002_279.txt
+parsing file S002_347.txt
+parsing file S002_465.txt
+parsing file S002_916.txt
+parsing file S002_885.txt
+parsing file S002_288.txt
+parsing file S002_627.txt
+parsing file S002_368.txt
+parsing file S002_141.txt
+parsing file S002_749.txt
+parsing file S002_13.txt
+parsing file S002_509.txt
+parsing file S002_990.txt
+parsing file S002_708.txt
+parsing file S002_204.txt
+parsing file S002_606.txt
+parsing file S002_39.txt
+parsing file S002_51.txt
+parsing file S002_531.txt
+parsing file S002_15.txt
+parsing file S002_248.txt
+parsing file S002_77.txt
+parsing file S002_179.txt
+parsing file S002_435.txt
+parsing file S002_957.txt
+parsing file S002_313.txt
+parsing file S002_712.txt
+parsing file S002_602.txt
+parsing file S002_630.txt
+parsing file S002_337.txt
+parsing file S002_542.txt
+parsing file S002_740.txt
+parsing file S002_758.txt
+parsing file S002_33.txt
+parsing file S002_648.txt
+parsing file S002_31.txt
+parsing file S002_547.txt
+parsing file S002_578.txt
+parsing file S002_444.txt
+parsing file S002_678.txt
+parsing file S002_182.txt
+parsing file S002_752.txt
+parsing file S002_507.txt
+parsing file S002_605.txt
+parsing file S002_186.txt
+parsing file S002_365.txt
+parsing file S002_76.txt
+parsing file S002_911.txt
+parsing file S002_353.txt
+parsing file S002_809.txt
+parsing file S002_82.txt
+parsing file S002_287.txt
+parsing file S002_511.txt
+parsing file S002_866.txt
+parsing file S002_331.txt
+parsing file S002_191.txt
+parsing file S002_705.txt
+parsing file S002_290.txt
+parsing file S002_102.txt
+parsing file S002_230.txt
+parsing file S002_563.txt
+parsing file S002_835.txt
+parsing file S002_931.txt
+parsing file S002_625.txt
+parsing file S002_87.txt
+parsing file S002_404.txt
+parsing file S002_902.txt
+parsing file S002_720.txt
+parsing file S002_427.txt
+parsing file S002_881.txt
+parsing file S002_619.txt
+parsing file S002_601.txt
+parsing file S002_645.txt
+parsing file S002_389.txt
+parsing file S002_306.txt
+parsing file S002_81.txt
+parsing file S002_834.txt
+parsing file S002_145.txt
+parsing file S002_843.txt
+parsing file S002_594.txt
+parsing file S002_501.txt
+parsing file S002_359.txt
+parsing file S002_641.txt
+parsing file S002_772.txt
+parsing file S002_580.txt
+parsing file S002_721.txt
+parsing file S002_968.txt
+parsing file S002_267.txt
+parsing file S002_737.txt
+parsing file S002_249.txt
+parsing file S002_52.txt
+parsing file S002_918.txt
+parsing file S002_790.txt
+parsing file S002_292.txt
+parsing file S002_955.txt
+parsing file S002_787.txt
+parsing file S002_80.txt
+parsing file S002_483.txt
+parsing file S002_399.txt
+parsing file S002_241.txt
+parsing file S002_820.txt
+parsing file S002_50.txt
+parsing file S002_945.txt
+parsing file S002_363.txt
+parsing file S002_336.txt
+parsing file S002_592.txt
+parsing file S002_411.txt
+parsing file S002_208.txt
+parsing file S002_668.txt
+parsing file S002_472.txt
+parsing file S002_297.txt
+Got data points of shape (9120, 12, 12, 45)
+
+feature_h: 6, feature_w: 6
+WARNING:tensorflow:From /home/lavenderyi/AIRobo/observer_model_v2/resnet.py:101: UniformUnitScaling.__init__ (from tensorflow.python.ops.init_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.initializers.variance_scaling instead with distribution=uniform to get equivalent behavior.
+
+feature_h: 6, feature_w: 6
+WARNING:tensorflow:From /home/lavenderyi/anaconda3/lib/python3.6/site-packages/tensorflow/python/util/tf_should_use.py:118: initialize_all_variables (from tensorflow.python.ops.variables) is deprecated and will be removed after 2017-03-02.
+Instructions for updating:
+Use `tf.global_variables_initializer` instead.
+2019-02-24 13:53:54.543087: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX
+2019-02-24 13:53:54.543302: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+Start training...
+----------------------------
+2019-02-24 13:54:03.984433: step 0, loss = 3.7866 (8.9 examples/sec; 3.612 sec/batch)
+Train top1 error =  1.0
+Validation top1 error = 1.0000
+Validation loss =  3.8525584
+----------------------------
+2019-02-24 13:56:04.261500: step 100, loss = 0.2748 (26.0 examples/sec; 1.232 sec/batch)
+Train top1 error =  0.03125
+Validation top1 error = 0.1875
+Validation loss =  0.5685315
+----------------------------
+2019-02-24 13:58:01.082327: step 200, loss = 0.3313 (27.2 examples/sec; 1.177 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1562
+Validation loss =  0.45154557
+----------------------------
+2019-02-24 13:59:54.220051: step 300, loss = 0.4397 (41.6 examples/sec; 0.768 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0625
+Validation loss =  0.24060956
+----------------------------
+2019-02-24 14:01:47.159735: step 400, loss = 0.2352 (27.5 examples/sec; 1.165 sec/batch)
+Train top1 error =  0.09375
+Validation top1 error = 0.1562
+Validation loss =  0.18499637
+----------------------------
+2019-02-24 14:03:45.328856: step 500, loss = 0.2983 (28.0 examples/sec; 1.141 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.2550805
+----------------------------
+2019-02-24 14:05:38.623090: step 600, loss = 0.3237 (27.8 examples/sec; 1.150 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2188
+Validation loss =  0.5721084
+----------------------------
+2019-02-24 14:07:35.976529: step 700, loss = 0.2318 (27.1 examples/sec; 1.181 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.1250
+Validation loss =  0.27593827
+----------------------------
+2019-02-24 14:09:28.772709: step 800, loss = 0.2781 (26.7 examples/sec; 1.200 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.0000
+Validation loss =  0.07899744
+----------------------------
+2019-02-24 14:11:23.747339: step 900, loss = 0.2789 (25.7 examples/sec; 1.245 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0938
+Validation loss =  0.17099126
+----------------------------
+2019-02-24 14:13:21.170892: step 1000, loss = 0.3689 (27.9 examples/sec; 1.145 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0938
+Validation loss =  0.18047757
+----------------------------
+2019-02-24 14:15:20.741386: step 1100, loss = 0.2334 (26.8 examples/sec; 1.192 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.12729415
+----------------------------
+2019-02-24 14:17:16.883507: step 1200, loss = 0.2142 (27.6 examples/sec; 1.159 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1875
+Validation loss =  0.20175529
+----------------------------
+2019-02-24 14:19:16.869565: step 1300, loss = 0.1972 (27.4 examples/sec; 1.166 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2188
+Validation loss =  0.4383263
+----------------------------
+2019-02-24 14:21:13.111005: step 1400, loss = 0.3698 (28.9 examples/sec; 1.108 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.29183382
+----------------------------
+2019-02-24 14:23:10.179178: step 1500, loss = 0.4672 (26.2 examples/sec; 1.220 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.0625
+Validation loss =  0.08370632
+----------------------------
+2019-02-24 14:25:09.962318: step 1600, loss = 0.2143 (24.6 examples/sec; 1.301 sec/batch)
+Train top1 error =  0.09375
+Validation top1 error = 0.1562
+Validation loss =  0.14597936
+----------------------------
+2019-02-24 14:27:09.574758: step 1700, loss = 0.3161 (27.7 examples/sec; 1.154 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.2684232
+----------------------------
+2019-02-24 14:29:03.143852: step 1800, loss = 0.2859 (36.2 examples/sec; 0.884 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1562
+Validation loss =  0.1556408
+----------------------------
+2019-02-24 14:31:02.629794: step 1900, loss = 0.1693 (27.3 examples/sec; 1.171 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0000
+Validation loss =  0.12496008
+----------------------------
+2019-02-24 14:33:00.606673: step 2000, loss = 0.1975 (37.5 examples/sec; 0.853 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.15336713
+----------------------------
+2019-02-24 14:34:58.360156: step 2100, loss = 0.1502 (27.3 examples/sec; 1.172 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0625
+Validation loss =  0.097643085
+----------------------------
+2019-02-24 14:36:57.467211: step 2200, loss = 0.1377 (41.0 examples/sec; 0.780 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.2188
+Validation loss =  0.30290285
+----------------------------
+2019-02-24 14:38:56.651788: step 2300, loss = 0.2806 (28.3 examples/sec; 1.132 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2500
+Validation loss =  0.4153682
+----------------------------
+2019-02-24 14:40:53.933454: step 2400, loss = 0.3754 (27.6 examples/sec; 1.160 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.0625
+Validation loss =  0.15741467
+----------------------------
+2019-02-24 14:42:47.154820: step 2500, loss = 0.1623 (24.9 examples/sec; 1.286 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0312
+Validation loss =  0.19425258
+----------------------------
+2019-02-24 14:44:47.091878: step 2600, loss = 0.1561 (27.4 examples/sec; 1.169 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1562
+Validation loss =  0.21567798
+----------------------------
+2019-02-24 14:46:38.792181: step 2700, loss = 0.2267 (28.1 examples/sec; 1.137 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.19274005
+----------------------------
+2019-02-24 14:48:33.335001: step 2800, loss = 0.3061 (27.3 examples/sec; 1.173 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2500
+Validation loss =  0.39602068
+----------------------------
+2019-02-24 14:50:29.868310: step 2900, loss = 0.5245 (28.0 examples/sec; 1.141 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.0625
+Validation loss =  0.112624004
+----------------------------
+2019-02-24 14:52:26.544632: step 3000, loss = 0.1821 (27.0 examples/sec; 1.185 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1562
+Validation loss =  0.24329515
+----------------------------
+2019-02-24 14:54:26.308498: step 3100, loss = 0.2330 (27.2 examples/sec; 1.176 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2500
+Validation loss =  0.43071818
+----------------------------
+2019-02-24 14:56:23.700601: step 3200, loss = 0.4256 (28.3 examples/sec; 1.130 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.3366565
+----------------------------
+2019-02-24 14:58:20.884757: step 3300, loss = 0.3191 (26.0 examples/sec; 1.231 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.2913392
+----------------------------
+2019-02-24 15:00:09.154838: step 3400, loss = 0.2713 (28.8 examples/sec; 1.110 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1562
+Validation loss =  0.14716484
+----------------------------
+2019-02-24 15:02:08.913904: step 3500, loss = 0.1373 (26.3 examples/sec; 1.217 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0000
+Validation loss =  0.1112821
+----------------------------
+2019-02-24 15:04:06.222433: step 3600, loss = 0.4362 (27.7 examples/sec; 1.154 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.0625
+Validation loss =  0.16259004
+----------------------------
+2019-02-24 15:06:05.702725: step 3700, loss = 0.2904 (27.7 examples/sec; 1.157 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.17623563
+----------------------------
+2019-02-24 15:08:00.758668: step 3800, loss = 0.1584 (27.7 examples/sec; 1.154 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.0938
+Validation loss =  0.1799343
+----------------------------
+2019-02-24 15:09:55.848838: step 3900, loss = 0.2255 (26.7 examples/sec; 1.196 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0938
+Validation loss =  0.20744413
+----------------------------
+2019-02-24 15:11:53.575517: step 4000, loss = 0.1287 (26.9 examples/sec; 1.190 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1562
+Validation loss =  0.19325618
+----------------------------
+2019-02-24 15:13:49.414231: step 4100, loss = 0.2960 (43.4 examples/sec; 0.737 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2188
+Validation loss =  0.31744152
+----------------------------
+2019-02-24 15:15:46.269149: step 4200, loss = 0.1670 (28.0 examples/sec; 1.141 sec/batch)
+Train top1 error =  0.03125
+Validation top1 error = 0.0938
+Validation loss =  0.15257573
+----------------------------
+2019-02-24 15:17:38.671976: step 4300, loss = 0.0762 (29.2 examples/sec; 1.096 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0938
+Validation loss =  0.21179058
+----------------------------
+2019-02-24 15:19:34.112449: step 4400, loss = 0.4536 (29.1 examples/sec; 1.098 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.2500
+Validation loss =  0.41140342
+----------------------------
+2019-02-24 15:21:30.370888: step 4500, loss = 0.2830 (28.8 examples/sec; 1.112 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.22341295
+----------------------------
+2019-02-24 15:23:27.316795: step 4600, loss = 0.1381 (27.8 examples/sec; 1.151 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1562
+Validation loss =  0.25029266
+----------------------------
+2019-02-24 15:25:23.938820: step 4700, loss = 0.1480 (26.8 examples/sec; 1.195 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2188
+Validation loss =  0.43982047
+----------------------------
+2019-02-24 15:27:19.400570: step 4800, loss = 0.4002 (27.8 examples/sec; 1.152 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0000
+Validation loss =  0.12713327
+----------------------------
+2019-02-24 15:29:16.444893: step 4900, loss = 0.1608 (27.3 examples/sec; 1.172 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.2500
+Validation loss =  0.49466282
+----------------------------
+2019-02-24 15:31:12.384894: step 5000, loss = 0.1569 (26.7 examples/sec; 1.196 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1562
+Validation loss =  0.19117123
+----------------------------
+2019-02-24 15:33:09.128478: step 5100, loss = 0.2395 (26.0 examples/sec; 1.232 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2188
+Validation loss =  0.34548303
+----------------------------
+2019-02-24 15:35:04.587767: step 5200, loss = 0.2071 (39.0 examples/sec; 0.820 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.26284304
+----------------------------
+2019-02-24 15:37:02.250643: step 5300, loss = 0.2561 (26.2 examples/sec; 1.222 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2500
+Validation loss =  0.31363901
+----------------------------
+2019-02-24 15:38:54.470891: step 5400, loss = 0.3384 (28.1 examples/sec; 1.139 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1875
+Validation loss =  0.31079596
+----------------------------
+2019-02-24 15:40:48.650717: step 5500, loss = 0.3158 (37.7 examples/sec; 0.848 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.0625
+Validation loss =  0.31853944
+----------------------------
+2019-02-24 15:42:41.052857: step 5600, loss = 0.2922 (28.8 examples/sec; 1.112 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0625
+Validation loss =  0.21253848
+----------------------------
+2019-02-24 15:44:34.607020: step 5700, loss = 0.1167 (29.7 examples/sec; 1.078 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0625
+Validation loss =  0.08642676
+----------------------------
+2019-02-24 15:46:27.956376: step 5800, loss = 0.3848 (27.3 examples/sec; 1.171 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.2188
+Validation loss =  0.28859007
+----------------------------
+2019-02-24 15:48:22.715465: step 5900, loss = 0.3648 (26.8 examples/sec; 1.193 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1875
+Validation loss =  0.384109
+----------------------------
+2019-02-24 15:50:16.301965: step 6000, loss = 0.4479 (27.8 examples/sec; 1.149 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.2500
+Validation loss =  0.43418777
+----------------------------
+2019-02-24 15:52:10.702070: step 6100, loss = 0.9042 (27.1 examples/sec; 1.179 sec/batch)
+Train top1 error =  0.53125
+Validation top1 error = 0.5938
+Validation loss =  0.9855105
+----------------------------
+2019-02-24 15:54:07.137384: step 6200, loss = 0.8506 (29.0 examples/sec; 1.104 sec/batch)
+Train top1 error =  0.3125
+Validation top1 error = 0.0625
+Validation loss =  0.36768568
+----------------------------
+2019-02-24 15:56:03.705298: step 6300, loss = 0.4377 (27.9 examples/sec; 1.148 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.1562
+Validation loss =  0.21981044
+----------------------------
+2019-02-24 15:58:00.404607: step 6400, loss = 0.1783 (27.7 examples/sec; 1.156 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0625
+Validation loss =  0.15831152
+----------------------------
+2019-02-24 15:59:57.870859: step 6500, loss = 0.4244 (27.7 examples/sec; 1.153 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0938
+Validation loss =  0.16168028
+----------------------------
+2019-02-24 16:01:52.394429: step 6600, loss = 0.4102 (29.2 examples/sec; 1.095 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2188
+Validation loss =  0.42204374
+----------------------------
+2019-02-24 16:03:46.213841: step 6700, loss = 0.1511 (26.0 examples/sec; 1.231 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1562
+Validation loss =  0.32443795
+----------------------------
+2019-02-24 16:05:42.171086: step 6800, loss = 0.1746 (28.0 examples/sec; 1.142 sec/batch)
+Train top1 error =  0.03125
+Validation top1 error = 0.0312
+Validation loss =  0.10319625
+----------------------------
+2019-02-24 16:07:33.589653: step 6900, loss = 0.3933 (27.4 examples/sec; 1.166 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0000
+Validation loss =  0.0827041
+----------------------------
+2019-02-24 16:09:29.295992: step 7000, loss = 0.2086 (27.0 examples/sec; 1.183 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2500
+Validation loss =  0.34759215
+----------------------------
+2019-02-24 16:11:25.460694: step 7100, loss = 0.2178 (28.2 examples/sec; 1.134 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0000
+Validation loss =  0.14622313
+----------------------------
+2019-02-24 16:13:21.233468: step 7200, loss = 0.2960 (27.9 examples/sec; 1.147 sec/batch)
+Train top1 error =  0.09375
+Validation top1 error = 0.0000
+Validation loss =  0.14779192
+----------------------------
+2019-02-24 16:15:13.104842: step 7300, loss = 0.1819 (45.3 examples/sec; 0.706 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0000
+Validation loss =  0.12104419
+----------------------------
+2019-02-24 16:17:10.628057: step 7400, loss = 0.1364 (25.3 examples/sec; 1.264 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.2500
+Validation loss =  0.4229523
+----------------------------
+2019-02-24 16:19:03.660431: step 7500, loss = 0.1943 (41.5 examples/sec; 0.771 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.15845373
+----------------------------
+2019-02-24 16:20:54.610399: step 7600, loss = 0.1821 (27.9 examples/sec; 1.148 sec/batch)
+Train top1 error =  0.09375
+Validation top1 error = 0.1875
+Validation loss =  0.3132381
+----------------------------
+2019-02-24 16:22:48.649421: step 7700, loss = 0.1468 (28.3 examples/sec; 1.131 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0312
+Validation loss =  0.109440856
+----------------------------
+2019-02-24 16:24:41.968761: step 7800, loss = 0.4396 (27.0 examples/sec; 1.187 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0625
+Validation loss =  0.23182681
+----------------------------
+2019-02-24 16:26:32.131628: step 7900, loss = 0.1863 (39.8 examples/sec; 0.804 sec/batch)
+Train top1 error =  0.03125
+Validation top1 error = 0.0625
+Validation loss =  0.112726174
+----------------------------
+2019-02-24 16:28:26.231388: step 8000, loss = 0.1148 (38.4 examples/sec; 0.833 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1562
+Validation loss =  0.22559297
+----------------------------
+2019-02-24 16:30:18.341832: step 8100, loss = 0.4058 (27.1 examples/sec; 1.179 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.0625
+Validation loss =  0.077908486
+----------------------------
+2019-02-24 16:32:14.595703: step 8200, loss = 0.3747 (26.8 examples/sec; 1.194 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.0000
+Validation loss =  0.032701798
+----------------------------
+2019-02-24 16:34:04.956061: step 8300, loss = 0.2940 (27.7 examples/sec; 1.155 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.17253083
+----------------------------
+2019-02-24 16:35:54.865828: step 8400, loss = 0.1531 (28.7 examples/sec; 1.116 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0000
+Validation loss =  0.07393745
+----------------------------
+2019-02-24 16:37:49.350085: step 8500, loss = 0.1815 (26.6 examples/sec; 1.201 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.096427135
+----------------------------
+2019-02-24 16:39:46.446172: step 8600, loss = 0.1977 (27.7 examples/sec; 1.155 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.2500
+Validation loss =  0.34776694
+----------------------------
+2019-02-24 16:41:40.349351: step 8700, loss = 0.1742 (28.6 examples/sec; 1.119 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.13773449
+----------------------------
+2019-02-24 16:43:32.642837: step 8800, loss = 0.3171 (26.6 examples/sec; 1.201 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.0000
+Validation loss =  0.020500496
+----------------------------
+2019-02-24 16:45:27.954317: step 8900, loss = 0.2242 (29.4 examples/sec; 1.089 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.45191026
+----------------------------
+2019-02-24 16:47:24.076607: step 9000, loss = 0.3185 (26.4 examples/sec; 1.211 sec/batch)
+Train top1 error =  0.21875
+Validation top1 error = 0.2500
+Validation loss =  0.35608095
+----------------------------
+2019-02-24 16:49:20.427438: step 9100, loss = 0.1613 (27.7 examples/sec; 1.154 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2188
+Validation loss =  0.35252368
+----------------------------
+2019-02-24 16:51:14.982353: step 9200, loss = 0.3098 (27.8 examples/sec; 1.153 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.1562
+Validation loss =  0.24323587
+----------------------------
+2019-02-24 16:53:10.091255: step 9300, loss = 0.0682 (32.3 examples/sec; 0.990 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0000
+Validation loss =  0.034386843
+----------------------------
+2019-02-24 16:55:01.894104: step 9400, loss = 0.2190 (26.0 examples/sec; 1.230 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.0000
+Validation loss =  0.07726067
+----------------------------
+2019-02-24 16:56:56.338547: step 9500, loss = 0.0362 (27.4 examples/sec; 1.169 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0000
+Validation loss =  0.0037274242
+----------------------------
+2019-02-24 16:58:52.360391: step 9600, loss = 0.1541 (26.7 examples/sec; 1.199 sec/batch)
+Train top1 error =  0.15625
+Validation top1 error = 0.0312
+Validation loss =  0.13967739
+----------------------------
+2019-02-24 17:00:48.871559: step 9700, loss = 0.4151 (26.4 examples/sec; 1.212 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.0625
+Validation loss =  0.17046404
+----------------------------
+2019-02-24 17:02:42.481570: step 9800, loss = 0.1745 (28.2 examples/sec; 1.136 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.15136895
+----------------------------
+2019-02-24 17:04:37.859226: step 9900, loss = 0.1023 (28.4 examples/sec; 1.128 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.0000
+Validation loss =  0.0061439816
+----------------------------
+/home/lavenderyi/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters

@@ -3,6 +3,7 @@ import sys
 import numpy as np
 from random import shuffle
 from utils import plot_trajectory
+import re
 
 class DataHandler(object):
 
@@ -81,7 +82,6 @@ class DataHandler(object):
         steps = []
         output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH, self.MAX_TRAJECTORY_SIZE))
         label = ''
-
         with open(filename) as fp:
             lines = list(fp)
             maze = lines[2:14]

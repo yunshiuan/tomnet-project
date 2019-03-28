@@ -5,3 +5,9 @@ S001c
 __pycache__
 cache
 resnet
+*.DS_Store
+*.pyc
+*.ipynb
+*.GIBMsBMLabServer
+nohup.out
+\.Readme\.txt\.swp
