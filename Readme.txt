@@ -3,7 +3,13 @@
 This is the file to record the discription of each file/directory.
 
 ##################################################################
-
+#########################################
+Current training session
+Time:
+Author:
+Output file name:
+Note:
+#########################################
 
 1. Main Codes for AI_Robohon training:
 
