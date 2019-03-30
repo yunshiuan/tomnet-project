@@ -34,8 +34,8 @@ class Model:
   NUM_CLASS = 4
 
   use_ckpt = False
-  ckpt_path = 'cache_S002a/logs/model.ckpt'
-  train_path = 'cache_S002a/train/'
+  ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
+  train_path = 'cache_S002a_10000files/train/'
 
   def __init__(self, args):
     #The data points must be given one by one here?

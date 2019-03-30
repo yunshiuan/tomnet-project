@@ -31,6 +31,10 @@ To check why the error would sometimes go to 0.25 in cache_S002a_80000steps: I t
 (4) cache_S002a_10000steps: Training S002a with 10000steps
 (5) cache_S002a_40000steps: Training S002a with 40000steps
 
+(6) cache_S002a_10000steps: Training S002a with 10000files to see whether the performance would be better than 1000 training files. 
+**Note** It seems that Edwinn's code can only read the file directory like "S002a". If I change to "S002a_10000files", there would be an error in terms of the maze size..It's weird...So the training files should all put in SXXXa. 
+
+
 ############################################
 
 3. Training S003 (6 agents + one subject)
