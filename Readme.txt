@@ -9,6 +9,20 @@ Time:
 Author:
 Output file name:
 Note:
+
+#########################################
+
+Training session: S002a with 10000 training files and 10000 training steps.
+Time: 20190330
+Author: HsinYi Hung
+Output file name:cache_S002a_10000files
+Note:
+cache_S002a_10000steps: Training S002a with 10000files to see whether the performance would be better than 1000 training files.
+
+It seems that Edwinn's code can only read the file directory like "S002a". If I change to "S002a_10000files", there would be an error in terms of the maze size..It's weird...So the training files should all put in SXXXa.
+
+
+
 #########################################
 
 1. Main Codes for AI_Robohon training:
@@ -31,7 +45,7 @@ To check why the error would sometimes go to 0.25 in cache_S002a_80000steps: I t
 (4) cache_S002a_10000steps: Training S002a with 10000steps
 (5) cache_S002a_40000steps: Training S002a with 40000steps
 
-(6) cache_S002a_10000steps: Training S002a with 10000files to see whether the performance would be better than 1000 training files. 
+(6) cache_S002a_10000files: Training S002a with 10000files to see whether the performance would be better than 1000 training files. 
 **Note** It seems that Edwinn's code can only read the file directory like "S002a". If I change to "S002a_10000files", there would be an error in terms of the maze size..It's weird...So the training files should all put in SXXXa. 
 
 
