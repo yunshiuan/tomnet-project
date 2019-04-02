@@ -5,6 +5,7 @@ S001c
 __pycache__
 cache
 resnet
+
 # Ignore hidden files
 *.DS_Store
 *.pyc
@@ -12,4 +13,6 @@ resnet
 *.GIBMsBMLabServer
 nohup.out
 \.Readme\.txt\.swp
+benchmark/cache_S002a_10000files/train/checkpoint
 *.local
+*.data-00000-of-00001
