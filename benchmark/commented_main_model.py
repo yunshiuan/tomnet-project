@@ -46,10 +46,16 @@ class Model:
   def __init__(self, args):
     #The data points must be given one by one here?
     #But the whole trajectory must be given to the LSTM
+    
+    # placeholder for the trainging traj
     self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
+    # placeholder for the trainging goal
     self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
+    # placeholder for the validation traj
     self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH])
+    # placeholder for the validation goal
     self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
+    # ramained to figure out what it means
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
 
     #Load data
