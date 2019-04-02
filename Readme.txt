@@ -10,6 +10,15 @@ Author:
 Output file name:
 Note:
 
+
+
+#########################################
+Current training session
+Time: 20190402
+Author: HsinYi Hung
+Output file name: cache_S002a_test_tuning
+Note: Add a file main_model_tuning.py and test whether the ouput is same as main_model.py
+
 #########################################
 
 Training session: S002a with 10000 training files and 10000 training steps.
