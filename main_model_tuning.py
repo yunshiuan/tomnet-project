@@ -28,8 +28,8 @@ class Model:
   REPORT_FREQ = 100
   FULL_VALIDATION = False
   INIT_LR = 0.00001
-  DECAY_STEP_0 = 10000
-  DECAY_STEP_1 = 15000
+  #DECAY_STEP_0 = 10000
+  #DECAY_STEP_1 = 15000
   
   NUM_CLASS = 4
 
@@ -37,7 +37,7 @@ class Model:
   #ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
   #train_path = 'cache_S002a_10000files/train/'
 
-  def __init__(self, args, BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE, ckpt_fname, train_fname, sub_dir):
+  def __init__(self, args, BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE, DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir):
     
     ckpt_path = ckpt_fname + '/logs/model.ckpt'
     train_path = train_fname + '/train/'
@@ -50,7 +50,8 @@ class Model:
     self.BATCH_SIZE_TEST = BATCH_SIZE_TEST 
     self.TRAIN_STEPS = TRAIN_STEPS
     self.EPOCH_SIZE = EPOCH_SIZE
-    
+    self.DECAY_STEP_0 = DECAY_STEP_0
+    self.DECAY_STEP_1 = DECAY_STEP_1
     
     #The data points must be given one by one here?
     #But the whole trajectory must be given to the LSTM
@@ -412,19 +413,21 @@ if __name__ == "__main__":
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
     args = parser.parse_args()	
-    BATCH_SIZE_TRAIN = 16
-    BATCH_SIZE_VAL = 16
-    BATCH_SIZE_TEST = 16
-    TRAIN_STEPS = 10000
-    EPOCH_SIZE = 100
-    ckpt_fname = 'cache_S002a_test_tuning'
-    train_fname = 'cache_S002a_test_tuning'
-    sub_dir='/S002a/'
+    for BATCH_SIZE_TRAIN in range(16,41, 4):
+        BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
+        BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
+        TRAIN_STEPS = 10000
+        EPOCH_SIZE = 100
+        DECAY_STEP_0 = 10000
+        DECAY_STEP_1 = 15000
+        ckpt_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
+        train_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
+        sub_dir='/S002a/'
     
-    model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE, ckpt_fname, train_fname, sub_dir)
+        model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
     
-    if args.mode == 'train' or args.mode == 'all':
-      model.train()
-    if args.mode == 'test' or args.mode == 'all':
-      model.test()
+        if args.mode == 'train' or args.mode == 'all':
+            model.train()
+        if args.mode == 'test' or args.mode == 'all':
+            model.test()
     

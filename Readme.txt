@@ -12,8 +12,18 @@ Note:
 
 
 
+
 #########################################
-Current training session
+Current training session: tuning batch size
+Time: 20190402
+Author: HsinYi Hung
+Output file name: cache_S002a_tuning_batch_sizeXXX
+Note:
+
+
+
+#########################################
+Training session
 Time: 20190402
 Author: HsinYi Hung
 Output file name: cache_S002a_test_tuning
