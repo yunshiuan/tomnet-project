@@ -17,8 +17,13 @@ class DataHandler(object):
         pass
 
     def parse_trajectories(self, directory, mode, shuf):
+        
         #Make a trajectory with each step same label
         files = os.listdir(directory)
+        # Filter out the csv file (only read the txt files) 
+        r = re.compile(".*.txt") 
+        files = list(filter(r.match, files)) # Read Note    
+
         print('Found', len(files), 'files in', directory)
         
         #Shuffle the filenames
