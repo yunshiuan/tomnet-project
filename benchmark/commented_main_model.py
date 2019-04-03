@@ -66,8 +66,8 @@ class Model:
     data_handler = dh.DataHandler(dir)
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
 
-    print('End of __init__-----------------')
-    pdb.set_trace()
+    #print('End of __init__-----------------')
+    #pdb.set_trace()
 
     
             
@@ -100,7 +100,7 @@ class Model:
   def train(self):
     
     print('Start training-----------------')
-    pdb.set_trace()
+    #pdb.set_trace()
     
     #Build graphs
     self._create_graphs()
@@ -130,7 +130,7 @@ class Model:
         
     print('Start training...')
     print('----------------------------')
-    pdb.set_trace()
+    #pdb.set_trace()
     
     for step in range(self.TRAIN_STEPS):
       #Generate batches for training and validation
@@ -176,8 +176,8 @@ class Model:
         step_list.append(step)
         train_error_list.append(train_error_value)
         
-        print('End of training report-----------------')
-        pdb.set_trace()
+        #print('End of training report-----------------')
+        #pdb.set_trace()
             
       if step == self.DECAY_STEP_0 or step == self.DECAY_STEP_1:
         self.INIT_LR = 0.1 * self.INIT_LR
