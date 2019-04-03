@@ -18,7 +18,7 @@ Current training session: tuning batch size
 Time: 20190402
 Author: HsinYi Hung
 Output file name: cache_S002a_tuning_batch_sizeXXX
-Note:
+Note: In order to write a script for looping the training, I revise the "resnet.py". 
 
 
 

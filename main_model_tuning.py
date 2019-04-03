@@ -53,6 +53,8 @@ class Model:
     self.DECAY_STEP_0 = DECAY_STEP_0
     self.DECAY_STEP_1 = DECAY_STEP_1
     
+    rn.batch_size = BATCH_SIZE_TRAIN
+    
     #The data points must be given one by one here?
     #But the whole trajectory must be given to the LSTM
     self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
@@ -423,11 +425,18 @@ if __name__ == "__main__":
         ckpt_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
         train_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
         sub_dir='/S002a/'
-    
+
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
     
         if args.mode == 'train' or args.mode == 'all':
             model.train()
         if args.mode == 'test' or args.mode == 'all':
             model.test()
+            
+        #reset variables
+        tf.reset_default_graph()
+        #del conv
+        #del fc_weights
+        #del fc_bias
+        
     
