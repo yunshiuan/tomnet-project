@@ -420,6 +420,7 @@ class Model:
 
 
 if __name__ == "__main__":
+    tf.reset_default_graph()
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
