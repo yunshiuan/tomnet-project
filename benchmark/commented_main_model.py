@@ -18,6 +18,9 @@ import commented_data_handler as dh
 import argparse
 import itertools
 
+# For debugging
+
+import pdb
 
 class Model:
   HEIGHT = 12
@@ -57,11 +60,15 @@ class Model:
     self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
     # ramained to figure out what it means
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
-
+        
     #Load data
     dir = os.getcwd() + '/S002a/'
     data_handler = dh.DataHandler(dir)
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
+
+    print('End of __init__-----------------')
+    pdb.set_trace()
+
     
             
   def _create_graphs(self):
@@ -91,8 +98,13 @@ class Model:
     return
         
   def train(self):
+    
+    print('Start training-----------------')
+    pdb.set_trace()
+    
     #Build graphs
     self._create_graphs()
+    
 
     # Initialize a saver to save checkpoints. Merge all summaries, so we can run all
     # summarizing operations by running summary_op. Initialize a new session
@@ -118,7 +130,8 @@ class Model:
         
     print('Start training...')
     print('----------------------------')
-
+    pdb.set_trace()
+    
     for step in range(self.TRAIN_STEPS):
       #Generate batches for training and validation
       train_batch_data, train_batch_labels = self.generate_train_batch(self.train_data, self.train_labels, self.BATCH_SIZE_TRAIN)
@@ -162,11 +175,14 @@ class Model:
 
         step_list.append(step)
         train_error_list.append(train_error_value)
+        
+        print('End of training report-----------------')
+        pdb.set_trace()
             
       if step == self.DECAY_STEP_0 or step == self.DECAY_STEP_1:
         self.INIT_LR = 0.1 * self.INIT_LR
         print('Learning rate decayed to ', self.INIT_LR)
-
+        
       # Save checkpoints every 10000 steps
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')

@@ -31,7 +31,8 @@ class DataHandler(object):
         if shuf:
             shuffle(files)
 
-        #Start testing with a 50-25-25 ratio
+        # Size of data set
+        # Train : Vali: Test = 80 : 10 : 10
         train_files = files[0:int(len(files)*0.8)]
         vali_files = files[int(len(files)*0.8):int(len(files)*0.9)]
         test_files = files[int(0.9*len(files)):len(files)]
