@@ -115,6 +115,13 @@ def output_layer(input_layer, num_labels):
     return fc_h
 
 def build_charnet(input_tensor, n, num_classes, reuse, train):
+  '''
+  :param input_tensor: 
+  :param n: the number of layers in the resnet
+  :param num_classes: 
+  :param reuse: ?
+  :param train:   
+  '''
     layers = []
        
     #Append the input tensor as first layer

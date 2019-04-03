@@ -47,6 +47,9 @@ class Model:
   train_path = 'cache_S002a_10000files/train/'
 
   def __init__(self, args):
+    '''
+    The constructor for the Model class.
+    '''
     #The data points must be given one by one here?
     #But the whole trajectory must be given to the LSTM
     
@@ -67,11 +70,19 @@ class Model:
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
 
     #print('End of __init__-----------------')
-    #pdb.set_trace()
+    pdb.set_trace()
 
     
             
   def _create_graphs(self):
+    
+    # The "step" values will be input to 
+    # (1)"self.train_operation(global_step, self.full_loss, self.train_top1_error)",
+    # and then to
+    # (2)"tf.train.ExponentialMovingAverage(self.TRAIN_EMA_DECAY, global_step)"
+    # - decay
+    # - num_updates=None #this is where 'global_step' goes
+
     global_step = tf.Variable(0, trainable=False)
     validation_step = tf.Variable(0, trainable=False)
     
