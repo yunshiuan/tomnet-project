@@ -16,3 +16,5 @@ nohup.out
 benchmark/cache_S002a_10000files/train/checkpoint
 *.local
 *.data-00000-of-00001
+
+*.MBP15-3
