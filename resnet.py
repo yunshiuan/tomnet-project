@@ -5,6 +5,7 @@ from tensorflow.contrib import rnn
 BN_EPSILON = 0.001
 WEIGHT_DECAY = 0.00002
 
+
 def activation_summary(x):
     tensor_name = x.op.name
     tf.summary.histogram(tensor_name + '/activations', x)
@@ -53,7 +54,7 @@ def average_pooling_layer(input_layer):
 
 def lstm_layer(input_layer, mode, num_classes):
     num_hidden = 64
-    batch_size = 16
+    #batch_size = 16
     out_channels = 11 #TODO: Change to depth of maze
     output_keep_prob = 0.8
 
