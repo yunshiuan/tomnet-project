@@ -1,9 +1,9 @@
 #-Path
 # Change working directory to where the script locates
 import os
-os.getcwd()
-PATH_ROOT = '/Users/vimchiz/bitbucket_local/observer_model_group/benchmark'
-os.chdir(PATH_ROOT)
+#os.getcwd()
+#PATH_ROOT = '/Users/vimchiz/bitbucket_local/observer_model_group/benchmark'
+#os.chdir(PATH_ROOT)
 
 import os
 import sys

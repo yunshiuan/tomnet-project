@@ -16,7 +16,7 @@ def activation_summary(x):
 
 def create_variables(name, shape, is_fc_layer, initializer=tf.contrib.layers.xavier_initializer()):
     regularizer = tf.contrib.layers.l2_regularizer(scale=WEIGHT_DECAY)
-    pdb.set_trace()
+    # pdb.set_trace()
     new_variables = tf.get_variable(name, shape=shape, initializer=initializer, regularizer=regularizer)
     return new_variables
 
