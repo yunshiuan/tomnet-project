@@ -30,6 +30,9 @@ def batch_normalization_layer(input_layer, dimension):
 
 def conv_bn_relu_layer(input_layer, filter_shape, stride):
     out_channel = filter_shape[-1]
+    
+    # pdb.set_trace()
+    
     filter = create_variables(name='conv', shape=filter_shape, is_fc_layer=False)
 
     conv_layer = tf.nn.conv2d(input_layer, filter, strides=[1, stride, stride, 1], padding='SAME')
@@ -41,6 +44,8 @@ def conv_bn_relu_layer(input_layer, filter_shape, stride):
 def residual_block(input_layer, output_channels):
     input_channel = input_layer.get_shape().as_list()[-1]
     stride = 1
+
+    # pdb.set_trace()
 
     with tf.variable_scope('conv1_in_block'):
         conv1 = conv_bn_relu_layer(input_layer, [3, 3, input_channel, output_channels], stride)
@@ -110,6 +115,13 @@ def output_layer(input_layer, num_labels):
     return fc_h
 
 def build_charnet(input_tensor, n, num_classes, reuse, train):
+  '''
+  :param input_tensor: 
+  :param n: the number of layers in the resnet
+  :param num_classes: 
+  :param reuse: ?
+  :param train:   
+  '''
     layers = []
        
     #Append the input tensor as first layer

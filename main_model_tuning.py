@@ -1,10 +1,3 @@
-#-Path
-# Change working directory to where the script locates
-import os
-#os.getcwd()
-#PATH_ROOT = '/Users/vimchiz/bitbucket_local/observer_model_group/benchmark'
-#os.chdir(PATH_ROOT)
-
 import os
 import sys
 import time
@@ -13,76 +6,71 @@ import datetime
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import commented_resnet as rn
-import commented_data_handler as dh
+import resnet as rn
+import data_handler as dh
 import argparse
 import itertools
 
-# For debugging
 
-import pdb
 
 class Model:
   HEIGHT = 12
   WIDTH = 12
   DEPTH = 11
-  BATCH_SIZE_TRAIN = 16
-  BATCH_SIZE_VAL = 16
-  BATCH_SIZE_TEST = 16
+  #BATCH_SIZE_TRAIN = 16
+  #BATCH_SIZE_VAL = 16
+  #BATCH_SIZE_TEST = 16
   NUM_RESIDUAL_BLOCKS = 5
   TRAIN_EMA_DECAY = 0.95
-  TRAIN_STEPS = 10000
-  EPOCH_SIZE = 100
+  #TRAIN_STEPS = 10000
+  #EPOCH_SIZE = 100
   
   REPORT_FREQ = 100
   FULL_VALIDATION = False
   INIT_LR = 0.00001
-  DECAY_STEP_0 = 10000
-  DECAY_STEP_1 = 15000
+  #DECAY_STEP_0 = 10000
+  #DECAY_STEP_1 = 15000
   
   NUM_CLASS = 4
 
   use_ckpt = False
-  ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
-  train_path = 'cache_S002a_10000files/train/'
+  #ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
+  #train_path = 'cache_S002a_10000files/train/'
 
-  def __init__(self, args):
-    '''
-    The constructor for the Model class.
-    '''
+  def __init__(self, args, BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE, DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir):
+    
+    ckpt_path = ckpt_fname + '/logs/model.ckpt'
+    train_path = train_fname + '/train/'
+    
+    self.ckpt_path = ckpt_path
+    self.train_path = train_path
+
+    self.BATCH_SIZE_TRAIN = BATCH_SIZE_TRAIN
+    self.BATCH_SIZE_VAL = BATCH_SIZE_VAL
+    self.BATCH_SIZE_TEST = BATCH_SIZE_TEST 
+    self.TRAIN_STEPS = TRAIN_STEPS
+    self.EPOCH_SIZE = EPOCH_SIZE
+    self.DECAY_STEP_0 = DECAY_STEP_0
+    self.DECAY_STEP_1 = DECAY_STEP_1
+    
+    rn.batch_size = BATCH_SIZE_TRAIN
+    
     #The data points must be given one by one here?
     #But the whole trajectory must be given to the LSTM
-    
-    # placeholder for the trainging traj
-    self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
-    # placeholder for the trainging goal
-    self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
-    # placeholder for the validation traj
-    self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH])
-    # placeholder for the validation goal
-    self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
-    # ramained to figure out what it means
+    self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
+    self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[BATCH_SIZE_TRAIN])
+    self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH])
+    self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[BATCH_SIZE_VAL])
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
-        
+
+    
     #Load data
-    dir = os.getcwd() + '/S002a/'
+    dir = os.getcwd() + sub_dir
     data_handler = dh.DataHandler(dir)
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
-
-    #print('End of __init__-----------------')
-    pdb.set_trace()
-
     
             
   def _create_graphs(self):
-    
-    # The "step" values will be input to 
-    # (1)"self.train_operation(global_step, self.full_loss, self.train_top1_error)",
-    # and then to
-    # (2)"tf.train.ExponentialMovingAverage(self.TRAIN_EMA_DECAY, global_step)"
-    # - decay
-    # - num_updates=None #this is where 'global_step' goes
-
     global_step = tf.Variable(0, trainable=False)
     validation_step = tf.Variable(0, trainable=False)
     
@@ -109,14 +97,9 @@ class Model:
     return
         
   def train(self):
-    
-    print('Start training-----------------')
-    #pdb.set_trace()
-    
     #Build graphs
     self._create_graphs()
     
-
     # Initialize a saver to save checkpoints. Merge all summaries, so we can run all
     # summarizing operations by running summary_op. Initialize a new session
     saver = tf.train.Saver(tf.global_variables())
@@ -141,8 +124,7 @@ class Model:
         
     print('Start training...')
     print('----------------------------')
-    #pdb.set_trace()
-    
+
     for step in range(self.TRAIN_STEPS):
       #Generate batches for training and validation
       train_batch_data, train_batch_labels = self.generate_train_batch(self.train_data, self.train_labels, self.BATCH_SIZE_TRAIN)
@@ -186,14 +168,11 @@ class Model:
 
         step_list.append(step)
         train_error_list.append(train_error_value)
-        
-        #print('End of training report-----------------')
-        #pdb.set_trace()
             
       if step == self.DECAY_STEP_0 or step == self.DECAY_STEP_1:
         self.INIT_LR = 0.1 * self.INIT_LR
         print('Learning rate decayed to ', self.INIT_LR)
-        
+
       # Save checkpoints every 10000 steps
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
@@ -431,16 +410,33 @@ class Model:
 
 
 if __name__ == "__main__":
-    tf.reset_default_graph()
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
     args = parser.parse_args()	
-    model = Model(args)
+    for BATCH_SIZE_TRAIN in range(16,41, 4):
+        BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
+        BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
+        TRAIN_STEPS = 10000
+        EPOCH_SIZE = 100
+        DECAY_STEP_0 = 10000
+        DECAY_STEP_1 = 15000
+        ckpt_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
+        train_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
+        sub_dir='/S002a/'
+
+        model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
     
-    if args.mode == 'train' or args.mode == 'all':
-      model.train()
-    if args.mode == 'test' or args.mode == 'all':
-      model.test()
+        if args.mode == 'train' or args.mode == 'all':
+            model.train()
+        if args.mode == 'test' or args.mode == 'all':
+            model.test()
+            
+        #reset variables
+        tf.reset_default_graph()
+        #del conv
+        #del fc_weights
+        #del fc_bias
+        
     
