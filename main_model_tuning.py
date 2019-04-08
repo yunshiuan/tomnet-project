@@ -415,15 +415,16 @@ if __name__ == "__main__":
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
     args = parser.parse_args()	
-    for BATCH_SIZE_TRAIN in range(16,41, 4):
+    for  TRAIN_STEPS in range(5000,120000, 5000):
+        BATCH_SIZE_TRAIN = 56
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
-        TRAIN_STEPS = 10000
+        #TRAIN_STEPS = 10000
         EPOCH_SIZE = 100
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
-        train_fname = 'cache_S002a_tuning_batch_size' + str(BATCH_SIZE_TRAIN)
+        ckpt_fname = 'cache_S002a_batch40_tuning_train_step_' + str(TRAIN_STEPS)
+        train_fname = 'cache_S002a_batch40_tuning_train_step_' + str(TRAIN_STEPS)
         sub_dir='/S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
