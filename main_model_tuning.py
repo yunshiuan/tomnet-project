@@ -415,7 +415,7 @@ if __name__ == "__main__":
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
     args = parser.parse_args()	
-    for  TRAIN_STEPS in range(5000, 15000, 1000):
+    for  TRAIN_STEPS in range(15000, 16000, 1000):
         BATCH_SIZE_TRAIN = 40
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
