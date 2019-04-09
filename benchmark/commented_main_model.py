@@ -64,9 +64,18 @@ class Model:
     # ramained to figure out what it means
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
         
-    #Load data
+    # Load data
     dir = os.getcwd() + '/S002a/'
     data_handler = dh.DataHandler(dir)
+    # For S002a:
+    # Get the data by "data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)"
+    # self.train_data.shape: (800, 12, 12, 11)
+    # self.vali_data.shape: (100, 12, 12, 11)
+    # self.test_data.shape: (100, 12, 12, 11)
+    # self.train_labels.shape: (800, )
+    # self.vali_labels.shape: (100, )
+    # self.test_labels.shape: (100, )
+
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
 
     #print('End of __init__-----------------')
