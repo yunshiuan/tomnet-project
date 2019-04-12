@@ -23,16 +23,24 @@ import itertools
 import pdb
 
 class Model:
-  HEIGHT = 12
-  WIDTH = 12
-  DEPTH = 11
-  BATCH_SIZE_TRAIN = 16
-  BATCH_SIZE_VAL = 16
-  BATCH_SIZE_TEST = 16
+  HEIGHT = 12 # height of the maze
+  WIDTH = 12 # width of the maze
+  DEPTH = 11 # number of steps of each trajectory (will be padded up to it if less than the constant)
+  
+  #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
+  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)
+  BATCH_SIZE_VAL = 16 # size of the batch for validation
+  BATCH_SIZE_TEST = 16 # size of batch for testing
+  
+  # number of layers in the resnet 
+  # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   NUM_RESIDUAL_BLOCKS = 5
   TRAIN_EMA_DECAY = 0.95
+  
+  # tota number of minibatches used for training
+  # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   TRAIN_STEPS = 10000
-  EPOCH_SIZE = 100
+  EPOCH_SIZE = 100 # the data size of an epoch (should equal to the traning set size)
   
   REPORT_FREQ = 100
   FULL_VALIDATION = False
@@ -89,8 +97,8 @@ class Model:
     # (1)"self.train_operation(global_step, self.full_loss, self.train_top1_error)",
     # and then to
     # (2)"tf.train.ExponentialMovingAverage(self.TRAIN_EMA_DECAY, global_step)"
-    # - decay
-    # - num_updates=None #this is where 'global_step' goes
+    # - decay = self.TRAIN_EMA_DECAY 
+    # - num_updates = global_step #this is where 'global_step' goes
 
     global_step = tf.Variable(0, trainable=False)
     validation_step = tf.Variable(0, trainable=False)
@@ -399,10 +407,21 @@ class Model:
     :param train_batch_size: int
     :return: augmented train batch data and labels. 4D numpy array and 1D numpy array
     '''
-    
+    # -----------
+    # numpy.random.choice:
+    # If an ndarray, a random sample is generated from its elements. 
+    # If an int, the random sample is generated as if a were np.arange(a)
+    # -----------
+    # > np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
+    # this generates an array with one random interger in it 
+    # (from 0 to 84, 84: self.EPOCH_SIZE - train_batch_size)
+    # -----------
+    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
     offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
+    
+    # subsetting a batch from traning data starting at index 'offet'
     batch_data = train_data[offset:offset + train_batch_size, ...]
-    batch_label = train_labels[offset:offset + self.BATCH_SIZE_TRAIN]
+    batch_label = train_labels[offset:offset + train_batch_size]
     
     return batch_data, batch_label
     
