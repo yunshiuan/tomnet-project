@@ -5,16 +5,32 @@ This is the file to record the discription of each file/directory.
 ##################################################################
 #########################################
 Current training session
-Time:
-Author:
-Output file name:
-Note:
+Time: 
+Author: 
+Output file name: 
+Note: 
+
+
+#########################################
+Training session
+Time: 20190408
+Author: HsinYi Hung
+Output file name: cache_S002a_tuning_train_step_20000_batchXX
+Note: Tune batch size with specific training step=20000.
+
+
+#########################################
+Training session
+Time: 20190408
+Author: HsinYi Hung
+Output file name: cache_S002a_batchXX_tuning_train_step_XXX
+Note: Tune training step with specific batch size.
 
 
 
 
 #########################################
-Current training session: tuning batch size
+training session: tuning batch size
 Time: 20190402
 Author: HsinYi Hung
 Output file name: cache_S002a_tuning_batch_sizeXXX
