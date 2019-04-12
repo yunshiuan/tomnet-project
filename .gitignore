@@ -12,4 +12,9 @@ resnet
 *.GIBMsBMLabServer
 nohup.out
 \.Readme\.txt\.swp
+benchmark/cache_S002a_10000files/train/checkpoint
 *.local
+
+*.MBP15-3
+
+*.BMLabGPU
