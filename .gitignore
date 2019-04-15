@@ -5,6 +5,7 @@ S001c
 __pycache__
 cache
 resnet
+
 # Ignore hidden files
 *.DS_Store
 *.pyc
@@ -18,3 +19,5 @@ benchmark/cache_S002a_10000files/train/checkpoint
 *.MBP15-3
 
 *.BMLabGPU
+
+*.Rhistory
