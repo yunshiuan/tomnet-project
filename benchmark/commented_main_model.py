@@ -325,6 +325,13 @@ class Model:
     :param k: int
     :return: tensor with shape [1]
     '''
+    # -----------
+    # The Top-1 error is the percentage of the time that the classifier 
+    # did not give the correct class the highest score. The Top-5 error 
+    # is the percentage of the time that the classifier did not include 
+    # the correct class among its top 5 guesses.
+    # -----------
+
     batch_size = predictions.get_shape().as_list()[0]
     in_top1 = tf.to_float(tf.nn.in_top_k(predictions, labels, k=1))
     num_correct = tf.reduce_sum(in_top1)
