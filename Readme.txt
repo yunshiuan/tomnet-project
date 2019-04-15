@@ -11,19 +11,14 @@ Output file name:
 Note: 
 
 
-<<<<<<< HEAD
 
 #########################################
-Current training session
+Training session
 Time: 20190412
 Author: HsinYi Hung
 Output file name: cache_S002a_epoch8000_train_step_10000_tuning_batchXXX 
 Note: Find out epoch size named by Edwinn should be training set size. So change epoch to 8000.
 
-
-
-=======
->>>>>>> v2_test_GPUserver
 #########################################
 Training session
 Time: 20190408
@@ -43,7 +38,7 @@ Note: Tune training step with specific batch size.
 
 
 #########################################
-training session: tuning batch size
+Training session: tuning batch size
 Time: 20190402
 Author: HsinYi Hung
 Output file name: cache_S002a_tuning_batch_sizeXXX
