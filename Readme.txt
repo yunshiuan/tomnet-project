@@ -11,6 +11,16 @@ Output file name:
 Note: 
 
 
+
+#########################################
+Current training session
+Time: 20190412
+Author: HsinYi Hung
+Output file name: cache_S002a_epoch8000_train_step_10000_tuning_batchXXX 
+Note: Find out epoch size named by Edwinn should be training set size. So change epoch to 8000.
+
+
+
 #########################################
 Training session
 Time: 20190408
