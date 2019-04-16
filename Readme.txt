@@ -11,6 +11,14 @@ Output file name:
 Note: 
 
 
+#########################################
+Current training session
+Time: 20190415
+Author: HsinYi Hung
+Output file name: cache_S002a_epoch8000_train_step_10000_tuning_batch96_XX
+Note: Run the model epoch8000_train_step_10000_tuning_batch96 9 more times to see whether the results are stable or not.
+
+
 
 #########################################
 Training session
