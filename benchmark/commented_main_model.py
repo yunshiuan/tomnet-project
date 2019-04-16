@@ -42,13 +42,13 @@ class Model:
   TRAIN_STEPS = 10000
   EPOCH_SIZE = 100 # the data size of an epoch (should equal to the traning set size)
   
-  REPORT_FREQ = 100
-  FULL_VALIDATION = False
-  INIT_LR = 0.00001
-  DECAY_STEP_0 = 10000
-  DECAY_STEP_1 = 15000
+  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
+  FULL_VALIDATION = False # WHAT is this? #TODO
+  INIT_LR = 0.00001 # Initial learning rate (LR)
+  DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
+  DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
   
-  NUM_CLASS = 4
+  NUM_CLASS = 4 # number of unique classes in the training set
 
   use_ckpt = False
   ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
@@ -93,6 +93,7 @@ class Model:
             
   def _create_graphs(self):
     
+    # > for step in range(self.TRAIN_STEPS):
     # The "step" values will be input to 
     # (1)"self.train_operation(global_step, self.full_loss, self.train_top1_error)",
     # and then to
@@ -103,15 +104,37 @@ class Model:
     global_step = tf.Variable(0, trainable=False)
     validation_step = tf.Variable(0, trainable=False)
     
+    # The charnet
+    # def build_charnet(input_tensor, n, num_classes, reuse, train):
+    # - Add n residual layers
+    # - Add average pooling
+    # - Add LSTM layer
+    # - Add a fully connected layer
+    # The output of charnet is "logits", which will be feeded into 
+    # the softmax layer to make predictions
+    
+    # "logits" output the input for a softmax layer (see below)
     logits = rn.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
     vali_logits = rn.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     
+    # REGULARIZATION_LOSSES: regularization losses collected during graph construction.
+    # See: https://www.tensorflow.org/api_docs/python/tf/GraphKeys
     regu_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
     
-    #Training loss and error
+    # Training loss and error
+    #  loss: the cross entropy loss given logits and true labels
+    #  > loss(logits, labels)
     loss = self.loss(logits, self.goal_placeholder)
-    self.full_loss = tf.add_n([loss] + regu_losses)
+    
+    #  tf.add_n: Adds all input tensors element-wise.
+    #  - Using sum or + might create many tensors in graph to store intermediate result.
+    self.full_loss = tf.add_n([loss] + regu_losses) 
     predictions = tf.nn.softmax(logits)
+
+    # Performace metric: prediction error
+    # - Note that, by comparison,  the loss function 'def loss(self, logits, labels):'
+    # - use the cross entropy loss.
+
     self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
 
     #Validation loss and error
@@ -136,9 +159,18 @@ class Model:
 
     # Initialize a saver to save checkpoints. Merge all summaries, so we can run all
     # summarizing operations by running summary_op. Initialize a new session
-    saver = tf.train.Saver(tf.global_variables())
-    summary_op = tf.summary.merge_all()
-    init = tf.initialize_all_variables()
+    saver = tf.train.Saver(tf.global_variables()) # <class 'tensorflow.python.training.saver.Saver'>
+    summary_op = tf.summary.merge_all() # <class 'tensorflow.python.framework.ops.Tensor'>
+    
+    # initialize_all_variables (from tensorflow.python.ops.variables) 
+    # is deprecated and will be removed after 2017-03-02.
+    # Instructions for updating:
+    # Use `tf.global_variables_initializer` instead.
+    
+    init = tf.initialize_all_variables() # <class 'tensorflow.python.framework.ops.Operation'>
+    # -----------------------
+    # Session: This is the start of the tf session
+    # -----------------------
     sess = tf.Session()
 
     # If you want to load from a checkpoint
@@ -146,12 +178,18 @@ class Model:
       saver.restore(sess, self.ckpt_path)
       print('Restored from checkpoint...')
     else:
+      # -----------------------
+      # Session: Initialize all the parameters in the sess.
+      # See above: "init = tf.initialize_all_variables()"
+      # -----------------------
       sess.run(init)
       
     # This summary writer object helps write summaries on tensorboard
+    # this is irrelevant to the error.csv file
     summary_writer = tf.summary.FileWriter(self.train_path, sess.graph)
 
     # These lists are used to save a csv file at last
+    # This is the data for error.csv
     step_list = []
     train_error_list = []
     val_error_list = []
@@ -182,7 +220,57 @@ class Model:
       
       start_time = time.time()
 
-      #Actual training
+      # Actual training
+      # -----------------------------------------------
+      # This is where the train_error_value comes from 
+      # -----------------------------------------------
+      # sess.run(
+      #     fetches = [self.train_op,
+      #                self.train_ema_op,
+      #                self.full_loss,
+      #                self.train_top1_error], 
+      #     feed_dict = {self.traj_placeholder: train_batch_data,
+      #                  self.goal_placeholder: train_batch_labels,
+      #                  self.vali_traj_placeholder: validation_batch_data,
+      #                  self.vali_goal_placeholder: validation_batch_labels,
+      #                  self.lr_placeholder: self.INIT_LR})
+      # Parameters:
+      # -----------------------------
+      # fetches
+      # -----------------------------
+      # (1,2) self.train_op, self.train_ema_op 
+      # - (1) These define the optimization operation.
+      # - (2) come from: def _create_graphs(self):
+      #       (1) come from: self.train_operation(global_step, self.full_loss, self.train_top1_error)
+      #         - return: two operations. 
+      #           - Running train_op will do optimization once. 
+      #           - Running train_ema_op will generate the moving average of train error and 
+      #             train loss for tensorboard
+      #         - param: global_step #TODO ??
+      #         - param: self.full_loss: 
+      #             - The loss that includes both the loss and the regularized loss
+      #             - comes from: self.full_loss = tf.add_n([loss] + regu_losses)
+      #         - param: self.train_top1_error: 
+      #             def _create_graphs(self):
+      #                self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
+      #                   def top_k_error(self, predictions, labels, k):
+      #                        The Top-1 error is the percentage of the time that the classifier 
+      #                        did not give the correct class the highest score.
+      # (3) self.full_loss
+      # - (1) The loss that includes both the loss and the regularized loss
+      # - (2) comes from: self.full_loss = tf.add_n([loss] + regu_losses)
+      # (4) self.train_top1_error
+      # - (1) comes from:
+      # - def _create_graphs(self):
+      # --- self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
+      # --- def top_k_error(self, predictions, labels, k):
+      # - (2) The Top-1 error is the percentage of the time that the classifier 
+      #       did not give the correct class the highest score.
+      #
+      # -----------------------------
+      # feed_dict
+      # -----------------------------
+      #
       _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error], {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
       duration = time.time() - start_time
 
@@ -201,6 +289,7 @@ class Model:
         print('Validation loss = ', validation_loss_value)
         print('----------------------------')
 
+        # This records the training steps and the corresponding training error
         step_list.append(step)
         train_error_list.append(train_error_value)
         
@@ -211,13 +300,14 @@ class Model:
         self.INIT_LR = 0.1 * self.INIT_LR
         print('Learning rate decayed to ', self.INIT_LR)
         
-      # Save checkpoints every 10000 steps
+      # Save checkpoints every 10000 steps and at the last step      
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
 
           df = pd.DataFrame(data={'step':step_list, 'train_error':train_error_list,
                           'validation_error': val_error_list})
+          # overwrite the csv
           df.to_csv(self.train_path + '_error.csv')
 
   def test(self):
