@@ -113,7 +113,7 @@ class Model:
     # The output of charnet is "logits", which will be feeded into 
     # the softmax layer to make predictions
     
-    # "logits" output the input for a softmax layer (see below)
+    # "logits" is the output of the charnet and is the input for a softmax layer (see below)
     logits = rn.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
     vali_logits = rn.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     
@@ -272,7 +272,17 @@ class Model:
       # -----------------------------
       # feed_dict
       # -----------------------------
-      #
+      # self.traj_placeholder: train_batch_data
+      # - feed in the trajectories of the training batch
+      # self.goal_placeholder: train_batch_labels
+      # - feed in the labels of the training batch
+      # self.vali_traj_placeholder: validation_batch_data
+      # - feed in the trajectories of the validation batch
+      # self.vali_goal_placeholder: validation_batch_labels
+      # - feed in the labels of the validation batch
+      # self.lr_placeholder: self.INIT_LR
+      # - feed in the initial learning rate
+      
       _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error], {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
       duration = time.time() - start_time
 

@@ -151,14 +151,22 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
 
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
+
         # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
-        # 
-        
+        # - param input_tensor: 'fc', is the output from the previous LSTM layer
+        # - param axis: The dimensions to reduce      
         global_pool = tf.reduce_mean(layers[-1], [1])
         assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+
+        # def output_layer(input_layer, num_labels):
+        # '''
+        # :param input_layer: 2D tensor
+        # :param num_labels: int. How many output labels in total?
+        # :return: output layer Y = WX + B
+        # '''
         output = output_layer(global_pool, num_classes)
         layers.append(output)
-    
+
     return layers[-1]
 
 def build_pred_head(self):
