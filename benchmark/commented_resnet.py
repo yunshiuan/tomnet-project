@@ -96,6 +96,7 @@ def lstm_layer(input_layer, mode, num_classes):
     #Linear output
     lstm_h = tf.matmul(outputs, W) + b
     shape = lstm_input.shape
+    # the length of the outpur = num_classes ?? Remained to be confirmed
     lstm_h = tf.reshape(lstm_h, [shape[0], -1, num_classes])
     return lstm_h
 
@@ -150,6 +151,9 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
 
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
+        # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
+        # 
+        
         global_pool = tf.reduce_mean(layers[-1], [1])
         assert global_pool.get_shape().as_list()[-1:] == [num_classes]
         output = output_layer(global_pool, num_classes)
