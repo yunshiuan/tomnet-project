@@ -6,8 +6,16 @@
 
 # Constants
 #path
-path_root <- readline("Please enter the root path of the repository.")
-PATH_ROOT = "/Users/vimchiz/bitbucket_local/observer_model_group"
+# Manually set the root path of the repo if running the script via RStudio
+if(interactive()){
+  # Should be manually adjusted to correspond to the root path of your repository.
+  PATH_ROOT = "/Users/vimchiz/bitbucket_local/observer_model_group"
+}else{
+  cat(paste0("Please enter the root path of your repository (without quotation mark), \n",
+             "e.g., /Users/observer_model \n"))
+  PATH_ROOT  <- readLines("stdin",n=1);
+}
+
 PATH_TRAINING_RESULT = file.path(PATH_ROOT,"training_result","caches")
 PATH_FIGURE_OUTPUT = file.path(PATH_ROOT,"training_result","figures")
 #file
