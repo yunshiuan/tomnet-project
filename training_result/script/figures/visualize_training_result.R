@@ -25,5 +25,5 @@ FILE_HELPER_FUNCTION = file.path(PATH_ROOT,
 source(FILE_HELPER_FUNCTION)
 
 # Visualize
-visualize_all_traning_performace(path_training_result = PATH_TRAINING_RESULT,
-                                 path_figure_output = PATH_FIGURE_OUTPUT)
+result = visualize_all_traning_performace(path_training_result = PATH_TRAINING_RESULT,
+                                          path_figure_output = PATH_FIGURE_OUTPUT)
