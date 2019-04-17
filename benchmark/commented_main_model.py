@@ -113,7 +113,8 @@ class Model:
     # The output of charnet is "logits", which will be feeded into 
     # the softmax layer to make predictions
     
-    # "logits" is the output of the charnet and is the input for a softmax layer (see below)
+    # "logits" is the output of the charnet (including ResNET and LSTM) 
+    # and is the input for a softmax layer (see below)
     logits = rn.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
     vali_logits = rn.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     
