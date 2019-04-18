@@ -23,18 +23,18 @@ visualize_one_traning_performace <- function(file_error_csv,
   # - return None: It write the plot to a output file.
 
   # check if the figure file already exists
-  if(!overwrite){ # skip it if overwrite == F
-    figure_full_name = file.path(path_figure_output, file_name_figure_output)
-    if(file.exists(figure_full_name)){
-     return(warning("The figure file already exists.")) 
+  if (!overwrite) { # skip it if overwrite == F
+    figure_full_name <- file.path(path_figure_output, file_name_figure_output)
+    if (file.exists(figure_full_name)) {
+      return(warning("The figure file already exists.", call. = F))
     }
   }
   # local constant
   LABEL_Y_AXIS <- "Error Value"
   VALUE_Y_AXIS_LIMIT <- c(0, 1)
   LABEL_ERROR_TYPE <- c("Train Error", "Validation Error")
-  VALUE_PLOT_WIDTH <- 8*0.5
-  VALUE_PLOT_HEIGHT <- 5*0.5
+  VALUE_PLOT_WIDTH <- 8 * 0.5
+  VALUE_PLOT_HEIGHT <- 5 * 0.5
   df_error_csv <- read.csv(file_error_csv, header = T)
   df_error_csv %>%
     gather(error_type, error_value, train_error, validation_error) %>%
@@ -65,27 +65,49 @@ visualize_all_traning_performace <- function(path_training_result,
     pattern = "_error.csv",
     full.names = T
   )
-  
-  lapply(list_error_csv,function(csv_file){
+  list_warning_message = c()
+  list_error_message = c()
+  result <- lapply(list_error_csv, function(csv_file) {
     tryCatch({
-      train_type = str_extract(string = csv_file,
-                               pattern = "(?<=cache_).*(?=/train)")
-      file_name_figure_output = paste0(train_type,".pdf")
-      
+      train_type <- str_extract(
+        string = csv_file,
+        pattern = "(?<=cache_).*(?=/train)"
+      )
+      file_name_figure_output <- paste0(train_type, ".pdf")
+
       # Make a valid file name
-      file_name_figure_output = gsub(pattern = "/",
-                                     x = file_name_figure_output,
-                                     replacement = "__")
-      visualize_one_traning_performace(file_error_csv = csv_file,
-                                       file_name_figure_output = file_name_figure_output,
-                                       path_figure_output = path_figure_output)
-    },warning = function(msg){
-      print(paste0("Warning with ", file_name_figure_output, ": ", msg))
+      file_name_figure_output <- gsub(
+        pattern = "/",
+        x = file_name_figure_output,
+        replacement = "__"
+      )
+      visualize_one_traning_performace(
+        file_error_csv = csv_file,
+        file_name_figure_output = file_name_figure_output,
+        path_figure_output = path_figure_output
+      )
+      return(paste0("Finish: ", file_name_figure_output))
+    }, warning = function(msg) {
+      #print(paste0("Warning with ", file_name_figure_output, ": ", msg))
+      warning_message = paste0("Warning with ", file_name_figure_output, ": ", msg$message)
+      #list_warning_message = append(list_warning_message,warning_message)
+      return(warning_message)
     }, error = function(msg) {
-      print(paste0("Error with ", file_name_figure_output, ": ", msg))
-    },finally = {
-      print(paste0("Finish: ",file_name_figure_output))
+      #print(paste0("Error with ", file_name_figure_output, ": ", msg))
+      error_message = paste0("Error with ", file_name_figure_output, ": ", msg$message)
+      #list_error_message = append(list_error_message,error_message)
+      return(error_message)
     })
-   
   })
+  # Print the summary
+  result = unlist(result)
+  list_finish = grep(pattern = "Finish",x = result,value = T)
+  list_skip = grep(pattern = "already exists",x = result,value = T)
+  summary =  paste0("Output figure: ",length(list_finish),"\n",
+                    "Skip: ", length(list_skip),"\n",
+                    "Total: ", length(result),"\n\n",
+                    "Output details:","\n",
+                    paste(paste0("  ",list_finish),collapse = "\n")
+                    )
+  cat(summary)
 }
