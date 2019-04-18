@@ -8,7 +8,10 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 
-visualize_one_traning_performace <- function(file_error_csv, file_name_figure_output, path_figure_output) {
+visualize_one_traning_performace <- function(file_error_csv,
+                                             file_name_figure_output,
+                                             path_figure_output,
+                                             overwrite = FALSE) {
   # This funciton is to visualize one training result that is stored
   # in error.csv file in the cache directory.
   # - param file_error_csv: the "error_csv" file stored in the cache directory.
@@ -16,8 +19,16 @@ visualize_one_traning_performace <- function(file_error_csv, file_name_figure_ou
   # - param path_figure_output: the path where the output figure should be created
   # Should include the file type suffix (e.g., .pdf, .png)
   # - param path_output_figure: the path of the output figure.
+  # - param overwrite: whether to overwrite if the figure file already exists
   # - return None: It write the plot to a output file.
 
+  # check if the figure file already exists
+  if(!overwrite){ # skip it if overwrite == F
+    figure_full_name = file.path(path_figure_output, file_name_figure_output)
+    if(file.exists(figure_full_name)){
+     return(warning("The figure file already exists.")) 
+    }
+  }
   # local constant
   LABEL_Y_AXIS <- "Error Value"
   VALUE_Y_AXIS_LIMIT <- c(0, 1)
@@ -39,11 +50,14 @@ visualize_one_traning_performace <- function(file_error_csv, file_name_figure_ou
     )
 }
 
-visualize_all_traning_performace <- function(path_training_result, path_figure_output) {
+visualize_all_traning_performace <- function(path_training_result,
+                                             path_figure_output,
+                                             overwrite = FALSE) {
   # This funciton is to output figures from all cache results.
   # It checks the existence of the figures and skip if the figures already exist.
   # - param path_training_result: the root path where all the cache directories exist.
   # - param path_figure_output: the root path where all the figures should be created.
+  # - param overwrite: whether to overwrite if the figure file already exists
   # - return None: output all the plots to a output directoris
   list_error_csv <- list.files(
     path = path_training_result,
@@ -66,11 +80,11 @@ visualize_all_traning_performace <- function(path_training_result, path_figure_o
                                        file_name_figure_output = file_name_figure_output,
                                        path_figure_output = path_figure_output)
     },warning = function(msg){
-      print("Warning with ", csv_file, ": ", msg)
+      print(paste0("Warning with ", file_name_figure_output, ": ", msg))
     }, error = function(msg) {
-      print("Error with ", csv_file, ": ", msg)
+      print(paste0("Error with ", file_name_figure_output, ": ", msg))
     },finally = {
-      print(paste0("Finish: ",csv_file))
+      print(paste0("Finish: ",file_name_figure_output))
     })
    
   })
