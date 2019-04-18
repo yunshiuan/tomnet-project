@@ -3,12 +3,21 @@
 This is the file to record the discription of each file/directory.
 
 ##################################################################
+
 #########################################
 Current training session
-Time: 
-Author: 
-Output file name: 
-Note: 
+Time:
+Author:
+Output file name:
+Note:
+
+
+#########################################
+Current training session
+Time: 20190417
+Author: HsinYi Hung
+Output file name: cache_S002a_epoch8000_tuning_batch96__train_step_100000_1 & cache_S002a_epoch8000_tuning_batch96__train_step_4000000_1 
+Note: try training step=10000 and 4000000.
 
 
 #########################################
