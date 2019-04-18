@@ -6,7 +6,11 @@ from tensorflow.contrib import rnn
 
 import pdb
 
+# hyperparameter for batch_normalization_layer()
 BN_EPSILON = 0.001
+
+# hyperparameter for create_variables()
+# this is especially for "tf.contrib.layers.l2_regularizer"
 WEIGHT_DECAY = 0.00002
 
 def activation_summary(x):
@@ -47,6 +51,7 @@ def residual_block(input_layer, output_channels):
 
     # pdb.set_trace()
 
+    # Note that conv_bn_relu_layer() includes both ReLU nonlinearities and batch-norm
     with tf.variable_scope('conv1_in_block'):
         conv1 = conv_bn_relu_layer(input_layer, [3, 3, input_channel, output_channels], stride)
 
@@ -62,10 +67,11 @@ def average_pooling_layer(input_layer):
     return pooled_input
 
 def lstm_layer(input_layer, mode, num_classes):
-    num_hidden = 64
-    batch_size = 16
+    
+    num_hidden = 64 # Paper: 64
+    batch_size = 16 # Paper: 16
     out_channels = 11 #TODO: Change to depth of maze
-    output_keep_prob = 0.8
+    output_keep_prob = 0.8 # This is for regularization during training
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -76,8 +82,16 @@ def lstm_layer(input_layer, mode, num_classes):
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
-    if mode == 'train':
+    if mode == 'train':      
+        # Using dropout for regularization during the RNN training
+        # Dropout should not be used during validation and testing.
+        #
+        # rnn_cell.DropoutWrapper 
+        # - param output_keep_prob: output keep probability (output dropout)
+        #  if it is constant and 1, no output dropout will be added.
+        # See: https://blog.csdn.net/abclhq2005/article/details/78683656
         cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
+        
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     #if mode == 'train':
@@ -96,7 +110,7 @@ def lstm_layer(input_layer, mode, num_classes):
     #Linear output
     lstm_h = tf.matmul(outputs, W) + b
     shape = lstm_input.shape
-    # the length of the outpur = num_classes ?? Remained to be confirmed
+    # the length of the outpur = num_classes ?? Remained to be confirmed #TODO
     lstm_h = tf.reshape(lstm_h, [shape[0], -1, num_classes])
     return lstm_h
 

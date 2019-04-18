@@ -40,11 +40,21 @@ class Model:
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   TRAIN_STEPS = 10000
-  EPOCH_SIZE = 100 # the data size of an epoch (should equal to the traning set size)
+  # the data size of an epoch (should equal to the traning set size)
+  # e.g., given a full date set with 10,000 snapshots,
+  # with a train:dev:test = 8:2:2 split,
+  # EPOCH_SIZE should be 8,000
+  EPOCH_SIZE = 100 
   
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
-  FULL_VALIDATION = False # WHAT is this? #TODO
-  INIT_LR = 0.00001 # Initial learning rate (LR)
+
+  # TRUE: use the full data set for validation 
+  # (but this would not be fair because a portion of the data has already been seen)
+  # FALSE: data split using train:vali:test = 8:1:1
+  FULL_VALIDATION = False 
+
+  # Initial learning rate (LR) # paper: 10−4
+  INIT_LR = 0.00001  # 10-5
   DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
   DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
   
@@ -83,6 +93,7 @@ class Model:
     # self.train_labels.shape: (800, )
     # self.vali_labels.shape: (100, )
     # self.test_labels.shape: (100, )
+    # Each data example is one trajectory (each contains several steps)
 
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
 
@@ -125,6 +136,12 @@ class Model:
     # Training loss and error
     #  loss: the cross entropy loss given logits and true labels
     #  > loss(logits, labels)
+    # Note:
+    # (1) To compute loss, it is important to use the output from NN before entering the softmax function
+    # https://www.tensorflow.org/api_docs/python/tf/nn/sparse_softmax_cross_entropy_with_logits
+    # WARNING: This op expects unscaled logits, 
+    # since it performs a softmax on logits internally for efficiency. 
+    # Do not call this op with the output of softmax, as it will produce incorrect results.
     loss = self.loss(logits, self.goal_placeholder)
     
     #  tf.add_n: Adds all input tensors element-wise.
@@ -200,7 +217,11 @@ class Model:
     #pdb.set_trace()
     
     for step in range(self.TRAIN_STEPS):
+      #pdb.set_trace()
+
       #Generate batches for training and validation
+      # Each example in a batch is of the shape 
+      # (maze width = 12, maze height = 12, steps of each trajectory = 11)
       train_batch_data, train_batch_labels = self.generate_train_batch(self.train_data, self.train_labels, self.BATCH_SIZE_TRAIN)
       validation_batch_data, validation_batch_labels = self.generate_vali_batch(self.vali_data, self.vali_labels, self.BATCH_SIZE_VAL)
 
@@ -313,7 +334,7 @@ class Model:
         self.INIT_LR = 0.1 * self.INIT_LR
         print('Learning rate decayed to ', self.INIT_LR)
         
-      # Save checkpoints every 10000 steps and at the last step      
+      # Save checkpoints every 10000 steps and also at the last step      
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
@@ -416,6 +437,14 @@ class Model:
     :return: loss tensor with shape [1]
     '''
     labels = tf.cast(labels, tf.int64)
+    
+    # Note
+    # (1) https://www.tensorflow.org/api_docs/python/tf/nn/sparse_softmax_cross_entropy_with_logits
+    # WARNING: This op expects unscaled logits, 
+    # since it performs a softmax on logits internally for efficiency. 
+    # Do not call this op with the output of softmax, as it will produce incorrect results.
+    # (2) The ToMNET paper also uses softmax cross entropy for loss function
+    # https://www.superdatascience.com/blogs/convolutional-neural-networks-cnn-softmax-crossentropy
     cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=labels, name='cross_entropy_per_example')
     cross_entropy_mean = tf.reduce_mean(cross_entropy, name='cross_entropy')
     return cross_entropy_mean
