@@ -72,12 +72,18 @@ def lstm_layer(input_layer, mode, num_classes):
     batch_size = 16 # Paper: 16
     out_channels = 11 #TODO: Change to depth of maze
     output_keep_prob = 0.8 # This is for regularization during training
+    # pdb.set_trace()
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
-
+    # input_layer.get_shape().as_list() = (16, 6, 6, 11)
+    # 16: batch size
+    # 6: featur_h after CNN
+    # 6: feature_w after CNN
+    # 11: number of channels after CNN (unaffected by CNN)
     _, feature_h, feature_w, _ = input_layer.get_shape().as_list()
     
+
     lstm_input = tf.transpose(input_layer,[0,2,1,3])
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
@@ -101,16 +107,24 @@ def lstm_layer(input_layer, mode, num_classes):
 
     initial_state = cell.zero_state(batch_size, dtype=tf.float32)
 
+    # lstm_input.shape = (16, 6, 66)
+    # seq_len.shape = (16, )
     outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
     outputs = tf.reshape(outputs, [-1, num_hidden])
     
+    # W.shape = (64, 4)
+    # b.shape = (4, )
     W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
     b = tf.get_variable(name='b_out', shape=[num_classes], dtype=tf.float32, initializer=tf.constant_initializer())
+    # pdb.set_trace()
 
     #Linear output
+    # lstm_h.shape = (96, 4)
     lstm_h = tf.matmul(outputs, W) + b
+    # lstm_input.shape = (16, 6, 66)
     shape = lstm_input.shape
-    # the length of the outpur = num_classes ?? Remained to be confirmed #TODO
+    # lstm_h.shape = (16, 6, 4)
+    # the length of the output = num_classes ?? Remained to be confirmed #TODO
     lstm_h = tf.reshape(lstm_h, [shape[0], -1, num_classes])
     return lstm_h
 
@@ -135,7 +149,9 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     :param n: the number of layers in the resnet
     :param num_classes: 
     :param reuse: ?
-    :param train:   
+    :param train:  
+    :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) 
+    # and is the input for a softmax layer 
     '''
     
     layers = []

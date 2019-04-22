@@ -12,6 +12,12 @@ class DataHandler(object):
     MAZE_WIDTH = 12
     MAZE_HEIGHT = 12
     MAZE_DEPTH = 11
+    # DEPTH != MAX_TRAJECTORY_SIZE (see commented_data_handler.py)
+    # - MAX_TRAJECTORY_SIZE = 10, number of steps of each trajectory 
+    # (will be padded up/truncated to it if less/more than the constant)
+    # - DEPTH = number of channels of each maze, 11 = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
+    # in our model, 5 actions: up/down/left/right/goal
+    # in the paper, also 5 actions: up/down/left/right/stay
     MAX_TRAJECTORY_SIZE = 10
 
     def __init__(self, dir):
@@ -19,8 +25,12 @@ class DataHandler(object):
         pass
 
     def parse_trajectories(self, directory, mode, shuf):
-        #Make a trajectory with each step same label
+        # Parse all files (each file is a trajectory contains multiple steps)
+        # The list is in arbitrary order.
+        # (the order has to do with the way the files are indexed on your FileSystem)
+        # The order is fixed if runnning from the same machine
         files = os.listdir(directory)
+        # pdb.set_trace()
         # Filter out the csv file (only read the txt files) 
         r = re.compile(".*.txt") 
         files = list(filter(r.match, files)) # Read Note    
@@ -31,8 +41,12 @@ class DataHandler(object):
          
         #Shuffle the filenames
         if shuf:
+          # note that shuf = False by default
+          # See commented_main_model() for details:
+          # section: if __name__ == "__main__":
             shuffle(files)
-        pdb.set_trace()
+        # pdb.set_trace()
+        
         # Size of data set
         # Train : Vali: Test = 80 : 10 : 10
         train_files = files[0:int(len(files)*0.8)]
@@ -57,7 +71,7 @@ class DataHandler(object):
             print('Parsing testing data')
             test_data, test_labels = self.parse_subset(directory, test_files)
         
-        return train_data, vali_data, test_data, train_labels, vali_labels, test_labels
+        return train_data, vali_data, test_data, train_labels, vali_labels, test_labels, files
 
     def parse_subset(self, directory, files):
         all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH])
@@ -89,6 +103,7 @@ class DataHandler(object):
         '''
         
         steps = []
+        #output.shape(12, 12, 11, 10)
         output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH, self.MAX_TRAJECTORY_SIZE))
         label = ''
         with open(filename) as fp:
@@ -97,7 +112,7 @@ class DataHandler(object):
             
             #Parse maze to 2d array, remove walls.
             i=0
-            while i < 12:
+            while i < 12: # in the txt file, each maze has 12 lines
                 maze[i]= list(maze[i])
                 maze[i].pop(0)
                 maze[i].pop(len(maze[i])-1)
@@ -119,6 +134,7 @@ class DataHandler(object):
             np_targets = np.repeat(np_maze[:, :, np.newaxis], len(targets), axis=2)
             for target, i in zip(targets, range(len(targets))):
                 np_targets[:,:,i] = np.where(np_maze == target, 1, 0)
+            # np_targets.shape = (12, 12, 4)
             np_targets = np_targets.astype(int)
             
             #Parse trajectory into 2d array
@@ -144,42 +160,63 @@ class DataHandler(object):
                     layer = 'up'
                 elif agent_locations[i][1] < agent_locations[i+1][1]:
                     layer = 'down'                
-                #Assign a value of 1 to that location
+                # Assign a value of 1 to the location where the action starts
+                # np_actions.shape = (12, 12, 5)
                 np_actions[int(agent_locations[i][1])-1, int(agent_locations[i][0])-1, possible_actions.index(layer)] = 1
+
+                # For each step:
+                # np_tensor.shape = (12, 12, 11)
+                # DEPTH = 11 layers = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
                 np_tensor = np.dstack((np_obstacles,np_targets,np_agent,np_actions))
                 steps.append(np_tensor)
                 output = np.array(steps)
             
-            #The last tensor of every series will be the position of the goal.
+            #The last tensor of every trajectory will be the position of the goal.
             np_actions = np.zeros((12,12,len(possible_actions)), dtype=np.int8)
             np_actions[int(agent_locations[-1][1])-1, int(agent_locations[-1][0])-1, possible_actions.index('goal')] = 1
+
+            # For the last step:
+            # np_tensor.shape = (12, 12, 11)
+            # DEPTH = 11 layers = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
             np_tensor = np.dstack((np_obstacles,np_targets,np_agent,np_actions))
 
-            #Make the label from the letter in the final position of the agent in one hot encoding style
+            # ---------------------------------------
+            # Generate the label (could be training_label, valid_label, testing_label) 
+            # (y, an int from 0 to 3)
+            # ---------------------------------------
+            # Make the label from the letter in the final position of the agent 
             goal = np_maze[int(agent_locations[-1][1])-1][int(agent_locations[-1][0])-1]
             char_to_int = dict((c, i) for i, c in enumerate(targets))
             integer_encoded = char_to_int[goal]
             #label = [0 for _ in range(len(targets))]
             #label[integer_encoded] = 1
             
-            #Return label as a number
+            #Return label as a number 
             label = int(integer_encoded)
             
-            #Put everything together in a 4-dim tensor            
-            steps.append(np_tensor)
+            # ---------------------------------------
+            # Generate each training/valid/testing example (one trajectory)
+            # ---------------------------------------
+            # Put everything step together in a 4-dim tensor: "output" (one trajectory)           
+            # each output (4-dim tensor, will be of shape after padding/truncating = (10, 12, 12, 11)) 
+            # contain 10 layers ("np_tensor", 3-dim tensor, shape = (12, 12, 11))
+            steps.append(np_tensor) 
             output = np.array(steps)
-
+            
+            # pdb.set_trace()
             pad_size = int(self.MAX_TRAJECTORY_SIZE - output.shape[0])
             
             #Zeroes pre-padding to max length
             if pad_size > 0:
                 np_pad = np.zeros((self.MAZE_HEIGHT,self.MAZE_WIDTH,self.MAZE_DEPTH), dtype=np.int8)
                 for i in range(pad_size):
+                    # insert the zero layer to the head
                     output = np.insert(output, 0, np_pad, axis=0)
             
             #Truncating trajectory to max length
             elif pad_size < 0:
                 for i in range(abs(pad_size)):
+                    # remove the first step
                     output = np.delete(output, 0, axis=0)
         
         fp.close()

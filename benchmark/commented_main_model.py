@@ -26,8 +26,9 @@ class Model:
   HEIGHT = 12 # height of the maze
   WIDTH = 12 # width of the maze
   # DEPTH != MAX_TRAJECTORY_SIZE (see commented_data_handler.py)
-  # - MAX_TRAJECTORY_SIZE = number of steps of each trajectory (will be padded up to it if less than the constant)
-  # - DEPTH = 
+  # - MAX_TRAJECTORY_SIZE = 10, number of steps of each trajectory 
+  # (will be padded up/truncated to it if less/more than the constant)
+    # - DEPTH = number of channels of each maze, 11 = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
   DEPTH = 11 
   
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -87,7 +88,7 @@ class Model:
         
     # Load data
     dir = os.getcwd() + '/S002a/'
-    pdb.set_trace()
+    # pdb.set_trace()
     data_handler = dh.DataHandler(dir)
     # For S002a:
     # Get the data by "data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)"
@@ -97,11 +98,13 @@ class Model:
     # self.train_labels.shape: (800, )
     # self.vali_labels.shape: (100, )
     # self.test_labels.shape: (100, )
-    # Each data example is one trajectory (each contains several steps)
+    # len (files) = 100
+    # Each data example is one trajectory (each contains 10 steps, MAX_TRAJECTORY_SIZE)
     
-    # Note that all training examples are shuffled randomly during
-    # data_handler.parse_trajectories()
-    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
+    # Note that all training examples are NOT shuffled randomly (by defualt)
+    # during data_handler.parse_trajectories()
+    
+    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.files = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
 
     #print('End of __init__-----------------')
     pdb.set_trace()
@@ -563,7 +566,7 @@ class Model:
     # -----------
     # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
     offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
-    
+    # pdb.set_trace()
     # subsetting a batch from traning data starting at index 'offet'
     batch_data = train_data[offset:offset + train_batch_size, ...]
     batch_label = train_labels[offset:offset + train_batch_size]
@@ -604,6 +607,8 @@ class Model:
 
 
 if __name__ == "__main__":
+    # reseting the graph is necessary for running the script via spyder or other
+    # ipython intepreter
     tf.reset_default_graph()
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
