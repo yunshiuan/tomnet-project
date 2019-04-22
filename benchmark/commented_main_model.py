@@ -25,7 +25,10 @@ import pdb
 class Model:
   HEIGHT = 12 # height of the maze
   WIDTH = 12 # width of the maze
-  DEPTH = 11 # number of steps of each trajectory (will be padded up to it if less than the constant)
+  # DEPTH != MAX_TRAJECTORY_SIZE (see commented_data_handler.py)
+  # - MAX_TRAJECTORY_SIZE = number of steps of each trajectory (will be padded up to it if less than the constant)
+  # - DEPTH = 
+  DEPTH = 11 
   
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)
@@ -84,6 +87,7 @@ class Model:
         
     # Load data
     dir = os.getcwd() + '/S002a/'
+    pdb.set_trace()
     data_handler = dh.DataHandler(dir)
     # For S002a:
     # Get the data by "data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)"
@@ -94,7 +98,9 @@ class Model:
     # self.vali_labels.shape: (100, )
     # self.test_labels.shape: (100, )
     # Each data example is one trajectory (each contains several steps)
-
+    
+    # Note that all training examples are shuffled randomly during
+    # data_handler.parse_trajectories()
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
 
     #print('End of __init__-----------------')
@@ -217,7 +223,7 @@ class Model:
     #pdb.set_trace()
     
     for step in range(self.TRAIN_STEPS):
-      #pdb.set_trace()
+      pdb.set_trace()
 
       #Generate batches for training and validation
       # Each example in a batch is of the shape 

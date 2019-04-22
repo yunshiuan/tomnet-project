@@ -4,6 +4,8 @@ import numpy as np
 from random import shuffle
 from commented_utils import plot_trajectory
 import re
+import pdb
+
 
 class DataHandler(object):
 
@@ -30,7 +32,7 @@ class DataHandler(object):
         #Shuffle the filenames
         if shuf:
             shuffle(files)
-
+        pdb.set_trace()
         # Size of data set
         # Train : Vali: Test = 80 : 10 : 10
         train_files = files[0:int(len(files)*0.8)]
@@ -113,7 +115,7 @@ class DataHandler(object):
 
             #Planes for each possible goal
             #targets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m']
-            targets = ['C','D','E','F']
+            targets = ['C','D','E','F'] # for the simplified 4-targets mazes
             np_targets = np.repeat(np_maze[:, :, np.newaxis], len(targets), axis=2)
             for target, i in zip(targets, range(len(targets))):
                 np_targets[:,:,i] = np.where(np_maze == target, 1, 0)
