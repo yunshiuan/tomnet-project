@@ -13,7 +13,7 @@ resnet
 *.GIBMsBMLabServer
 nohup.out
 \.Readme\.txt\.swp
-benchmark/cache_S002a_10000files/train/checkpoint
+benchmark/cache_S002a_10000files/train/
 *.local
 
 *.MBP15-3
