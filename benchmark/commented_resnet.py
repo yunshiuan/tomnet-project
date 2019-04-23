@@ -12,6 +12,7 @@ BN_EPSILON = 0.001
 # hyperparameter for create_variables()
 # this is especially for "tf.contrib.layers.l2_regularizer"
 WEIGHT_DECAY = 0.00002
+MAZE_DEPTH = 11
 
 def activation_summary(x):
     tensor_name = x.op.name
@@ -70,9 +71,9 @@ def lstm_layer(input_layer, train, num_classes):
     
     num_hidden = 64 # Paper: 64
     batch_size = 16 # Paper: 16
-    out_channels = 11 #TODO: Change to depth of maze
+    out_channels = MAZE_DEPTH
     output_keep_prob = 0.8 # This is for regularization during training
-    pdb.set_trace()
+    # pdb.set_trace()
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -162,21 +163,25 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) 
     # and is the input for a softmax layer 
     '''
-    
+    pdb.set_trace()
     layers = []
        
     #Append the input tensor as first layer
+    # input_tensor.shape = (16, 12, 12, 11)
     layers.append(input_tensor)
     
     #Add n residual layers
     for i in range(n):
         with tf.variable_scope('conv_%d' %i, reuse=reuse):
-            block = residual_block(layers[-1], 11) #TODO: Change here to the depth of the maze
+            # block.shape = (16, 12, 12, 11)
+            block = residual_block(layers[-1], MAZE_DEPTH) 
             activation_summary(block)
             layers.append(block)
     
     #Add average pooling
     with tf.variable_scope('average_pooling', reuse=reuse):
+        # block.shape = (16, 12, 12, 11) 
+        # avg_pool.shape = (16, 6, 6, 11)
         avg_pool = average_pooling_layer(block)
         layers.append(avg_pool)
     
