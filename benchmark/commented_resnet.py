@@ -84,7 +84,7 @@ def lstm_layer(input_layer, train, num_classes):
     batch_size = 16 # Paper: 16
     out_channels = MAZE_DEPTH
     output_keep_prob = 0.8 # This is for regularization during training
-    # pdb.set_trace()
+    pdb.set_trace()
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
