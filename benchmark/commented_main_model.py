@@ -473,9 +473,23 @@ class Model:
     # the correct class among its top 5 guesses.
     # -----------
 
+    # predictions:
+    # Tensor("Softmax_1:0", shape=(16, 4), dtype=float32)
     batch_size = predictions.get_shape().as_list()[0]
+    
+    # in_top1
+    # Tensor("ToFloat_1:0", shape=(16,), dtype=float32)
     in_top1 = tf.to_float(tf.nn.in_top_k(predictions, labels, k=1))
+    
+    # num_correct
+    # Tensor("Sum_1:0", shape=(), dtype=float32)
     num_correct = tf.reduce_sum(in_top1)
+    # print('predictions:')
+    # print(predictions)
+    # print('in_top1')
+    # print(in_top1) 
+    # print('num_correct')
+    # print(num_correct)
     return (batch_size - num_correct) / float(batch_size)
   
   def train_operation(self, global_step, total_loss, top1_error):
