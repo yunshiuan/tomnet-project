@@ -45,7 +45,18 @@ def conv_bn_relu_layer(input_layer, filter_shape, stride):
 
     output = tf.nn.relu(bn_layer)
     return output
+def conv_bn_no_relu_layer(input_layer, filter_shape, stride):
+    out_channel = filter_shape[-1]
+    
+    # pdb.set_trace()
+    
+    filter = create_variables(name='conv', shape=filter_shape, is_fc_layer=False)
 
+    conv_layer = tf.nn.conv2d(input_layer, filter, strides=[1, stride, stride, 1], padding='SAME')
+    bn_layer = batch_normalization_layer(conv_layer, out_channel)
+
+    output = bn_layer
+    return output  
 def residual_block(input_layer, output_channels):
     input_channel = input_layer.get_shape().as_list()[-1]
     stride = 1
@@ -57,9 +68,9 @@ def residual_block(input_layer, output_channels):
         conv1 = conv_bn_relu_layer(input_layer, [3, 3, input_channel, output_channels], stride)
 
     with tf.variable_scope('conv2_in_block'):
-        conv2 = conv_bn_relu_layer(conv1, [3, 3, output_channels, output_channels], stride)
+        conv2 = conv_bn_no_relu_layer(conv1, [3, 3, output_channels, output_channels], stride)
 
-    output = conv2 + input_layer
+    output = tf.nn.relu(conv2 + input_layer)
     
     return output
 
