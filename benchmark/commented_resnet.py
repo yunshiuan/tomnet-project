@@ -83,10 +83,16 @@ def lstm_layer(input_layer, mode, num_classes):
     # 11: number of channels after CNN (unaffected by CNN)
     _, feature_h, feature_w, _ = input_layer.get_shape().as_list()
     
-
+    # lstm_input.shape = (16, 6, 6, 11)
     lstm_input = tf.transpose(input_layer,[0,2,1,3])
+    # lstm_input.shape = (16, 6, 66)
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
+    # seq_len.shape = (16)
+    # note that 16 steps in the batch are regarded as a series for LSTM
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
+    # cell:
+    # the cell will be fed in to 
+    # tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     if mode == 'train':      
         # Using dropout for regularization during the RNN training

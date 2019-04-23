@@ -107,7 +107,7 @@ class Model:
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.files = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
 
     #print('End of __init__-----------------')
-    pdb.set_trace()
+    # pdb.set_trace()
 
     
             
@@ -226,7 +226,7 @@ class Model:
     #pdb.set_trace()
     
     for step in range(self.TRAIN_STEPS):
-      pdb.set_trace()
+      # pdb.set_trace()
 
       #Generate batches for training and validation
       # Each example in a batch is of the shape 
