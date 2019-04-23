@@ -66,13 +66,13 @@ def average_pooling_layer(input_layer):
     pooled_input = tf.nn.avg_pool(input_layer, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
     return pooled_input
 
-def lstm_layer(input_layer, mode, num_classes):
+def lstm_layer(input_layer, train, num_classes):
     
     num_hidden = 64 # Paper: 64
     batch_size = 16 # Paper: 16
     out_channels = 11 #TODO: Change to depth of maze
     output_keep_prob = 0.8 # This is for regularization during training
-    # pdb.set_trace()
+    pdb.set_trace()
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -94,7 +94,8 @@ def lstm_layer(input_layer, mode, num_classes):
     # the cell will be fed in to 
     # tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
-    if mode == 'train':      
+    
+    if train:      
         # Using dropout for regularization during the RNN training
         # Dropout should not be used during validation and testing.
         #
@@ -106,7 +107,7 @@ def lstm_layer(input_layer, mode, num_classes):
         
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
-    #if mode == 'train':
+    #if train:
     #    cell1 = tf.nn.rnn_cell.DropoutWrapper(cell=cell1, output_keep_prob=output_keep_prob)
     
     #stack = tf.nn.rnn_cell.MultiRNNCell([cell, cell1], state_is_tuple=True)
@@ -115,7 +116,9 @@ def lstm_layer(input_layer, mode, num_classes):
 
     # lstm_input.shape = (16, 6, 66)
     # seq_len.shape = (16, )
+    # outputs.shape = (16, 6, 64)
     outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
+    # output.shape = (96, 64)
     outputs = tf.reshape(outputs, [-1, num_hidden])
     
     # W.shape = (64, 4)
@@ -130,7 +133,7 @@ def lstm_layer(input_layer, mode, num_classes):
     # lstm_input.shape = (16, 6, 66)
     shape = lstm_input.shape
     # lstm_h.shape = (16, 6, 4)
-    # the length of the output = num_classes ?? Remained to be confirmed #TODO
+    # the length of the output = num_classes 
     lstm_h = tf.reshape(lstm_h, [shape[0], -1, num_classes])
     return lstm_h
 
@@ -179,6 +182,7 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     
     #Add LSTM layer
     with tf.variable_scope('LSTM', reuse=reuse):
+        # lstm.shape = (16, 6, 4)
         lstm = lstm_layer(layers[-1], train, num_classes)
         layers.append(lstm)
         
