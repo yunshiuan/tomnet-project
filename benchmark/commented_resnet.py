@@ -65,6 +65,14 @@ def conv_bn_no_relu_layer(input_layer, filter_shape, stride):
     output = bn_layer
     return output  
 def residual_block(input_layer, output_channels):
+    '''
+    Constructing a resudual block. Note that as in the paper, each residual block
+    has 32 channels (or 32 filers).
+    
+    :param input_layer: shape = (16, 12, 12, 11)
+    :param output_channels: 32 (as in the ToMNET paper)
+    :return output: a[l+2] = g(z[l+2]+a[l]) = g(w[l+2]*a[l+1] + b[l+2] + a[l]) 
+    '''
     input_channel = input_layer.get_shape().as_list()[-1]
     stride = 1
     # pdb.set_trace()
@@ -199,11 +207,14 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     # input_tensor.shape = (16, 12, 12, 11)
     layers.append(input_tensor)
     
+    resnet_output_channels = 32
+    
     #Add n residual layers
     for i in range(n):
         with tf.variable_scope('conv_%d' %i, reuse=reuse):
+            # layers[-1] = intput_tensor = (16, 12, 12, 11)
             # block.shape = (16, 12, 12, 11)
-            block = residual_block(layers[-1], MAZE_DEPTH) 
+            block = residual_block(layers[-1], resnet_output_channels) #MAZE_DEPTH) 
             activation_summary(block)
             layers.append(block)
     
