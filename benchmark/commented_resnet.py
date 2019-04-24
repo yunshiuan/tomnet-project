@@ -40,6 +40,13 @@ def conv_bn_relu_layer(input_layer, filter_shape, stride):
     
     filter = create_variables(name='conv', shape=filter_shape, is_fc_layer=False)
 
+    # conv2d(input, filter, strides, padding)
+    # input: 4D input tensor of shape [batch, in_height, in_width, in_channels]
+    # filter: 4D filter tensor of shape [filter_height, filter_width, in_channels, out_channels]
+    # - out_channels determin the number of channels
+    # strides: Must have strides[0] = strides[3] = 1. 
+    # - For the most common case of the same horizontal and vertices strides, strides = [1, stride, stride, 1].
+    # padding: A string from: "SAME", "VALID".
     conv_layer = tf.nn.conv2d(input_layer, filter, strides=[1, stride, stride, 1], padding='SAME')
     bn_layer = batch_normalization_layer(conv_layer, out_channel)
 
@@ -60,16 +67,27 @@ def conv_bn_no_relu_layer(input_layer, filter_shape, stride):
 def residual_block(input_layer, output_channels):
     input_channel = input_layer.get_shape().as_list()[-1]
     stride = 1
-
     # pdb.set_trace()
 
     # Note that conv_bn_relu_layer() includes both ReLU nonlinearities and batch-norm
     with tf.variable_scope('conv1_in_block'):
+        # input_channel = 11
+        # output_channels = 11
         conv1 = conv_bn_relu_layer(input_layer, [3, 3, input_channel, output_channels], stride)
 
     with tf.variable_scope('conv2_in_block'):
+        # output_channels = 11
+        # output_channels = 11
         conv2 = conv_bn_no_relu_layer(conv1, [3, 3, output_channels, output_channels], stride)
-
+        
+    # -------------------------------------------------
+    # Make sure the second relu happens after addition
+    # Following the original paper, should be “(a) original”: 
+    # a[l+2] = g(z[l+2]+a[l]) = g(w[l+2]*a[l+1] + b[l+2] + a[l])
+    # Reference: 
+    # Identity Mappings in Deep Residual Networks (25 Jul 2016) 
+    # (https://arxiv.org/pdf/1603.05027v3.pdf). See Figure 4.
+    # -------------------------------------------------
     output = tf.nn.relu(conv2 + input_layer)
     
     return output
@@ -84,7 +102,7 @@ def lstm_layer(input_layer, train, num_classes):
     batch_size = 16 # Paper: 16
     out_channels = MAZE_DEPTH
     output_keep_prob = 0.8 # This is for regularization during training
-    pdb.set_trace()
+    # pdb.set_trace()
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -198,19 +216,20 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     
     #Add LSTM layer
     with tf.variable_scope('LSTM', reuse=reuse):
+        # layers[-1].shape = avg_pool.shape = (16, 6, 6, 11)
         # lstm.shape = (16, 6, 4)
         lstm = lstm_layer(layers[-1], train, num_classes)
-        layers.append(lstm)
-        
-    #TODO:One convolutional layer
-
+        layers.append(lstm)        
 
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
 
         # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
         # - param input_tensor: 'fc', is the output from the previous LSTM layer
-        # - param axis: The dimensions to reduce      
+        # - param axis: The dimensions to reduce
+        
+        # global average pooling??
+        # global_pool.shape = (16, 4)
         global_pool = tf.reduce_mean(layers[-1], [1])
         assert global_pool.get_shape().as_list()[-1:] == [num_classes]
 
@@ -220,6 +239,8 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         # :param num_labels: int. How many output labels in total?
         # :return: output layer Y = WX + B
         # '''
+        
+        # output.shape = (16, 4)
         output = output_layer(global_pool, num_classes)
         layers.append(output)
 
