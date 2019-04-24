@@ -67,10 +67,12 @@ def conv_bn_no_relu_layer(input_layer, filter_shape, stride):
 def residual_block(input_layer, output_channels):
     '''
     Constructing a resudual block. Note that as in the paper, each residual block
-    has 32 channels (or 32 filers).
+    should have 32 channels (or 32 filers), but currently we use 11 channels to 
+    correspond to the number of channels of the input tensor (to ensure addtion of
+    "main path" and "residual connection")
     
     :param input_layer: shape = (16, 12, 12, 11)
-    :param output_channels: 32 (as in the ToMNET paper)
+    :param output_channels: 11 (note: different from the ToMNET paper)
     :return output: a[l+2] = g(z[l+2]+a[l]) = g(w[l+2]*a[l+1] + b[l+2] + a[l]) 
     '''
     input_channel = input_layer.get_shape().as_list()[-1]
@@ -200,21 +202,22 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) 
     # and is the input for a softmax layer 
     '''
-    pdb.set_trace()
+    # pdb.set_trace()
     layers = []
        
     #Append the input tensor as first layer
     # input_tensor.shape = (16, 12, 12, 11)
     layers.append(input_tensor)
     
-    resnet_output_channels = 32
+    # resnet_output_channels = 32 (as in the paper. we currently use
+    # 11, MAZE_DEPTH, to enable addition with the residual connection.)
     
     #Add n residual layers
     for i in range(n):
         with tf.variable_scope('conv_%d' %i, reuse=reuse):
             # layers[-1] = intput_tensor = (16, 12, 12, 11)
             # block.shape = (16, 12, 12, 11)
-            block = residual_block(layers[-1], resnet_output_channels) #MAZE_DEPTH) 
+            block = residual_block(layers[-1], MAZE_DEPTH) #resnet_output_channels) 
             activation_summary(block)
             layers.append(block)
     
