@@ -29,6 +29,7 @@ class Model:
   # - MAX_TRAJECTORY_SIZE = 10, number of steps of each trajectory 
   # (will be padded up/truncated to it if less/more than the constant)
     # - DEPTH = number of channels of each maze, 11 = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
+  MAX_TRAJECTORY_SIZE = 10
   DEPTH = 11 
   
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -47,8 +48,8 @@ class Model:
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 10,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
-  # EPOCH_SIZE should be 8,000
-  EPOCH_SIZE = 100 
+  # EPOCH_SIZE should be 8,000 training files if there are 10,000 files
+  EPOCH_SIZE = 800
   
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
 
@@ -76,14 +77,38 @@ class Model:
     #But the whole trajectory must be given to the LSTM
     
     # placeholder for the trainging traj
-    self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
+    # --------------------------------------------------------------
+    # Edwinn's codes
+    # self.traj_placeholder, vali_traj_placeholder: (for input_tensor)
+    # - shape: 
+    # (batch size = 16, width = 12, height = 12, depth = 11)
+    # --------------------------------------------------------------
+  
+#    self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
+#    # placeholder for the trainging goal
+#    self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
+#    # placeholder for the validation traj
+#    self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH])
+#    # placeholder for the validation goal
+#    self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
+#    # placeholder for learning rate
+#    self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
+    
+    # --------------------------------------------------------------
+    # Paper
+    # self.traj_placeholder: (for input_tensor)
+    # - shape: 
+    # (batch size = 16: batch_size, 10: MAX_TRAJECTORY_SIZE, HEIGHT = 12, WIDTH = 12, DEPTH = 11)
+    # --------------------------------------------------------------
+    
+    self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
     # placeholder for the trainging goal
     self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
     # placeholder for the validation traj
-    self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH])
+    self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
     # placeholder for the validation goal
     self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
-    # ramained to figure out what it means
+#    # placeholder for learning rate
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
         
     # Load data
@@ -555,9 +580,56 @@ class Model:
     :param vali_batch_size: int
     :return: 4D numpy array and 1D numpy array
     '''
-    offset = np.random.choice(100 - vali_batch_size, 1)[0]
-    vali_data_batch = vali_data[offset:offset+vali_batch_size, ...]
-    vali_label_batch = vali_label[offset:offset+vali_batch_size]
+    # --------------------------------------------------------------
+    # Edwinn's codes
+    # Generate a batch. 
+    # Each batch is a step.
+    # Each batch contains 16 steps (span from 2 trajectories, which
+    # each contains 10 steps).
+    # batch_data shape = (16, 6, 6, 11)
+    # batch_label shape = (16, 1)
+    # --------------------------------------------------------------
+#    offset = np.random.choice(self.EPOCH_SIZE - vali_batch_size, 1)[0]
+#    vali_data_batch = vali_data[offset:offset+vali_batch_size, ...]
+#    vali_label_batch = vali_label[offset:offset+vali_batch_size]
+    
+    # --------------------------------------------------------------
+    # Paper codes
+    # Generate a batch. 
+    # Each example is a trejectory.
+    # Each batch contains 16 examples (trajectories). Each trajectory contains 10 steps.
+    # batch_data shape = (16, 10, 6, 6, 11)
+    # batch_label shape = (16, 1)
+    # --------------------------------------------------------------
+    # pdb.set_trace()
+    # the total number of batch equals the total number of steps devided by the steps fore each trajectory
+    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
+    total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE))
+
+    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
+    # the starting batch
+    # e.g., offset_batch_start_index = 2
+    offset_batch_start_index = np.random.choice(total_number_batch - vali_batch_size, 1)[0]
+    # the ending batch
+    # e.g., offset_batch_end_index = (2 + 16)  = 18
+    # (note that this stopping index would be excluded by range())
+    offset_batch_end_index = (offset_batch_start_index + vali_batch_size)
+
+    # e.g., offset_step_start_index = 2 * 10 = 20
+    offset_step_start_index = offset_batch_start_index * self.MAX_TRAJECTORY_SIZE
+    # e.g., offset_step_end_index = 18 * 10 = 180
+    # (note that this stopping index would be excluded by range())
+    offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
+    offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
+    
+    batch_data = vali_data[offset_step_range_index , ...]
+    # Reshape the batch data
+    # (160, 6, 6, 11) -> (16, 10, 6, 6, 11)
+
+    vali_data_batch  = batch_data.reshape((vali_batch_size, self.MAX_TRAJECTORY_SIZE,
+                                     self.HEIGHT, self.WIDTH, self.DEPTH))
+    
+    vali_label_batch  = vali_label[offset_step_range_index]
 
     return vali_data_batch, vali_label_batch
 
@@ -578,13 +650,61 @@ class Model:
     # this generates an array with one random interger in it 
     # (from 0 to 84, 84: self.EPOCH_SIZE - train_batch_size)
     # -----------
-    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
-    offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
-    # pdb.set_trace()
-    # subsetting a batch from traning data starting at index 'offet'
-    batch_data = train_data[offset:offset + train_batch_size, ...]
-    batch_label = train_labels[offset:offset + train_batch_size]
     
+    # --------------------------------------------------------------
+    # Edwinn's codes
+    # Generate a batch. 
+    # Each batch is a step.
+    # Each batch contains 16 steps (span from 2 trajectories, which
+    # each contains 10 steps).
+    # batch_data shape = (16, 6, 6, 11)
+    # batch_label shape = (16, 1)
+    # --------------------------------------------------------------
+#    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
+#    offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
+#    # pdb.set_trace()
+#    # subsetting a batch from traning data starting at index 'offet'
+#    batch_data = train_data[offset:offset + train_batch_size, ...]
+#    batch_label = train_labels[offset:offset + train_batch_size]
+    
+    # --------------------------------------------------------------
+    # Paper codes
+    # Generate a batch. 
+    # Each example is a trejectory.
+    # Each batch contains 16 examples (trajectories). Each trajectory contains 10 steps.
+    # batch_data shape = (16, 10, 6, 6, 11)
+    # batch_label shape = (16, 1)
+    # --------------------------------------------------------------
+    pdb.set_trace()
+    # the total number of batch equals the total number of steps devided by the steps fore each trajectory
+    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
+    total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE))
+
+    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
+    # the starting batch
+    # e.g., offset_batch_start_index = 2
+    offset_batch_start_index = np.random.choice(total_number_batch - train_batch_size, 1)[0]
+    # the ending batch
+    # e.g., offset_batch_end_index = (2 + 16)  = 18
+    # (note that this stopping index would be excluded by range())
+    offset_batch_end_index = (offset_batch_start_index + train_batch_size)
+
+    # e.g., offset_step_start_index = 2 * 10 = 20
+    offset_step_start_index = offset_batch_start_index * self.MAX_TRAJECTORY_SIZE
+    # e.g., offset_step_end_index = 18 * 10 = 180
+    # (note that this stopping index would be excluded by range())
+    offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
+    offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
+    
+    batch_data = train_data[offset_step_range_index , ...]
+    # Reshape the batch data
+    # (160, 6, 6, 11) -> (16, 10, 6, 6, 11)
+
+    batch_data = batch_data.reshape((train_batch_size, self.MAX_TRAJECTORY_SIZE,
+                                     self.HEIGHT, self.WIDTH, self.DEPTH))
+    
+    batch_label = train_labels[offset_step_range_index]
+
     return batch_data, batch_label
     
   def full_validation(self, loss, top1_error, session, vali_data, vali_labels, batch_data, batch_label):
@@ -599,6 +719,9 @@ class Model:
     :param batch_label: 1D numpy array. training labels to feed the dict
     :return: float, float
     '''
+    # This whole funciton is remained to be fixed ##TODO
+    # (1) It should also comply with 
+    # the batch = (16: batch_size, 10: MAX_TRAJECTORY_SIZE, HEIGHT = 12, WIDTH = 12, DEPTH = 11) rule
     num_batches = 10000 // self.BATCH_SIZE_VAL
     order = np.random.choice(10000, num_batches * self.BATCH_SIZE_VAL)
     vali_data_subset = vali_data[order, ...]

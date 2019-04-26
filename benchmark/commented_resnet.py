@@ -109,6 +109,7 @@ def average_pooling_layer(input_layer):
 def lstm_layer(input_layer, train, num_classes):
     # --------------------------------------------------------------
     # Edwinn's codes
+    # input_layer = (16, 6, 6, 11)
     # --------------------------------------------------------------
 #    num_hidden = 64 # Paper: 64
 #    batch_size = 16 # Paper: 16 
@@ -126,6 +127,7 @@ def lstm_layer(input_layer, train, num_classes):
 #    feature_h, feature_w, _ = input_layer.get_shape().as_list() 
     # --------------------------------------------------------------
     # Paper
+    # input_layer = (16, 10, 6, 6, 11)
     # --------------------------------------------------------------
 
     num_hidden = 64 # Paper: 64
@@ -133,9 +135,9 @@ def lstm_layer(input_layer, train, num_classes):
     # out_channels = MAZE_DEPTH # get from the input_layer directly
     output_keep_prob = 0.8 # This is for regularization during training
     
-    pdb.set_trace()
-    # Only for testing
-    input_layer = tf.zeros((16, 10, 6, 6, 11))
+    # pdb.set_trace()
+    ## Only for testing
+    # input_layer = tf.zeros((16, 10, 6, 6, 11))
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -144,6 +146,7 @@ def lstm_layer(input_layer, train, num_classes):
     # 6: featur_h after CNN
     # 6: feature_w after CNN
     # 11: number of channels after CNN (unaffected by CNN)
+    pdb.set_trace()
     batch_size, time_steps, feature_h, feature_w, maze_depth = input_layer.get_shape().as_list()
     out_channels = maze_depth # note that output channels should not be the depth of the maze? #TODO
     # ==============================================================
@@ -188,7 +191,7 @@ def lstm_layer(input_layer, train, num_classes):
     # --------------------------------------------------------------
     # Define the input for lstm
     # (1) input_layer.shape = (16, 10, 6, 6, 11)
-    pdb.set_trace()
+    # pdb.set_trace()
     # No need to transpose width and height?
     # lstm_input = tf.transpose(input_layer,[0,1,3,2,4])  # transpose the width and the height dimension
     lstm_input = input_layer
@@ -454,7 +457,7 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     # pdb.set_trace()
     layers = []
        
-    #Append the input tensor as first layer
+    #Append the input tensor as the first layer
     # input_tensor.shape = (16, 12, 12, 11)
     layers.append(input_tensor)
     
@@ -479,31 +482,81 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     
     #Add LSTM layer
     with tf.variable_scope('LSTM', reuse=reuse):
+        # --------------------------------------------------------------
+        # Edwinn's codes
+        # (16, 6, 6, 11) -> (16, 6, 4)
+        
         # layers[-1].shape = avg_pool.shape = (16, 6, 6, 11)
         # 16: Tx
         # 6, 6, 11: the output width, height, and channels from average pooling
         
         # lstm.shape = (16, 6, 4)
         # 16: Ty
-        # 6: ?
-        # 4: 
+        # 6: see lstm_layer(input_layer, train, num_classes) for details
+        # 4: num_classes
+        # --------------------------------------------------------------
+
+        # --------------------------------------------------------------
+        # Paper codes
+        # (16, 6, 6, 11) ->  (16, 4)      
+        # --------------------------------------------------------------
+        
         lstm = lstm_layer(layers[-1], train, num_classes)
         layers.append(lstm)        
 
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
 
-        # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
-        # - param input_tensor: the output from the previous LSTM layer
-        # - param axis: The dimensions to reduce
+
+        # ==============================================================
+        # This section is to change the tensor shape from (16, 6, 4) to (16, 4)
+        # for FC later.
+        # ==============================================================
         
         # global average pooling:
         # average across the second axis:
+        # --------------------------------------------------------------
+        # Edwinn's codes
         # from (16, 6, 4) to (16, 4) [6 2-d arrays reduce to 1 2-d array]
         # global_pool.shape = (16, 4)
-        global_pool = tf.reduce_mean(layers[-1], [1])
-        assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+        # --------------------------------------------------------------
+#        # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
+#        # - param input_tensor: the output from the previous LSTM layer
+#        # - param axis: The dimensions to reduce
+#        global_pool = tf.reduce_mean(layers[-1], [1])
+#        assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+        
+        # --------------------------------------------------------------
+        # Paper codes
+        # Do not need 'global average pooling'
+        # already (16, 4)
+        # --------------------------------------------------------------
 
+        # ==============================================================
+        # This section is to feed the result from LSTM to a FC layer
+        # ==============================================================
+        # --------------------------------------------------------------
+        # Edwinn's codes
+        # from (16, 6, 4) to (16, 4) [6 2-d arrays reduce to 1 2-d array]
+        # global_pool.shape = (16, 4)
+        # --------------------------------------------------------------        
+        
+#        # def output_layer(input_layer, num_labels):
+#        # '''
+#        # :param input_layer: 2D tensor
+#        # :param num_labels: int. How many output labels in total?
+#        # :return: output layer Y = WX + B
+#        # '''
+#        
+#        # output.shape = (16, 4)
+#        output = output_layer(global_pool, num_classes)
+#        layers.append(output)
+        
+        # --------------------------------------------------------------
+        # Paper codes
+        # Do not need 'global average pooling'
+        # already (16, 4)
+        # --------------------------------------------------------------
         # def output_layer(input_layer, num_labels):
         # '''
         # :param input_layer: 2D tensor
@@ -512,9 +565,8 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         # '''
         
         # output.shape = (16, 4)
-        output = output_layer(global_pool, num_classes)
+        output = output_layer(layers[-1], num_classes)
         layers.append(output)
-
     return layers[-1]
 
 def build_pred_head(self):
