@@ -71,7 +71,7 @@ def residual_block(input_layer, output_channels):
     correspond to the number of channels of the input tensor (to ensure addtion of
     "main path" and "residual connection")
     
-    :param input_layer: shape = (16, 12, 12, 11)
+    :param input_layer: shape = (batch_size, height, width, depth)
     :param output_channels: 11 (note: different from the ToMNET paper)
     :return output: a[l+2] = g(z[l+2]+a[l]) = g(w[l+2]*a[l+1] + b[l+2] + a[l]) 
     '''
@@ -146,7 +146,7 @@ def lstm_layer(input_layer, train, num_classes):
     # 6: featur_h after CNN
     # 6: feature_w after CNN
     # 11: number of channels after CNN (unaffected by CNN)
-    pdb.set_trace()
+    # pdb.set_trace()
     batch_size, time_steps, feature_h, feature_w, maze_depth = input_layer.get_shape().as_list()
     out_channels = maze_depth # note that output channels should not be the depth of the maze? #TODO
     # ==============================================================
@@ -458,8 +458,21 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     layers = []
        
     #Append the input tensor as the first layer
+    # --------------------------------------------------------------
+    # Edwinn's codes
+    # --------------------------------------------------------------    
     # input_tensor.shape = (16, 12, 12, 11)
+#    layers.append(input_tensor)
+    
+    # --------------------------------------------------------------
+    # Paper codes
+    # input_tensor.shape = (16, 10, 12, 12, 11)
+    # 16: 16 trajectories
+    # 10: each trajectory has 10 steps
+    # 12, 12, 11: maze height, width, depth
+    # --------------------------------------------------------------    
     layers.append(input_tensor)
+    batch_size, trajectory_size, height, width, depth  = layers[-1].get_shape().as_list()
     
     # resnet_output_channels = 32 (as in the paper. we currently use
     # 11, MAZE_DEPTH, to enable addition with the residual connection.)
@@ -467,18 +480,78 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     #Add n residual layers
     for i in range(n):
         with tf.variable_scope('conv_%d' %i, reuse=reuse):
+
+            # --------------------------------------------------------------
+            # Edwinn's codes
+            # (16, 12, 12, 11) -> (16, 12, 12, 11)
             # layers[-1] = intput_tensor = (16, 12, 12, 11)
-            # block.shape = (16, 12, 12, 11)
-            block = residual_block(layers[-1], MAZE_DEPTH) #resnet_output_channels) 
+            # 16: 16 steps
+            # 12, 12, 11: maze height, width, depth
+            #
+            # block = (16, 12, 12, 11)
+            # 16: 16 steps
+            # 12, 12, 11: maze height, width, output channels (SHOUlD be 32 as in the paper)
+            # --------------------------------------------------------------
+            
+            # block = residual_block(layers[-1], MAZE_DEPTH) #resnet_output_channels) 
+            # activation_summary(block)
+            # layers.append(block)
+            
+            # --------------------------------------------------------------
+            # Paper codes
+            # (16, 10, 12, 12, 11) -> (160, 12, 12, 11)
+            # layers[-1] = intput_tensor = (16, 10, 12, 12, 11)
+            # 16: 16 trajectories
+            # 10: each trajectory has 10 steps
+            # 12, 12, 11: maze height, width, depth
+            
+            # block = (160, 12, 12, 11)
+            # 160: 160 steps (16 trajectories x 10 steps/trajectory)
+            # 12, 12, 11: maze height, width, output channels (SHOUlD be 32 as in the paper)
+            # --------------------------------------------------------------
+
+            #pdb.set_trace()
+            # layers[-1] = (16, 10, 12, 12, 11)
+            resnet_input = tf.reshape(layers[-1], [batch_size * trajectory_size, height, width, depth])
+            # resnet_input = (160, 12, 12, 11)
+
+            block = residual_block(resnet_input, MAZE_DEPTH) #resnet_output_channels) 
             activation_summary(block)
             layers.append(block)
     
     #Add average pooling
     with tf.variable_scope('average_pooling', reuse=reuse):
-        # block.shape = (16, 12, 12, 11) 
-        # avg_pool.shape = (16, 6, 6, 11)
+        # --------------------------------------------------------------
+        # Edwinn's codes
+        # (16, 12, 12, 11) -> (16, 6, 6, 11)
+        # layers[-1] = block = (16, 12, 12, 11) (after resnet)
+        # 16: 16 steps
+        # 12, 12, 11: feature height, width, channels (SHOUlD be 32 as in the paper)
+        #
+        # avg_pool = (16, 6, 6, 11)
+        # 16: 16 steps
+        # 6, 6, 11: feature height, width, output channels 
+        # --------------------------------------------------------------
+
+#        avg_pool = average_pooling_layer(block)
+#        layers.append(avg_pool)
+        
+        # --------------------------------------------------------------
+        # Paper codes
+        # (160, 12, 12, 11) ->  (160, 6, 6, 11)
+        # 
+        # layers[-1] = block = (160, 12, 12, 11)
+        # 160: 160 steps (16 trajectories x 10 steps/trajectory)
+        # 12, 12, 11: maze height, width, output channels (SHOUlD be 32 as in the paper)
+        #  
+        # avg_pool = (16, 6, 6, 11)
+        # 160: 160 steps (16 trajectories x 10 steps/trajectory)
+        # 6, 6, 11: feature height, width, output channels 
+        # --------------------------------------------------------------
         avg_pool = average_pooling_layer(block)
         layers.append(avg_pool)
+        
+    
     
     #Add LSTM layer
     with tf.variable_scope('LSTM', reuse=reuse):
@@ -486,22 +559,40 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         # Edwinn's codes
         # (16, 6, 6, 11) -> (16, 6, 4)
         
-        # layers[-1].shape = avg_pool.shape = (16, 6, 6, 11)
+        # layers[-1] = avg_pool = (16, 6, 6, 11)
         # 16: Tx
         # 6, 6, 11: the output width, height, and channels from average pooling
         
-        # lstm.shape = (16, 6, 4)
+        # lstm = (16, 6, 4)
         # 16: Ty
         # 6: see lstm_layer(input_layer, train, num_classes) for details
         # 4: num_classes
         # --------------------------------------------------------------
-
+        
+#        lstm = lstm_layer(layers[-1], train, num_classes)
+#        layers.append(lstm)
+        
         # --------------------------------------------------------------
         # Paper codes
-        # (16, 6, 6, 11) ->  (16, 4)      
-        # --------------------------------------------------------------
+        # (160, 6, 6, 11) ->  (16, 4)  
+        #
+        # avg_pool = (16, 6, 6, 11)
+        # 160: 160 steps (16 trajectories x 10 steps/trajectory)
+        # 6, 6, 11: feature height, width, output channels 
         
-        lstm = lstm_layer(layers[-1], train, num_classes)
+        # lstm = (16, 4)
+        # 16: batch_size (16 trajectories)
+        # 4: num_classes     
+        # --------------------------------------------------------------
+        # (160, 6, 6, 11)
+        _, feature_h, feature_w, feature_d = layers[-1].get_shape().as_list()
+        lstm_input = tf.reshape(layers[-1], [batch_size, trajectory_size, feature_h, feature_w, feature_d])
+        # (16, 10, 6, 6, 11)
+         
+        # (16, 10, 6, 6, 11)
+        lstm = lstm_layer(lstm_input, train, num_classes)
+        # lstm = (16, 4)
+        
         layers.append(lstm)        
 
     #Fully connected

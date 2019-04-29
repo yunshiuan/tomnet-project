@@ -603,7 +603,7 @@ class Model:
     # --------------------------------------------------------------
     # pdb.set_trace()
     # the total number of batch equals the total number of steps devided by the steps fore each trajectory
-    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
+    # (e.g., # validation steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
     total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE))
 
     # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
@@ -621,7 +621,7 @@ class Model:
     # (note that this stopping index would be excluded by range())
     offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
     offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
-    
+    pdb.set_trace()    
     batch_data = vali_data[offset_step_range_index , ...]
     # Reshape the batch data
     # (160, 6, 6, 11) -> (16, 10, 6, 6, 11)
@@ -675,7 +675,7 @@ class Model:
     # batch_data shape = (16, 10, 6, 6, 11)
     # batch_label shape = (16, 1)
     # --------------------------------------------------------------
-    pdb.set_trace()
+    # pdb.set_trace()
     # the total number of batch equals the total number of steps devided by the steps fore each trajectory
     # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
     total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE))
