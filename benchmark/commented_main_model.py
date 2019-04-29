@@ -603,11 +603,12 @@ class Model:
     # --------------------------------------------------------------
     # pdb.set_trace()
     # the total number of batch equals the total number of steps devided by the steps fore each trajectory
-    # (e.g., # validation steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
-    total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE))
+    # (e.g., # validation steps = 1000, max_trajectory_size = 10, then total_number_batch = 100)
+    total_number_vali_steps = vali_data.shape[0]
+    total_number_batch = int(np.ceil(total_number_vali_steps/self.MAX_TRAJECTORY_SIZE))
 
     # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
-    # the starting batch
+    # the starting batch #TODO: randomly select 16 batches instead of 16 continuous batches
     # e.g., offset_batch_start_index = 2
     offset_batch_start_index = np.random.choice(total_number_batch - vali_batch_size, 1)[0]
     # the ending batch
@@ -621,16 +622,41 @@ class Model:
     # (note that this stopping index would be excluded by range())
     offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
     offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
-    pdb.set_trace()    
+    # pdb.set_trace()    
+    
+    # --------------------------------------------------------------
+    # Select 16 random batches
+    # (1000, 12, 12, 11) -> (160, 6, 6, 11)
+    # --------------------------------------------------------------
+    # vali_data = (1000, 12, 12, 11)
     batch_data = vali_data[offset_step_range_index , ...]
+    # batch_data = (160, 6, 6, 11)
+    
+    # --------------------------------------------------------------
     # Reshape the batch data
     # (160, 6, 6, 11) -> (16, 10, 6, 6, 11)
-
+    # --------------------------------------------------------------    
+    # batch_data = (160, 6, 6, 11)
     vali_data_batch  = batch_data.reshape((vali_batch_size, self.MAX_TRAJECTORY_SIZE,
                                      self.HEIGHT, self.WIDTH, self.DEPTH))
+    # vali_data_batch = (16, 10, 6, 6, 11)
     
+    # --------------------------------------------------------------
+    # Reshape the batch labels
+    # (1000,) -> (160,)
+    # --------------------------------------------------------------
+    # vali_label = (1000,)    
     vali_label_batch  = vali_label[offset_step_range_index]
+    # vali_label_batch = (160, ) 
 
+    # --------------------------------------------------------------    
+    # only retain 16 unique label (one for each batch)
+    # (160,) -> (16,)
+    # --------------------------------------------------------------    
+    # vali_label_batch = (160,)
+    vali_label_batch = vali_label_batch[0:-1:self.MAX_TRAJECTORY_SIZE]
+    assert(vali_label_batch.shape[0]==vali_batch_size)
+    # vali_label_batch = (16,)
     return vali_data_batch, vali_label_batch
 
   def generate_train_batch(self, train_data, train_labels, train_batch_size):
@@ -678,7 +704,7 @@ class Model:
     # pdb.set_trace()
     # the total number of batch equals the total number of steps devided by the steps fore each trajectory
     # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
-    total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE))
+    total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE)) 
 
     # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
     # the starting batch
@@ -696,15 +722,42 @@ class Model:
     offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
     offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
     
+    # --------------------------------------------------------------
+    # Select 16 random batches
+    # (1000, 12, 12, 11) -> (160, 6, 6, 11)
+    # --------------------------------------------------------------
+    # vali_data = (1000, 12, 12, 11)
     batch_data = train_data[offset_step_range_index , ...]
+    # batch_data = (160, 6, 6, 11)
+    
+    # --------------------------------------------------------------
     # Reshape the batch data
     # (160, 6, 6, 11) -> (16, 10, 6, 6, 11)
-
+    # --------------------------------------------------------------
+    # batch_data = (160, 6, 6, 11)
     batch_data = batch_data.reshape((train_batch_size, self.MAX_TRAJECTORY_SIZE,
                                      self.HEIGHT, self.WIDTH, self.DEPTH))
-    
-    batch_label = train_labels[offset_step_range_index]
+    # vali_data_batch = (16, 10, 6, 6, 11)
 
+    
+    # --------------------------------------------------------------
+    # Reshape the batch labels
+    # (1000,) -> (160,)
+    # --------------------------------------------------------------
+    # train_labels = (1000,)    
+    batch_label = train_labels[offset_step_range_index]
+    # batch_label = (160, ) 
+    
+    # --------------------------------------------------------------    
+    # only retain 16 unique label (one for each batch)
+    # (160,) -> (16,)
+    # --------------------------------------------------------------   
+    # batch_label = (160,)
+    batch_label = batch_label[0:-1:self.MAX_TRAJECTORY_SIZE]
+    # pdb.set_trace()
+    assert(batch_label.shape[0]==train_batch_size)
+    # batch_label = (16,)
+    
     return batch_data, batch_label
     
   def full_validation(self, loss, top1_error, session, vali_data, vali_labels, batch_data, batch_label):
