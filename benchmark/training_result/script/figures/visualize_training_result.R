@@ -9,7 +9,7 @@
 # Manually set the root path of the repo if running the script via RStudio
 if(interactive()){
   # Should be manually adjusted to correspond to the root path of your repository.
-  PATH_ROOT = "/Users/vimchiz/bitbucket_local/observer_model_group"
+  PATH_ROOT = "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark"
 }else{
   cat(paste0("Please enter the root path of your repository (without quotation mark), \n",
              "e.g., /Users/observer_model \n"))
