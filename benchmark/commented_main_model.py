@@ -33,9 +33,9 @@ class Model:
   DEPTH = 11 
   
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)
-  BATCH_SIZE_VAL = 16 # size of the batch for validation
-  BATCH_SIZE_TEST = 16 # size of batch for testing
+  BATCH_SIZE_TRAIN = 5 # size of the batch for traning (number of the steps within each batch)
+  BATCH_SIZE_VAL = 5 # size of the batch for validation
+  BATCH_SIZE_TEST = 5 # size of batch for testing
   
   # number of layers in the resnet 
   # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -44,7 +44,7 @@ class Model:
   
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 10000
+  TRAIN_STEPS = 200
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 10,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
@@ -384,20 +384,33 @@ class Model:
     :param test_image_array: 4D numpy array with shape [num_test_traj_steps, maze_height, maze_width, maze_depth]
     :return: the softmax probability with shape [num_test_traj_steps, num_labels]
     '''
-
-    num_test_trajs = len(self.test_data)
-    num_batches = num_test_trajs // self.BATCH_SIZE_TEST
-    remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
+    # self.test_data = (100, 12, 12, 11) [when totol steps = 1,000 with 8:1:1 data split]
+    num_test_trajs = len(self.test_data)/self.MAX_TRAJECTORY_SIZE
+    # num_test_trajs = 10 [when totol steps = 1,000 with 8:1:1 data split]
+  
+    # num_batches = 10//batch_size = 0
+    num_batches = int(num_test_trajs // self.BATCH_SIZE_TEST)
+    # remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
     print('%i test batches in total...' %num_batches)
-
-    # Create the test image and labels placeholders
-    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TEST, self.HEIGHT, self.WIDTH, self.DEPTH])
+   
+    # --------------------------------------------------------------
+    # Paper
+    # self.test_traj_placeholder  (for input_tensor)
+    # - shape: 
+    # (batch size = 16: batch_size, 10: MAX_TRAJECTORY_SIZE, HEIGHT = 12, WIDTH = 12, DEPTH = 11)
+    # --------------------------------------------------------------
+    
+    # self.test_traj_placeholder.shape = (batch_size, 12, 12, 11)
+    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
 
     # Build the test graph
     if args.mode == 'all':
+      # logits.shape = (batch_size, num_classes)
       logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
     else:
       logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=False)
+
+    # predictions.shape = (batch_size, num_classes)
     predictions = tf.nn.softmax(logits)
 
     # Initialize a new session and restore a checkpoint
@@ -410,14 +423,80 @@ class Model:
     prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
 
     # Test by batches
+    #pdb.set_trace()
     for step in range(num_batches):
       if step % 10 == 0:
           print('%i batches finished!' %step)
-      offset = step * self.BATCH_SIZE_TEST
-      test_traj_batch = self.test_data[offset:offset+self.BATCH_SIZE_TEST, ...]
+      # pdb.set_trace()         
+      # --------------------------------------------------------------
+      # Edwinn's codes
+      # generate test_traj_batch = (batch_size, height, width, depth)
+      # --------------------------------------------------------------
+      # offset = step * self.BATCH_SIZE_TEST
+      # test_traj_batch = self.test_data[offset:offset+self.BATCH_SIZE_TEST, ...]
 
+      # --------------------------------------------------------------
+      # Paper
+      # generate test_traj_batch = (batch_size * MAX_TRAJECTORY_SIZE, height, width, depth)
+      # --------------------------------------------------------------
+      
+
+      # e.g., offset_batch_start_index = 2
+      offset_batch_start_index = step
+      # the ending batch
+      # e.g., offset_batch_end_index = (2 + 16)  = 18
+      # (note that this stopping index would be excluded by range())      
+      offset_batch_end_index = (offset_batch_start_index + self.BATCH_SIZE_TEST)
+
+      # e.g., offset_step_start_index = 2 * 10 = 20
+      offset_step_start_index = offset_batch_start_index * self.MAX_TRAJECTORY_SIZE
+
+      # e.g., offset_step_end_index = 18 * 10 = 180
+      # (note that this stopping index would be excluded by range())
+      offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
+      offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
+
+      test_traj_batch = self.test_data[offset_step_range_index, ...]
+
+     
+      # --------------------------------------------------------------
+      # Paper
+      # Reshape the batch data
+      # (batch_size * MAX_TRAJECTORY_SIZE, height, width, depth) -> 
+      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
+      # test_traj_batch = 
+      # (batch_size * MAX_TRAJECTORY_SIZE, height, width, depth)
+      #
+      # test_traj_batch =
+      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
+      # --------------------------------------------------------------
+      # batch_data = (160, 6, 6, 11)
+
+      test_traj_batch = test_traj_batch.reshape((self.BATCH_SIZE_TEST, self.MAX_TRAJECTORY_SIZE,
+                                     self.HEIGHT, self.WIDTH, self.DEPTH))
+      # vali_data_batch = (16, 10, 6, 6, 11)
+      # pdb.set_trace()         
+
+      # --------------------------------------------------------------
+      # Paper
+      # Making predictions
+      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth) ->
+      # (batch_size, num_classes)
+      #  test_traj_batch = 
+      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
+      #
+      # np.array(rounded_array).shape = 
+      # (batch_size, num_classes)
+      # --------------------------------------------------------------
+      # predictions = (batch_size, num_classes)
       batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
+      # batch_prediction_array = (batch_size, num_classes)
+
+      # prediction_array = (0, num_classes)
+      # concatenating it to collect results from diefference testing batches
       prediction_array = np.concatenate((prediction_array, batch_prediction_array))
+      # after all interaion
+      # prediction_array = (num_batches * batch_size, num_classes)
 
     # TODO: For now we dont have a way to handle batches of size != 32, so we are gonna have to skip the last few datapoints.
     '''
@@ -433,27 +512,48 @@ class Model:
 
       prediction_array = np.concatenate((prediction_array, batch_prediction_array))
     '''
-    
+    # prediction_array = (batch_size, num_classes)
     rounded_array = np.around(prediction_array,2).tolist()
+    # rounded_array = (batch_size, num_classes)
+
+    # length = (number of all testing trajectories) = (num_batches * batch_size)
     length = num_batches*self.BATCH_SIZE_TEST  
-    self.match_estimation(self.test_labels, rounded_array, length)
+    
+    # self.test_labels= (batch_size * MAX_TRAJECTORY_SIZE)
+    # rounded_array = (batch_size, num_classes)
+    # length = (number of all testing trajectories) = (num_batches * batch_size)
+    # pdb.set_trace()
+    self.match_estimation(self.test_labels, rounded_array, length) #print out performance metrics
     
     return prediction_array
   
   def match_estimation(self, labels, predictions, length):
+    '''
+    Evaluate model performance on the testing set
+    
+    :param labels: the ground truth labels (batch_size, num_classes)
+    :param predicitons: the predicted labels with softmax probabilities (batch_size, num_classes)
+    :param length: number of all testing trajectories (num_batches * batch_size)
+    '''
     
     #Initialize zeroes for each possible arrangement
+    # matches = 24 = 4! = num_classes!
     matches = [0 for item in range(math.factorial(self.NUM_CLASS))]
     
-    for i in range(length):
+    for i in range(length): # number of all testing trajectories (num_batches * batch_size)
       #Initialize a 2d zeroes array
+      # test = 24 x 4 = 4! x 4 = num_classes! x num_classes
+      # filled by zeros
       test = [[0 for item in range(self.NUM_CLASS)] for item in range(math.factorial(self.NUM_CLASS))]
+      # test = 24 x 4 = 4! x 4 = num_classes! x num_classes
+      # all possible combination in 4!
       combinations = list(itertools.permutations(range(self.NUM_CLASS),self.NUM_CLASS))
-      for j in range(math.factorial(self.NUM_CLASS)):
-        for k in range(self.NUM_CLASS):
+      
+      for j in range(math.factorial(self.NUM_CLASS)): # range(0, 24)
+        for k in range(self.NUM_CLASS): # range(0, 4)
           test[j][k] = predictions[i][combinations[j][k]]
       
-      for j in range(math.factorial(self.NUM_CLASS)):
+      for j in range(math.factorial(self.NUM_CLASS)): # range(0, 24)
         if int(labels[i]) == test[j].index(max(test[j])):
           matches[j] += 1
 

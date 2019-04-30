@@ -446,13 +446,14 @@ def output_layer(input_layer, num_labels):
 
 def build_charnet(input_tensor, n, num_classes, reuse, train):
     '''
-    :param input_tensor: 
+    Build the character net.
+    
+    :param input_tensor:
     :param n: the number of layers in the resnet
     :param num_classes: 
     :param reuse: ?
     :param train:  
-    :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) 
-    # and is the input for a softmax layer 
+    :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) and is the input for a softmax layer 
     '''
     # pdb.set_trace()
     layers = []
