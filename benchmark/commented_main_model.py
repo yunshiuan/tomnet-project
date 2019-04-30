@@ -49,7 +49,7 @@ class Model:
   # e.g., given a full date set with 10,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
   # EPOCH_SIZE should be 8,000 training files if there are 10,000 files
-  EPOCH_SIZE = 800
+  EPOCH_SIZE = 8000
   
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
 
