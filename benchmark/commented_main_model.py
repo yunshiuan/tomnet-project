@@ -33,9 +33,9 @@ class Model:
   DEPTH = 11 
   
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE_TRAIN = 5 # size of the batch for traning (number of the steps within each batch)
-  BATCH_SIZE_VAL = 5 # size of the batch for validation
-  BATCH_SIZE_TEST = 5 # size of batch for testing
+  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)
+  BATCH_SIZE_VAL = 16 # size of the batch for validation
+  BATCH_SIZE_TEST = 16 # size of batch for testing
   
   # number of layers in the resnet 
   # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -44,7 +44,7 @@ class Model:
   
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 200
+  TRAIN_STEPS = 200000
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 10,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
