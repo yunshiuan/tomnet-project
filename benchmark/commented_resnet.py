@@ -32,9 +32,44 @@ def batch_normalization_layer(input_layer, dimension):
     bn_layer = tf.nn.batch_normalization(input_layer, mean, variance, beta, gamma, BN_EPSILON)
 
     return bn_layer
+  
+def conv_layer(input_layer, filter_shape, stride):
+    '''
+    This layer is a pure convolutional layer (without bn, relu). 
+    It is used for reshaping the tensor channels before entering the resnet.
+    
+    :param filter_shape: filter height, filter width, input_channel, output_channels
+    '''    
+    filter = create_variables(name='conv', shape=filter_shape, is_fc_layer=False)
+    conv_layer = tf.nn.conv2d(input_layer, filter, strides=[1, stride, stride, 1], padding='SAME')
 
+    output = conv_layer
+    return output
+  
+def conv_layer_before_resnet(input_layer):
+    '''
+    Reshape the tensor channels before entering the resnet.
+    '''
+    stride = 1
+    output_channels = 32
+    #filter height, filter width, input_channel, output_channels
+    filter_shape = [3, 3, input_layer.get_shape().as_list()[-1], output_channels]
+    
+    #output = conv_layer(input_layer, filter_shape, stride)
+    
+    filter = create_variables(name='conv', shape=filter_shape, is_fc_layer=False)
+    conv_layer = tf.nn.conv2d(input_layer, filter, strides=[1, stride, stride, 1], padding='SAME')
+    output = conv_layer
+   
+    return output
+    
 def conv_bn_relu_layer(input_layer, filter_shape, stride):
-    out_channel = filter_shape[-1]
+    '''
+    This sub-block is the first sub-block in the residual connection of the residual block.
+    
+    :param filter_shape: filter height, filter width, input_channel, output_channels
+    '''
+    out_channel = filter_shape[-1] 
     
     # pdb.set_trace()
     
@@ -52,7 +87,14 @@ def conv_bn_relu_layer(input_layer, filter_shape, stride):
 
     output = tf.nn.relu(bn_layer)
     return output
+  
 def conv_bn_no_relu_layer(input_layer, filter_shape, stride):
+    '''
+    This sub-block is the second sub-block in the residual connection of the residual block.
+    This block is needed because ReLU should happen after addtion.
+    
+    :param filter_shape: filter height, filter width, input_channel, output_channels
+    '''
     out_channel = filter_shape[-1]
     
     # pdb.set_trace()
@@ -64,15 +106,14 @@ def conv_bn_no_relu_layer(input_layer, filter_shape, stride):
 
     output = bn_layer
     return output  
+  
 def residual_block(input_layer, output_channels):
     '''
     Constructing a resudual block. Note that as in the paper, each residual block
-    should have 32 channels (or 32 filers), but currently we use 11 channels to 
-    correspond to the number of channels of the input tensor (to ensure addtion of
-    "main path" and "residual connection")
+    should have 32 channels (or 32 filers).
     
     :param input_layer: shape = (batch_size, height, width, depth)
-    :param output_channels: 11 (note: different from the ToMNET paper)
+    :param output_channels: 32 (as in the ToMNET paper)
     :return output: a[l+2] = g(z[l+2]+a[l]) = g(w[l+2]*a[l+1] + b[l+2] + a[l]) 
     '''
     input_channel = input_layer.get_shape().as_list()[-1]
@@ -103,8 +144,30 @@ def residual_block(input_layer, output_channels):
     return output
 
 def average_pooling_layer(input_layer):
-    pooled_input = tf.nn.avg_pool(input_layer, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
-    return pooled_input
+    '''
+    Collapse the spatical dimension.
+    
+    :param input layer: (steps, maze height, maze width, output channels). 
+    The tensor will be averaged across the maze height and width dimensions
+    and output a tensor with shape (steps, channels)
+    '''
+    # --------------------------------------------------------------
+    # Edwinn's codes
+    # Half the height and width of the tensor.
+    # (16, 12, 12, 11) -> (16, 6, 6, 11)
+    # --------------------------------------------------------------
+    # pooled_input = tf.nn.avg_pool(input_layer, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+
+    # --------------------------------------------------------------
+    # Paper codes
+    # (160, 12, 12, 32) -> (160, 32)
+    # --------------------------------------------------------------
+    
+    # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
+    # - param input_tensor: the output from the previous LSTM layer
+    # - param axis: The dimensions to reduce
+    global_pool = tf.reduce_mean(input_layer, [1,2])    
+    return global_pool
 
 def lstm_layer(input_layer, train, num_classes):
     # --------------------------------------------------------------
@@ -113,7 +176,7 @@ def lstm_layer(input_layer, train, num_classes):
     # --------------------------------------------------------------
 #    num_hidden = 64 # Paper: 64
 #    batch_size = 16 # Paper: 16 
-#    out_channels = MAZE_DEPTH 
+#    out_channels = MAZE_DEPTH # note that output channels should not be the depth of the maze?
 #    output_keep_prob = 0.8 # This is for regularization during training
 #    
 #
@@ -127,7 +190,7 @@ def lstm_layer(input_layer, train, num_classes):
 #    feature_h, feature_w, _ = input_layer.get_shape().as_list() 
     # --------------------------------------------------------------
     # Paper
-    # input_layer = (16, 10, 6, 6, 11)
+    # input_layer = (16, 10, 32)
     # --------------------------------------------------------------
 
     num_hidden = 64 # Paper: 64
@@ -141,14 +204,14 @@ def lstm_layer(input_layer, train, num_classes):
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
-    # input_layer.get_shape().as_list() = (16, 6, 6, 11)
+    
+    # input_layer = (16, 10, 32)
     # 16: batch size (Tx for LSTM)
-    # 6: featur_h after CNN
-    # 6: feature_w after CNN
-    # 11: number of channels after CNN (unaffected by CNN)
+    # 10: time steps
+    # 32: number of channels after CNN
     # pdb.set_trace()
-    batch_size, time_steps, feature_h, feature_w, maze_depth = input_layer.get_shape().as_list()
-    out_channels = maze_depth # note that output channels should not be the depth of the maze? #TODO
+    batch_size, time_steps, out_channels = input_layer.get_shape().as_list()
+    
     # ==============================================================
     # This section is to reshape the tensor for LSTM 
     # ==============================================================
@@ -177,36 +240,22 @@ def lstm_layer(input_layer, train, num_classes):
 
     # --------------------------------------------------------------
     # Paper:
-    # (16, 10, 6, 6, 11) -> (16, 10, 396)
+    # No need to reshape becuase the spatial dimensions have
+    # already been averaged out during the average pooling
+    # (16, 10, 32) -> (16, 10, 32)
     #
     # (16, 10, 6, 6, 11):
     # 16: batch size
     # 10: time steps
-    # 6, 6, 11: maze tensor after average pooling
+    # 32: channels
     # 
     # (16, 10, 396):
     # 16: batch size
     # 10: time steps
-    # 396 = 6 x 6 x 11
+    # 32: channels
     # --------------------------------------------------------------
     # Define the input for lstm
-    # (1) input_layer.shape = (16, 10, 6, 6, 11)
-    # pdb.set_trace()
-    # No need to transpose width and height?
-    # lstm_input = tf.transpose(input_layer,[0,1,3,2,4])  # transpose the width and the height dimension
     lstm_input = input_layer
-    # (2) lstm_input.shape = (16, 10, 6, 6, 11)
-    
-    # Flatten the channel dimension so that 
-    # the shape of each x_i 's time step t of lstm_input changes from
-    # 3-dim (w = 6, h = 6, c = 11) to
-    # 1-dim (depth = 6 x 6 x 11)
-    # (2) lstm_input.shape = (16, 10, 6, 6, 11)
-    lstm_input = tf.reshape(lstm_input, [batch_size, time_steps, feature_w * feature_h * out_channels])
-    # (3) lstm_input.shape =  (16, 10, 396)
-    # - 16: batch_size
-    # - 10: time steps
-    # - 396 = 6 x 6 x 11
 
     # ==============================================================
     # This section is to perform LSTM 
@@ -273,24 +322,24 @@ def lstm_layer(input_layer, train, num_classes):
     
     # --------------------------------------------------------------
     # Paper:
-    # (16, 10, 396) -> (16, 10, 64)
+    # (16, 10, 32) -> (16, 10, 64)
     #
-    # (16, 10, 396):
+    # (16, 10, 32):
     # 16: batch size
     # 10: time steps
-    # 396 = 6 x 6 x 11
+    # 32: channels
     #
     # 16: batch size
     # 10: time steps
     # 64: hidden units
     # 1. for each x_i(t) (example_i's step_t):
-    # a (64, 1) = W(64, 396) * x (391, 1) 
+    # a (64, 1) = W(64, 32) * x (32, 1) 
     # --------------------------------------------------------------
     # seq_len.shape = (16)
     # An int32/int64 vector sized [batch_size]. 
     # Used to copy-through state and zero-out outputs when past a batch 
     # element's sequence length. So it's more for performance than correctness.
-    seq_len = tf.fill([batch_size], feature_w)
+    seq_len = tf.fill([batch_size], 0)
     # cell:
     # the cell will be fed in to 
     # tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
@@ -311,7 +360,7 @@ def lstm_layer(input_layer, train, num_classes):
 
     initial_state = cell.zero_state(batch_size, dtype=tf.float32)
     
-    # (3) lstm_input.shape = (16, 10, 396)
+    # (3) lstm_input.shape = (16, 10, 32)
     outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
     
     # (4) outputs.shape = (16, 10, 64)
@@ -455,9 +504,13 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     :param train:  
     :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) and is the input for a softmax layer 
     '''
-    pdb.set_trace()
+    # pdb.set_trace()
     layers = []
     
+    # --------------------------------------------------------------
+    # Constants
+    # -------------------------------------------------------------- 
+    # resnet_input_channels = 32
        
     #Append the input tensor as the first layer
     # --------------------------------------------------------------
@@ -468,6 +521,8 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     
     # --------------------------------------------------------------
     # Paper codes
+    # Regard each step independently in the resnet
+    # (16, 10, 12, 12, 11) -> (160, 12, 12, 11)
     # input_tensor.shape = (16, 10, 12, 12, 11)
     # 16: 16 trajectories
     # 10: each trajectory has 10 steps
@@ -475,10 +530,25 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     # --------------------------------------------------------------    
     layers.append(input_tensor)
     batch_size, trajectory_size, height, width, depth  = layers[-1].get_shape().as_list()
-    
-    # resnet_output_channels = 32 (as in the paper. we currently use
-    # 11, MAZE_DEPTH, to enable addition with the residual connection.)
-    
+    # layers[-1] = input_tensor = (16, 10, 12, 12, 11)
+    step_wise_input = tf.reshape(layers[-1], [batch_size * trajectory_size, height, width, depth])
+    # resnet_iput = (160, 12, 12, 11)
+    layers.append(step_wise_input)
+
+    # --------------------------------------------------------------
+    # Paper codes    
+    # (160, 12, 12, 11) -> (160, 12, 12, 32)
+    # Use 3x3 conv layer to shape the depth to 32
+    # to enable resnet to work (addition between main path and residual connection)
+    # --------------------------------------------------------------
+    with tf.variable_scope('conv_before_resnet', reuse = reuse):
+        # layers[-1] = step_wise_iput = (160, 12, 12, 32)
+        conv_before_resnet = conv_layer_before_resnet(layers[-1])
+        # conv_before_resnet = (160, 12, 12, 32)
+        layers.append(conv_before_resnet)
+        _, _, _, resnet_input_channels  = layers[-1].get_shape().as_list()
+
+                      
     #Add n residual layers
     for i in range(n):
         with tf.variable_scope('conv_%d' %i, reuse=reuse):
@@ -501,23 +571,23 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
             
             # --------------------------------------------------------------
             # Paper codes
-            # (16, 10, 12, 12, 11) -> (160, 12, 12, 11)
-            # layers[-1] = intput_tensor = (16, 10, 12, 12, 11)
-            # 16: 16 trajectories
+            # (160, 12, 12, 32) -> (160, 12, 12, 32)
+            # layers[-1] = intput_tensor = (16, 10, 12, 12, 32)
+            # 160: 160 steps (16 trajectories x 10 steps/trajectory)
             # 10: each trajectory has 10 steps
             # 12, 12, 11: maze height, width, depth
             
-            # block = (160, 12, 12, 11)
+            # block = (160, 12, 12, 32)
             # 160: 160 steps (16 trajectories x 10 steps/trajectory)
-            # 12, 12, 11: maze height, width, output channels (SHOUlD be 32 as in the paper)
+            # 12, 12, 32: maze height, width, output channels (as in the paper)
             # --------------------------------------------------------------
 
             #pdb.set_trace()
             # layers[-1] = (16, 10, 12, 12, 11)
-            resnet_input = tf.reshape(layers[-1], [batch_size * trajectory_size, height, width, depth])
+            resnet_input = layers[-1]
             # resnet_input = (160, 12, 12, 11)
 
-            block = residual_block(resnet_input, MAZE_DEPTH) #resnet_output_channels) 
+            block = residual_block(resnet_input, resnet_input_channels) 
             activation_summary(block)
             layers.append(block)
     
@@ -540,15 +610,16 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         
         # --------------------------------------------------------------
         # Paper codes
-        # (160, 12, 12, 11) ->  (160, 6, 6, 11)
-        # 
+        # (160, 12, 12, 32) ->  (160, 32)
+        # # collapse the spacial dimension
+        #
         # layers[-1] = block = (160, 12, 12, 11)
         # 160: 160 steps (16 trajectories x 10 steps/trajectory)
-        # 12, 12, 11: maze height, width, output channels (SHOUlD be 32 as in the paper)
+        # 12, 12, 32: maze height, width, output channels (32 as in the paper)
         #  
-        # avg_pool = (16, 6, 6, 11)
+        # avg_pool = (160, 32)
         # 160: 160 steps (16 trajectories x 10 steps/trajectory)
-        # 6, 6, 11: feature height, width, output channels 
+        # 32: output channels 
         # --------------------------------------------------------------
         avg_pool = average_pooling_layer(block)
         layers.append(avg_pool)
@@ -556,6 +627,8 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     
     
     #Add LSTM layer
+    # pdb.set_trace()
+
     with tf.variable_scope('LSTM', reuse=reuse):
         # --------------------------------------------------------------
         # Edwinn's codes
@@ -576,17 +649,16 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         
         # --------------------------------------------------------------
         # Paper codes
-        # (160, 6, 6, 11) ->  (16, 4)  
+        # (160, 32) ->  (16, 4)  
         #
-        # avg_pool = (16, 6, 6, 11)
+        # avg_pool = (160, 32)
         # 160: 160 steps (16 trajectories x 10 steps/trajectory)
-        # 6, 6, 11: feature height, width, output channels 
+        # 32: output channels 
         
         # lstm = (16, 4)
         # 16: batch_size (16 trajectories)
         # 4: num_classes     
         # --------------------------------------------------------------
-        # (160, 6, 6, 11)
 
         # --------------------------------------------------------------        
         # for testing only        
@@ -597,14 +669,15 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         # var_test_resume_dim = var_test_reduce_dim.reshape(5, 10, feature_h, feature_w, feature_d)
         # np.array_equal(var_test_reduce_dim,var_test_resume_dim)
         # > False!??!!?? #TODO
-        tf.reshape(layers[-1], [batch_size, trajectory_size, feature_h, feature_w, feature_d])
-
         
-        _, feature_h, feature_w, feature_d = layers[-1].get_shape().as_list()
-        lstm_input = tf.reshape(layers[-1], [batch_size, trajectory_size, feature_h, feature_w, feature_d])
-        # (16, 10, 6, 6, 11)
+        # layers[-1] = avg_pool = (160, 32)
+        _, resnet_output_channels = layers[-1].get_shape().as_list()
+        
+        # layers[-1] = avg_pool = (160, 32)
+        lstm_input = tf.reshape(layers[-1], [batch_size, trajectory_size, resnet_output_channels])
+        # lstm_input = (16, 10, 32)
          
-        # (16, 10, 6, 6, 11)
+        # lstm_input = (16, 10, 32)
         lstm = lstm_layer(lstm_input, train, num_classes)
         # lstm = (16, 4)
         
