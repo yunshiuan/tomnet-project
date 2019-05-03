@@ -44,7 +44,7 @@ class Model:
   
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 200000
+  TRAIN_STEPS = 4000000
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 10,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
