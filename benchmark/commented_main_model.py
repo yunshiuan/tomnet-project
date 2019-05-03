@@ -33,9 +33,16 @@ class Model:
   DEPTH = 11 
   
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)
-  BATCH_SIZE_VAL = 16 # size of the batch for validation
-  BATCH_SIZE_TEST = 16 # size of batch for testing
+#  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
+#  BATCH_SIZE_VAL = 16 # size of the batch for validation
+#  BATCH_SIZE_TEST = 16 # size of batch for testing
+
+  # --------------------------------------
+  # for testing on the local machine with 100 file
+  # --------------------------------------
+  BATCH_SIZE_TRAIN = 5 # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE_VAL = 5 # size of the batch for validation
+  BATCH_SIZE_TEST = 5 # size of batch for testing
   
   # number of layers in the resnet 
   # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -49,7 +56,12 @@ class Model:
   # e.g., given a full date set with 10,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
   # EPOCH_SIZE should be 8,000 training files if there are 10,000 files
-  EPOCH_SIZE = 8000
+  
+  # EPOCH_SIZE = 8000
+  # --------------------------------------
+  # for testing on the local machine with 100 file
+  # --------------------------------------
+  EPOCH_SIZE = 800
   
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
 
@@ -130,7 +142,7 @@ class Model:
     # during data_handler.parse_trajectories()
     
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.files = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
-
+    # on my local machine: self.files = 'S002_83.txt', 'S002_97.txt', 'S002_68.txt'...
     #print('End of __init__-----------------')
     # pdb.set_trace()
 
@@ -346,9 +358,9 @@ class Model:
         summary_str = sess.run(summary_op, {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
         summary_writer.add_summary(summary_str, step)
 
-        num_examples_per_step = self.BATCH_SIZE_TRAIN
-        examples_per_sec = num_examples_per_step / duration
-        sec_per_batch = float(duration)
+        num_examples_per_step = self.BATCH_SIZE_TRAIN # trajectoris per step = trajectoris per batch = batch size
+        examples_per_sec = num_examples_per_step / duration # trajectories per second
+        sec_per_batch = float(duration) # seconds for this step
 
         format_str = ('%s: step %d, loss = %.4f (%.1f examples/sec; %.3f ' 'sec/batch)')
         print(format_str % (datetime.datetime.now(), step, train_loss_value, examples_per_sec, sec_per_batch))

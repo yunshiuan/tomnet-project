@@ -455,8 +455,9 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     :param train:  
     :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) and is the input for a softmax layer 
     '''
-    # pdb.set_trace()
+    pdb.set_trace()
     layers = []
+    
        
     #Append the input tensor as the first layer
     # --------------------------------------------------------------
@@ -586,6 +587,19 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         # 4: num_classes     
         # --------------------------------------------------------------
         # (160, 6, 6, 11)
+
+        # --------------------------------------------------------------        
+        # for testing only        
+        # conclusion: reshaping twice result in the same np array
+        # var_test = np.array(range(0,(5*10*6*6*11))).reshape(5, 10, 6, 6, 11)
+        # var_test_reduce_dim = var_test.reshape(5 * 10, 6, 6, 11)
+        # _, feature_h, feature_w, feature_d = var_test_reduce_dim.shape
+        # var_test_resume_dim = var_test_reduce_dim.reshape(5, 10, feature_h, feature_w, feature_d)
+        # np.array_equal(var_test_reduce_dim,var_test_resume_dim)
+        # > False!??!!?? #TODO
+        tf.reshape(layers[-1], [batch_size, trajectory_size, feature_h, feature_w, feature_d])
+
+        
         _, feature_h, feature_w, feature_d = layers[-1].get_shape().as_list()
         lstm_input = tf.reshape(layers[-1], [batch_size, trajectory_size, feature_h, feature_w, feature_d])
         # (16, 10, 6, 6, 11)
