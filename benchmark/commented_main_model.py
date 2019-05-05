@@ -40,9 +40,9 @@ class Model:
   # --------------------------------------
   # for testing on the local machine with 100 file
   # --------------------------------------
-  BATCH_SIZE_TRAIN = 5 # size of the batch for traning (number of the steps within each batch)  
-  BATCH_SIZE_VAL = 5 # size of the batch for validation
-  BATCH_SIZE_TEST = 5 # size of batch for testing
+  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE_VAL = 16 # size of the batch for validation
+  BATCH_SIZE_TEST = 16 # size of batch for testing
   
   # number of layers in the resnet 
   # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -61,7 +61,7 @@ class Model:
   # --------------------------------------
   # for testing on the local machine with 100 file
   # --------------------------------------
-  EPOCH_SIZE = 800
+  EPOCH_SIZE = 80000
   
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
 
