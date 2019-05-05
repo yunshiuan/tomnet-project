@@ -53,9 +53,10 @@ class Model:
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   TRAIN_STEPS = 4000000
   # the data size of an epoch (should equal to the traning set size)
-  # e.g., given a full date set with 10,000 snapshots,
+  # e.g., given a full date set with 100,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
-  # EPOCH_SIZE should be 8,000 training files if there are 10,000 files
+  # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
+  # because each file contains 10 steps
   
   # EPOCH_SIZE = 8000
   # --------------------------------------
@@ -813,7 +814,7 @@ class Model:
     # batch_data shape = (16, 10, 6, 6, 11)
     # batch_label shape = (16, 1)
     # --------------------------------------------------------------
-    # pdb.set_trace()
+    pdb.set_trace()
     # the total number of batch equals the total number of steps devided by the steps fore each trajectory
     # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
     total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE)) 
