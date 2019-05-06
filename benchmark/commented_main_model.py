@@ -62,7 +62,7 @@ class Model:
   # --------------------------------------
   # for testing on the local machine with 100 file
   # --------------------------------------
-  EPOCH_SIZE = 80000
+  EPOCH_SIZE = 8000
   
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
 
