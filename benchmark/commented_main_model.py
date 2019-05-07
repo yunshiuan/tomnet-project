@@ -51,7 +51,7 @@ class Model:
   
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 4000000
+  TRAIN_STEPS = 200
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 100,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
@@ -143,7 +143,7 @@ class Model:
     # during data_handler.parse_trajectories()
     
     # pdb.set_trace()
-    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.files = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
+    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_trajectories(dir,mode=args.mode,shuf=args.shuffle)
     # on my local machine: 
     # 'S002_83.txt', 'S002_97.txt', 'S002_68.txt', 'S002_40.txt', 'S002_54.txt', 'S002_55.txt'
     #print('End of __init__-----------------')
@@ -399,12 +399,14 @@ class Model:
     :param test_image_array: 4D numpy array with shape [num_test_traj_steps, maze_height, maze_width, maze_depth]
     :return: the softmax probability with shape [num_test_traj_steps, num_labels]
     '''
-    # self.test_data = (100, 12, 12, 11) [when totol steps = 1,000 with 8:1:1 data split]
-    num_test_trajs = len(self.test_data)/self.MAX_TRAJECTORY_SIZE
-    # num_test_trajs = 10 [when totol steps = 1,000 with 8:1:1 data split]
+    # pdb.set_trace()
+    # self.test_data = (100, 12, 12, 11) [when totol steps = 10,000 with 8:1:1 data split]
+    num_test_files = int(len(self.test_data)/self.MAX_TRAJECTORY_SIZE)
+    assert(len(self.test_data) % self.MAX_TRAJECTORY_SIZE == 0)
+    # num_test_files = 10 [when totol steps = 1,000 with 8:1:1 data split]
   
     # num_batches = 10//batch_size = 0
-    num_batches = int(num_test_trajs // self.BATCH_SIZE_TEST)
+    num_batches = int(num_test_files // self.BATCH_SIZE_TEST)
     # remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
     print('%i test batches in total...' %num_batches)
    
@@ -412,12 +414,30 @@ class Model:
     # Paper
     # self.test_traj_placeholder  (for input_tensor)
     # - shape: 
-    # (batch size = 16: batch_size, 10: MAX_TRAJECTORY_SIZE, HEIGHT = 12, WIDTH = 12, DEPTH = 11)
+    # (batch size, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
     # --------------------------------------------------------------
     
-    # self.test_traj_placeholder.shape = (batch_size, 12, 12, 11)
-    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
+    # self.test_traj_placeholder.shape = (batch_size, MAX_TRAJECTORY_SIZE, 12, 12, 11)
+    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32,
+                                                shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
 
+    # --------------------------------------------------------------
+    # Paper
+    # Reshape test_data and test label
+    # self.test_data = (num_files * MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH) ->
+    # self.test_data = (num_files, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
+    #
+    # self.test_labels = (num_files * MAX_TRAJECTORY_SIZE,) ->
+    # self.test_labels = (num_files,)    
+    # --------------------------------------------------------------
+    # self.test_data = (num_files * MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
+    self.test_data = self.test_data.reshape([num_test_files, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
+    # self.test_data = (num_files, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
+
+    # self.test_labels = (num_files * MAX_TRAJECTORY_SIZE,)
+    self.test_labels = self.test_labels[0:-1:self.MAX_TRAJECTORY_SIZE]
+    # self.test_labels = (num_files,)        
+    
     # Build the test graph
     if args.mode == 'all':
       # logits.shape = (batch_size, num_classes)
@@ -425,7 +445,7 @@ class Model:
     else:
       logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=False)
 
-    # predictions.shape = (batch_size, num_classes)
+    # predictions = (batch_size, num_classes)
     predictions = tf.nn.softmax(logits)
 
     # Initialize a new session and restore a checkpoint
@@ -437,7 +457,7 @@ class Model:
 
     prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
 
-    # Test by batches
+    # Test by batches (sequentially)
     #pdb.set_trace()
     for step in range(num_batches):
       if step % 10 == 0:
@@ -452,45 +472,13 @@ class Model:
 
       # --------------------------------------------------------------
       # Paper
-      # generate test_traj_batch = (batch_size * MAX_TRAJECTORY_SIZE, height, width, depth)
+      # Select the batch of this iteration
+      # self.test_data = (num_files, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH) ->
+      # test_batch = (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
       # --------------------------------------------------------------
-      
+      file_indexes = range(step * self.BATCH_SIZE_TEST, (step+1) * self.BATCH_SIZE_TEST)
+      test_batch = self.test_data[file_indexes, ...]
 
-      # e.g., offset_batch_start_index = 2
-      offset_batch_start_index = step
-      # the ending batch
-      # e.g., offset_batch_end_index = (2 + 16)  = 18
-      # (note that this stopping index would be excluded by range())      
-      offset_batch_end_index = (offset_batch_start_index + self.BATCH_SIZE_TEST)
-
-      # e.g., offset_step_start_index = 2 * 10 = 20
-      offset_step_start_index = offset_batch_start_index * self.MAX_TRAJECTORY_SIZE
-
-      # e.g., offset_step_end_index = 18 * 10 = 180
-      # (note that this stopping index would be excluded by range())
-      offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
-      offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
-
-      test_traj_batch = self.test_data[offset_step_range_index, ...]
-
-     
-      # --------------------------------------------------------------
-      # Paper
-      # Reshape the batch data
-      # (batch_size * MAX_TRAJECTORY_SIZE, height, width, depth) -> 
-      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
-      # test_traj_batch = 
-      # (batch_size * MAX_TRAJECTORY_SIZE, height, width, depth)
-      #
-      # test_traj_batch =
-      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
-      # --------------------------------------------------------------
-      # batch_data = (160, 6, 6, 11)
-
-      test_traj_batch = test_traj_batch.reshape((self.BATCH_SIZE_TEST, self.MAX_TRAJECTORY_SIZE,
-                                     self.HEIGHT, self.WIDTH, self.DEPTH))
-      # vali_data_batch = (16, 10, 6, 6, 11)
-      # pdb.set_trace()         
 
       # --------------------------------------------------------------
       # Paper
@@ -504,7 +492,7 @@ class Model:
       # (batch_size, num_classes)
       # --------------------------------------------------------------
       # predictions = (batch_size, num_classes)
-      batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
+      batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_batch})
       # batch_prediction_array = (batch_size, num_classes)
 
       # prediction_array = (0, num_classes)
@@ -527,18 +515,35 @@ class Model:
 
       prediction_array = np.concatenate((prediction_array, batch_prediction_array))
     '''
-    # prediction_array = (batch_size, num_classes)
-    rounded_array = np.around(prediction_array,2).tolist()
-    # rounded_array = (batch_size, num_classes)
-
-    # length = (number of all testing trajectories) = (num_batches * batch_size)
-    length = num_batches*self.BATCH_SIZE_TEST  
+    # --------------------------------------------------------------
+    # Edwinn's codes
+    # Evaluate testing performance
+    # --------------------------------------------------------------
+#    # prediction_array = (batch_size, num_classes)
+#    rounded_array = np.around(prediction_array,2).tolist()
+#    # rounded_array = (batch_size, num_classes)
+#
+#    # length = (number of all testing trajectories) = (num_batches * batch_size)
+#    length = num_batches*self.BATCH_SIZE_TEST  
+#    
+#    # self.test_labels = (batch_size * MAX_TRAJECTORY_SIZE)
+#    # rounded_array = (batch_size, num_classes)
+#    # length = (number of all testing trajectories) = (num_batches * batch_size)
+#    # pdb.set_trace()
+#    self.match_estimation(self.test_labels, rounded_array, length) #print out performance metrics
     
-    # self.test_labels= (batch_size * MAX_TRAJECTORY_SIZE)
-    # rounded_array = (batch_size, num_classes)
-    # length = (number of all testing trajectories) = (num_batches * batch_size)
+    # --------------------------------------------------------------
+    # Paper codes
+    # Accurary: match_predictions/total_predictions
+    # --------------------------------------------------------------   
     # pdb.set_trace()
-    self.match_estimation(self.test_labels, rounded_array, length) #print out performance metrics
+
+    total_predictions = len(prediction_array)
+    # match_predictions
+    predicted_labels = np.argmax(prediction_array,1)
+    match_predictions = sum(predicted_labels == self.test_labels)
+    print('Matches: ' + str(match_predictions) + '/' + str(total_predictions))
+    print('Accuracy: ' + str(round(match_predictions*100/total_predictions,2)) + '%')
     
     return prediction_array
   
@@ -686,14 +691,16 @@ class Model:
     
     return val_op
   
-  def generate_vali_batch(self, vali_data, vali_label, vali_batch_size):
+  def generate_vali_batch(self, vali_data, vali_labels, vali_batch_size):
     '''
     If you want to use a random batch of validation data to validate instead of using the
-    whole validation data, this function helps you generate that batch
-    :param vali_data: 4D numpy array
-    :param vali_label: 1D numpy array
+    whole validation data, this function helps you generate a batch of validation data
+    :param vali_data: 4D numpy array (total_steps, height, width, depth)
+    :param vali_labels: 1D numpy array total_steps, ）
     :param vali_batch_size: int
-    :return: 4D numpy array and 1D numpy array
+    :return: one batch of validation data and labels.
+    4D numpy array (num_batches, trajectory_size, height, width, depth) and 
+    1D numpy array (num_batches, )
     '''
     # --------------------------------------------------------------
     # Edwinn's codes
@@ -713,74 +720,67 @@ class Model:
     # Generate a batch. 
     # Each example is a trejectory.
     # Each batch contains 16 examples (trajectories). Each trajectory contains 10 steps.
-    # batch_data shape = (16, 10, 6, 6, 11)
+    # batch_data shape = (16, 10, 12, 12, 11)
     # batch_label shape = (16, 1)
     # --------------------------------------------------------------
     # pdb.set_trace()
-    # the total number of batch equals the total number of steps devided by the steps fore each trajectory
-    # (e.g., # validation steps = 1000, max_trajectory_size = 10, then total_number_batch = 100)
-    total_number_vali_steps = vali_data.shape[0]
-    total_number_batch = int(np.ceil(total_number_vali_steps/self.MAX_TRAJECTORY_SIZE))
+        
+    # the total number of batch equals the total number of steps devided by the steps for each trajectory
+    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_file = 800)
+    num_files = int(np.ceil(len(vali_data)/self.MAX_TRAJECTORY_SIZE)) 
 
-    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
-    # the starting batch #TODO: randomly select 16 batches instead of 16 continuous batches
-    # e.g., offset_batch_start_index = 2
-    offset_batch_start_index = np.random.choice(total_number_batch - vali_batch_size, 1)[0]
-    # the ending batch
-    # e.g., offset_batch_end_index = (2 + 16)  = 18
-    # (note that this stopping index would be excluded by range())
-    offset_batch_end_index = (offset_batch_start_index + vali_batch_size)
+    # --------------------------------------------------------------
+    # Reshape train_data
+  
+    # train_data = (num_steps, height, width, depth) ->
+    # train_data = (num_files, num_steps, height, width, depth)
+    # --------------------------------------------------------------
+    
+    # train_data = (num_steps, height, width, depth)
+    vali_data = vali_data.reshape((num_files, self.MAX_TRAJECTORY_SIZE,
+                                    self.HEIGHT, self.WIDTH, self.DEPTH))
+    # train_data = (num_files, num_steps, height, width, depth)
 
-    # e.g., offset_step_start_index = 2 * 10 = 20
-    offset_step_start_index = offset_batch_start_index * self.MAX_TRAJECTORY_SIZE
-    # e.g., offset_step_end_index = 18 * 10 = 180
-    # (note that this stopping index would be excluded by range())
-    offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
-    offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
-    # pdb.set_trace()    
+    # --------------------------------------------------------------
+    # Chose train_batch_size random files from all the files
+    # vali_data = (num_files, num_steps, height, width, depth)->
+    # batch_data = (batch_size, num_steps, height, width, depth)->
+    # --------------------------------------------------------------
     
-    # --------------------------------------------------------------
-    # Select 16 random batches
-    # (1000, 12, 12, 11) -> (160, 6, 6, 11)
-    # --------------------------------------------------------------
-    # vali_data = (1000, 12, 12, 11)
-    batch_data = vali_data[offset_step_range_index , ...]
-    # batch_data = (160, 6, 6, 11)
-    
-    # --------------------------------------------------------------
-    # Reshape the batch data
-    # (160, 6, 6, 11) -> (16, 10, 6, 6, 11)
-    # --------------------------------------------------------------    
-    # batch_data = (160, 6, 6, 11)
-    vali_data_batch  = batch_data.reshape((vali_batch_size, self.MAX_TRAJECTORY_SIZE,
-                                     self.HEIGHT, self.WIDTH, self.DEPTH))
-    # vali_data_batch = (16, 10, 6, 6, 11)
-    
-    # --------------------------------------------------------------
-    # Reshape the batch labels
-    # (1000,) -> (160,)
-    # --------------------------------------------------------------
-    # vali_label = (1000,)    
-    vali_label_batch  = vali_label[offset_step_range_index]
-    # vali_label_batch = (160, ) 
+    indexes_files = np.random.choice(num_files, vali_batch_size)
+    batch_data = vali_data[indexes_files,...]
 
+    # --------------------------------------------------------------
+    # Only retain unique labels
+    # vali_labels = （total_steps, ） ->
+    # vali_labels = (num_files, )
+    # --------------------------------------------------------------
+    # vali_labels = (1000,)    
+    vali_labels = vali_labels[0:-1:self.MAX_TRAJECTORY_SIZE]
+    # vali_labels = (100, ) 
+    
     # --------------------------------------------------------------    
-    # only retain 16 unique label (one for each batch)
-    # (160,) -> (16,)
-    # --------------------------------------------------------------    
-    # vali_label_batch = (160,)
-    vali_label_batch = vali_label_batch[0:-1:self.MAX_TRAJECTORY_SIZE]
-    assert(vali_label_batch.shape[0]==vali_batch_size)
-    # vali_label_batch = (16,)
-    return vali_data_batch, vali_label_batch
+    # Choose the labels coresponding to the indexes files
+    # vali_labels = （num_files, ） ->
+    # batch_labels = (batch_size, )
+    # (100,) -> (16,)
+    # --------------------------------------------------------------   
+    batch_labels = vali_labels[indexes_files]
+    # pdb.set_trace()
+    assert(batch_labels.shape[0]==vali_batch_size)
+    return batch_data, batch_labels
+
 
   def generate_train_batch(self, train_data, train_labels, train_batch_size):
     '''
     This function helps generate a batch of train data
-    :param train_data: 4D numpy array
-    :param train_labels: 1D numpy array
+    :param train_data: 4D numpy array (total_steps, height, width, depth)
+    (note: total_steps = trajectory_size * num_files)
+    :param train_labels: 1D numpy array （total_steps, ）
     :param train_batch_size: int
-    :return: augmented train batch data and labels. 4D numpy array and 1D numpy array
+    :return: one batch of train data and labels.
+    4D numpy array (num_batches, trajectory_size, height, width, depth) and 
+    1D numpy array (num_batches, )
     '''
     # -----------
     # numpy.random.choice:
@@ -813,68 +813,57 @@ class Model:
     # Generate a batch. 
     # Each example is a trejectory.
     # Each batch contains 16 examples (trajectories). Each trajectory contains 10 steps.
-    # batch_data shape = (16, 10, 6, 6, 11)
+    # batch_data shape = (16, 10, 12, 12, 11)
     # batch_label shape = (16, 1)
     # --------------------------------------------------------------
-    # pdb.set_trace()
-    # the total number of batch equals the total number of steps devided by the steps fore each trajectory
-    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
-    total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE)) 
+    #pdb.set_trace()
+        
+    # the total number of batch equals the total number of steps devided by the steps for each trajectory
+    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_file = 800)
+    num_files = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE)) 
 
-    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
-    # the starting batch
-    # e.g., offset_batch_start_index = 2
-    offset_batch_start_index = np.random.choice(total_number_batch - train_batch_size, 1)[0]
-    # the ending batch
-    # e.g., offset_batch_end_index = (2 + 16)  = 18
-    # (note that this stopping index would be excluded by range())
-    offset_batch_end_index = (offset_batch_start_index + train_batch_size)
-
-    # e.g., offset_step_start_index = 2 * 10 = 20
-    offset_step_start_index = offset_batch_start_index * self.MAX_TRAJECTORY_SIZE
-    # e.g., offset_step_end_index = 18 * 10 = 180
-    # (note that this stopping index would be excluded by range())
-    offset_step_end_index = (offset_batch_end_index ) * self.MAX_TRAJECTORY_SIZE
-    offset_step_range_index = range(offset_step_start_index, offset_step_end_index)
+    # --------------------------------------------------------------
+    # Reshape train_data
+  
+    # train_data = (num_steps, height, width, depth) ->
+    # train_data = (num_files, num_steps, height, width, depth)
+    # --------------------------------------------------------------
     
-    # --------------------------------------------------------------
-    # Select 16 random batches
-    # (1000, 12, 12, 11) -> (160, 6, 6, 11)
-    # --------------------------------------------------------------
-    # train_data = (1000, 12, 12, 11)
-    batch_data = train_data[offset_step_range_index , ...]
-    # batch_data = (160, 6, 6, 11)
-    
-    # --------------------------------------------------------------
-    # Reshape the batch data
-    # (160, 6, 6, 11) -> (16, 10, 6, 6, 11)
-    # --------------------------------------------------------------
-    # batch_data = (160, 6, 6, 11)
-    batch_data = batch_data.reshape((train_batch_size, self.MAX_TRAJECTORY_SIZE,
+    # train_data = (num_steps, height, width, depth)
+    train_data = train_data.reshape((num_files, self.MAX_TRAJECTORY_SIZE,
                                      self.HEIGHT, self.WIDTH, self.DEPTH))
-    # vali_data_batch = (16, 10, 6, 6, 11)
+    # train_data = (num_files, num_steps, height, width, depth)
 
-    
     # --------------------------------------------------------------
-    # Reshape the batch labels
-    # (1000,) -> (160,)
+    # Chose train_batch_size random files from all the files
+    # train_data = (num_files, num_steps, height, width, depth)->
+    # batch_data = (batch_size, num_steps, height, width, depth)->
+    # --------------------------------------------------------------
+    
+    indexes_files = np.random.choice(num_files, train_batch_size)
+    batch_data = train_data[indexes_files,...]
+
+    # --------------------------------------------------------------
+    # Only retain unique labels
+    # train_labels = （total_steps, ） ->
+    # train_labels = (num_files, )
     # --------------------------------------------------------------
     # train_labels = (1000,)    
-    batch_label = train_labels[offset_step_range_index]
-    # batch_label = (160, ) 
+    train_labels = train_labels[0:-1:self.MAX_TRAJECTORY_SIZE]
+    # train_labels = (100, ) 
     
     # --------------------------------------------------------------    
-    # only retain 16 unique label (one for each batch)
-    # (160,) -> (16,)
+    # Choose the labels coresponding to the indexes files
+    # train_labels = （num_files, ） ->
+    # batch_labels = (batch_size, )
+    # (100,) -> (16,)
     # --------------------------------------------------------------   
-    # batch_label = (160,)
-    batch_label = batch_label[0:-1:self.MAX_TRAJECTORY_SIZE]
+    batch_labels = train_labels[indexes_files]
     # pdb.set_trace()
-    assert(batch_label.shape[0]==train_batch_size)
+    assert(batch_labels.shape[0]==train_batch_size)
     # batch_label = (16,)
-    pdb.set_trace()
-    # 31: 'S002_79.txt'
-    return batch_data, batch_label
+    #pdb.set_trace()
+    return batch_data, batch_labels
     
   def full_validation(self, loss, top1_error, session, vali_data, vali_labels, batch_data, batch_label):
     '''

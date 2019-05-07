@@ -71,7 +71,7 @@ class DataHandler(object):
             print('Parsing testing data')
             test_data, test_labels = self.parse_subset(directory, test_files)
         
-        return train_data, vali_data, test_data, train_labels, vali_labels, test_labels, files
+        return train_data, vali_data, test_data, train_labels, vali_labels, test_labels, files, train_files, vali_files, test_files 
 
     def parse_subset(self, directory, files):
         all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH])
