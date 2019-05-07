@@ -15,7 +15,7 @@ class DataHandler(object):
     # DEPTH != MAX_TRAJECTORY_SIZE (see commented_data_handler.py)
     # - MAX_TRAJECTORY_SIZE = 10, number of steps of each trajectory 
     # (will be padded up/truncated to it if less/more than the constant)
-    # - DEPTH = number of channels of each maze, 11 = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
+    # - DEPTH = number of channels of each maze, 11 = 1 (obstacle) + 1 (agent initial position) + 4 (targets) + 5 (actions)
     # in our model, 5 actions: up/down/left/right/goal
     # in the paper, also 5 actions: up/down/left/right/stay
     MAX_TRAJECTORY_SIZE = 10

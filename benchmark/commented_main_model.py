@@ -40,9 +40,9 @@ class Model:
   # --------------------------------------
   # for testing on the local machine with 100 file
   # --------------------------------------
-  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
-  BATCH_SIZE_VAL = 16 # size of the batch for validation
-  BATCH_SIZE_TEST = 16 # size of batch for testing
+  BATCH_SIZE_TRAIN = 5 # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE_VAL = 5 # size of the batch for validation
+  BATCH_SIZE_TEST = 5 # size of batch for testing
   
   # number of layers in the resnet 
   # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -62,7 +62,7 @@ class Model:
   # --------------------------------------
   # for testing on the local machine with 100 file
   # --------------------------------------
-  EPOCH_SIZE = 8000
+  EPOCH_SIZE = 800
   
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
 
@@ -142,8 +142,10 @@ class Model:
     # Note that all training examples are NOT shuffled randomly (by defualt)
     # during data_handler.parse_trajectories()
     
+    # pdb.set_trace()
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.files = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
-    # on my local machine: self.files = 'S002_83.txt', 'S002_97.txt', 'S002_68.txt'...
+    # on my local machine: 
+    # 'S002_83.txt', 'S002_97.txt', 'S002_68.txt', 'S002_40.txt', 'S002_54.txt', 'S002_55.txt'
     #print('End of __init__-----------------')
     # pdb.set_trace()
 
@@ -814,7 +816,7 @@ class Model:
     # batch_data shape = (16, 10, 6, 6, 11)
     # batch_label shape = (16, 1)
     # --------------------------------------------------------------
-    pdb.set_trace()
+    # pdb.set_trace()
     # the total number of batch equals the total number of steps devided by the steps fore each trajectory
     # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_batch = 800)
     total_number_batch = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE)) 
@@ -839,7 +841,7 @@ class Model:
     # Select 16 random batches
     # (1000, 12, 12, 11) -> (160, 6, 6, 11)
     # --------------------------------------------------------------
-    # vali_data = (1000, 12, 12, 11)
+    # train_data = (1000, 12, 12, 11)
     batch_data = train_data[offset_step_range_index , ...]
     # batch_data = (160, 6, 6, 11)
     
@@ -870,7 +872,8 @@ class Model:
     # pdb.set_trace()
     assert(batch_label.shape[0]==train_batch_size)
     # batch_label = (16,)
-    
+    pdb.set_trace()
+    # 31: 'S002_79.txt'
     return batch_data, batch_label
     
   def full_validation(self, loss, top1_error, session, vali_data, vali_labels, batch_data, batch_label):

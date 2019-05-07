@@ -364,6 +364,7 @@ def lstm_layer(input_layer, train, num_classes):
     outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
     
     # (4) outputs.shape = (16, 10, 64)
+    # tf.nn.dynamic_rnn()
     # - cell:
     # - param lstm_input: shape = (16, 10, 396) 
     # Edwinn's codes: [16: batch_size, 6: width (after average pooling), 64: height (after average pooling) x channels]
