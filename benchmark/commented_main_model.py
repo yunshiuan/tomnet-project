@@ -536,7 +536,7 @@ class Model:
     # Paper codes
     # Accurary: match_predictions/total_predictions
     # --------------------------------------------------------------   
-    # pdb.set_trace()
+    pdb.set_trace()
 
     total_predictions = len(prediction_array)
     # match_predictions
@@ -544,7 +544,13 @@ class Model:
     match_predictions = sum(predicted_labels == self.test_labels)
     print('Matches: ' + str(match_predictions) + '/' + str(total_predictions))
     print('Accuracy: ' + str(round(match_predictions*100/total_predictions,2)) + '%')
-    
+  
+    df = pd.DataFrame(data={'matches':str(str(match_predictions) + '/' + str(total_predictions)),
+                            'test_accurary':str(str(round(match_predictions*100/total_predictions,2))+'%')},
+                      index = [0])
+    # overwrite the csv
+    df.to_csv(self.train_path + '_test_accuracy.csv')
+
     return prediction_array
   
   def match_estimation(self, labels, predictions, length):
