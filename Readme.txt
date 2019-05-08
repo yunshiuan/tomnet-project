@@ -6,10 +6,12 @@ This is the file to record the discription of each file/directory.
 
 #########################################
 Current training session
-Time:
-Author:
-Output file name:
-Note:
+
+Time: 20190507
+Author: Chuang, Yun-Shiuan
+Output file name: output_S002a_epoch80000_tuning_batch96_train_step_40M_INIT_LR=0.00001
+Note: the cache folder is misnamed as "cache_S002a_epoch8000_tuning_batch96_train_step_8000000_INIT_LR_0.0000011"
+Note: try using epoch size 80000 (correspongs to 10000 files)
 
 
 #########################################

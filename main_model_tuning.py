@@ -27,7 +27,7 @@ class Model:
   
   REPORT_FREQ = 100
   FULL_VALIDATION = False
-  INIT_LR = 0.000001
+  INIT_LR = 0.00001
   #DECAY_STEP_0 = 10000
   #DECAY_STEP_1 = 15000
   
@@ -419,8 +419,8 @@ if __name__ == "__main__":
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
-        TRAIN_STEPS = 8000000
-        EPOCH_SIZE = 8000
+        TRAIN_STEPS = 4000000
+        EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
         ckpt_fname = 'training_result/caches/cache_S002a_epoch8000_tuning_batch96_train_step_8000000_INIT_LR_0.000001' + str(times)
