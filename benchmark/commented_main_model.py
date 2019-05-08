@@ -79,8 +79,8 @@ class Model:
   NUM_CLASS = 4 # number of unique classes in the training set
 
   use_ckpt = False
-  ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
-  train_path = 'cache_S002a_10000files/train/'
+  ckpt_path = 'cache_S002a_commit_3de45a_10000files/logs/model.ckpt'
+  train_path = 'cache_S002a_commit_3de45a_10000files/train/'
 
   def __init__(self, args):
     '''
