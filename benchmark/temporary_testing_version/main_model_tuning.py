@@ -268,7 +268,11 @@ class Model:
     print('Combination with best matches was ' + str(combinations[best]))
     print('Matches: ' + str(matches[best]) + '/' + str(length))
     print('Accuracy: ' + str(round(matches[best]*100/length,2)) + '%')
-    
+    df = pd.DataFrame(data={'matches':str(matches[best]) + '/' + str(length)),
+                            'test_accurary':str(str(round(matches[best]*100/length,2)) + '%'},
+                      index = [0])
+    # write the csv
+    df.to_csv(self.train_path + '_test_accuracy.csv')
   
   def loss(self, logits, labels):
     '''
@@ -423,7 +427,7 @@ if __name__ == "__main__":
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
-        TRAIN_STEPS = 4000000
+        TRAIN_STEPS = 1000000
         EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000

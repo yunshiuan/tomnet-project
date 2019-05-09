@@ -69,7 +69,7 @@ def average_pooling_layer(input_layer):
     pooled_input = tf.nn.avg_pool(input_layer, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
     return pooled_input
 
-def lstm_layer(input_layer, mode, num_classes):
+def lstm_layer(input_layer, train, num_classes):
     num_hidden = 64
     # batch_size = 16 # get from the input_layer directly
     # out_channels = 11 #get from the input_layer directly
@@ -84,7 +84,7 @@ def lstm_layer(input_layer, mode, num_classes):
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
-    if mode == 'train':
+    if train:
         cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
