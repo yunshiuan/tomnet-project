@@ -5,17 +5,16 @@ This is the file to record the discription of each file/directory.
 ##################################################################
 
 #########################################
-Current training session
+Finished training session
 
 Time: 20190507
-Author: Chuang, Yun-Shiuan
+Author: Chuang, Yun-Shiuan (commit 092117)
 Output file name: output_S002a_epoch80000_tuning_batch96_train_step_40M_INIT_LR=0.00001
-Note: the cache folder is misnamed as "cache_S002a_epoch8000_tuning_batch96_train_step_8000000_INIT_LR_0.0000011"
 Note: try using epoch size 80000 (correspongs to 10000 files)
 
 
 #########################################
-Current training session
+Finished training session
 Time: 20190417
 Author: HsinYi Hung
 Output file name: cache_S002a_epoch8000_tuning_batch96__train_step_100000_1 & cache_S002a_epoch8000_tuning_batch96__train_step_4000000_1 
@@ -23,7 +22,7 @@ Note: try training step=10000 and 4000000.
 
 
 #########################################
-Current training session
+Finished training session
 Time: 20190415
 Author: HsinYi Hung
 Output file name: cache_S002a_epoch8000_train_step_10000_tuning_batch96_XX
