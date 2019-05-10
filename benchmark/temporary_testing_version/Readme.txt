@@ -2,10 +2,10 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 
 #########################################
-Current training session (commit ???)
+Current training session (commit 0f83ad)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v3_commit_???_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
+Output file name: /cache_S002a_v3_commit_0f83ad_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
 
 Modify:
 (1) Remove regulizization for LSTM (keep_prob = 1.0)
