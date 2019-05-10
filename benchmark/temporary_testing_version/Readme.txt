@@ -2,6 +2,15 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 
 #########################################
+Current training session (commit ???)
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v5_commit_???_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
+
+Add:
+(1) Resume to v2, with keep_prob = 0.8
+
+#########################################
 Finished training session (commit 71297d)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
@@ -19,7 +28,7 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v3_commit_0f83ad_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
 
 Modify:
-(1) Remove regulizization for LSTM (keep_prob = 1.0)
+(1) (modified) Remove regulizization for LSTM (keep_prob = 1.0)
 
 Note:
 (1) Bad result, but validation error is not going down.
@@ -43,7 +52,7 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v1_commit_31cb84_epoch80000_tuning_batch96_train_step_4000000_INIT_LR_0.000011
 Note: epoch_size = 80000, batch_size = 96,LR = 10^-5, steps = 40M
 Add:
-(1) To test Edwinn's codes with the addition of a 3x3 conv layer before resnet.
+(1) Add a 3x3 conv layer before resnet to scale up the number of filters to 32.
 
 Note:
 (1) Learning great.
