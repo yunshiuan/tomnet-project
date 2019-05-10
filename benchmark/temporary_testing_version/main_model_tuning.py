@@ -268,8 +268,8 @@ class Model:
     print('Combination with best matches was ' + str(combinations[best]))
     print('Matches: ' + str(matches[best]) + '/' + str(length))
     print('Accuracy: ' + str(round(matches[best]*100/length,2)) + '%')
-    df = pd.DataFrame(data={'matches':str(matches[best]) + '/' + str(length)),
-                            'test_accurary':str(str(round(matches[best]*100/length,2)) + '%'},
+    df = pd.DataFrame(data={'matches':str(str(matches[best]) + '/' + str(length)),
+                            'test_accurary':str(str(round(matches[best]*100/length,2)) + '%')},
                       index = [0])
     # write the csv
     df.to_csv(self.train_path + '_test_accuracy.csv')

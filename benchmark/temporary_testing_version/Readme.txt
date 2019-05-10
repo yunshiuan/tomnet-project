@@ -10,10 +10,10 @@ Add:
 (1) To test Edwinn's codes with the addition of a 3x3 conv layer before resnet.
 
 #########################################
-Finished training session (commit ??)
+Finished training session (commit d42c3b)
 Time: 2019/05/09
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v2_commit_???_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
+Output file name: /cache_S002a_v2_commit_d42c3b_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
 
 Add:
 (1) Add in regulizization
