@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.contrib import rnn
+import pdb
 
 BN_EPSILON = 0.001
 WEIGHT_DECAY = 0.00002
@@ -73,7 +74,7 @@ def lstm_layer(input_layer, train, num_classes):
     num_hidden = 64
     # batch_size = 16 # get from the input_layer directly
     # out_channels = 11 #get from the input_layer directly
-    output_keep_prob = 0.8
+    output_keep_prob = 1 # no regularization for LSTM
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -85,6 +86,7 @@ def lstm_layer(input_layer, train, num_classes):
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     if train:
+        pdb.set_trace()
         cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
