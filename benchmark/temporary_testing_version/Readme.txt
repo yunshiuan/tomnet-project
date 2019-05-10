@@ -2,7 +2,7 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 
 #########################################
-Current training session (commit 71297d)
+Finished training session (commit 71297d)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v4_commit_71297d_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
@@ -10,8 +10,10 @@ Output file name: /cache_S002a_v4_commit_71297d_epoch80000_tuning_batch96_train_
 Add:
 (1) Take LSTM result from the final state instead of results from all time steps
 
+Note: 
+(1) Bad result, not learning at all.
 #########################################
-Current training session (commit 0f83ad)
+Finished training session (commit 0f83ad)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v3_commit_0f83ad_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
@@ -19,6 +21,8 @@ Output file name: /cache_S002a_v3_commit_0f83ad_epoch80000_tuning_batch96_train_
 Modify:
 (1) Remove regulizization for LSTM (keep_prob = 1.0)
 
+Note:
+(1) Bad result, but validation error is not going down.
 #########################################
 Finished training session (commit d42c3b)
 Time: 2019/05/09
@@ -29,6 +33,9 @@ Add:
 (1) (modified) Add in regulizization for LSTM (keep_prob = 0.8)
 (2) Print out testing performance to a csv (main_model_tuning.match_estimation())
 
+Note:
+(1) Learning great.
+
 #########################################
 Finished training session (commit 31cb84)
 Time: 2019/05/08
@@ -38,3 +45,5 @@ Note: epoch_size = 80000, batch_size = 96,LR = 10^-5, steps = 40M
 Add:
 (1) To test Edwinn's codes with the addition of a 3x3 conv layer before resnet.
 
+Note:
+(1) Learning great.
