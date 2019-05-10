@@ -2,10 +2,10 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 
 #########################################
-Current training session (commit ???)
+Current training session (commit 71297d)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v5_commit_???_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
+Output file name: /cache_S002a_v4_commit_71297d_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
 
 Add:
 (1) Take LSTM result from the final state instead of results from all time steps
