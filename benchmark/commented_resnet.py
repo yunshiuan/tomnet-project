@@ -340,6 +340,7 @@ def lstm_layer(input_layer, train, num_classes):
     # Used to copy-through state and zero-out outputs when past a batch 
     # element's sequence length. So it's more for performance than correctness.
     seq_len = tf.fill([batch_size], 0)
+
     # cell:
     # the cell will be fed in to 
     # tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
@@ -361,17 +362,18 @@ def lstm_layer(input_layer, train, num_classes):
     initial_state = cell.zero_state(batch_size, dtype=tf.float32)
     
     # (3) lstm_input.shape = (16, 10, 32)
+    pdb.set_trace()
     outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
     
     # (4) outputs.shape = (16, 10, 64)
     # tf.nn.dynamic_rnn()
     # - cell:
-    # - param lstm_input: shape = (16, 10, 396) 
+    # - param lstm_input: shape = (16, 10, num_filters = 32) 
     # Edwinn's codes: [16: batch_size, 6: width (after average pooling), 64: height (after average pooling) x channels]
-    # should be: [16: batch_size, 16: max_time, 396: depth] (see the param 'time_major')
+    # should be: [16: batch_size, 10: max_time, 396: depth] (see the param 'time_major')
     # 
-    # - param seq_len: shape = (16, )
-    # - param initial_state:
+    # - param seq_len: shape = (16, )??Why did I set it to batch_size instead of num_time_steps? #TODO
+    # - param initial_state = (batch_size, num_hiddens)
     # - param time_major: False.
     # The shape format of the inputs and outputs Tensors. 
     # If true, these Tensors must be shaped [max_time, batch_size, depth].
