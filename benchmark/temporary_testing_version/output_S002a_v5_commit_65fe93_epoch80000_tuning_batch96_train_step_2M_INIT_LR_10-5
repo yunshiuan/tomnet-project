@@ -1,0 +1,4 @@
+  File "main_model_tuning.py", line 271
+    df = pd.DataFrame(data={'matches':str(matches[best]) + '/' + str(length)),
+                                                                            ^
+SyntaxError: invalid syntax
