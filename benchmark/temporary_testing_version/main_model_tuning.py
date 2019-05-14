@@ -257,7 +257,7 @@ class Model:
     # --------------------------------------------------------------
     test_set_rounded_array = np.around(test_set_prediction_array,2).tolist()
     length = num_batches*self.BATCH_SIZE_TEST  
-    df_test_match_estimation = self.match_estimation(test_set_rounded_array, self.vali_labels, length, 'test')
+    df_test_match_estimation = self.match_estimation(test_set_rounded_array, self.test_labels, length, 'test')
 
     # --------------------------------------------------------------
     # My codes
