@@ -22,3 +22,5 @@ nohup.out
 benchmark/cache_S002a_10000files/train/
 benchmark/S002a/
 
+
+*.pdf#
