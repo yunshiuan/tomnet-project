@@ -1,15 +1,17 @@
 This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 #########################################
-Current training session (v6, commit ???)
+Current training session (v6, commit 495618)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v6_commit_???_epoch80000_tuning_batch96_train_step_40M_INIT_LR_10-5
+Output file name: /cache_S002a_v6_commit_495618_epoch80000_tuning_batch96_train_step_40M_INIT_LR_10-5
 
 Modify:
 (1) Use 40M steps, so as to compare with v1 fairly
 
 Note:
+(1) Learning great.
+(2) Test accuracy = 59.81%
 
 #########################################
 
@@ -19,12 +21,13 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v5_commit_c8e358_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 Add:
-(1) To test Edwinn's codes with the addition of a 3x3 conv layer before resnet.
+(1) Resume to v2, with keep_prob = 0.8
+(2) Test accuracy = 43.31%
 
 Note:
 (1) Not sure how well the performance is. Should try more steps.
 #########################################
-Finished training session (f4, commit 71297d)
+Finished training session (v4, commit 71297d)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v4_commit_71297d_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
