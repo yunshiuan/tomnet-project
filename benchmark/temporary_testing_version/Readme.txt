@@ -1,10 +1,10 @@
 This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 #########################################
-Current training session (v7, commit ?????)
+Current training session (v7, commit 6f14c6)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v7_commit_??????_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 Add:
 (1) Add a full validation set performance metric (instead of validation batch performance)
