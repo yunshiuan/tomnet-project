@@ -14,6 +14,8 @@ Note:
 (1) 
 (2) Test accuracy = 
 
+Note:
+(1) Not sure how well the performance is. Should try more steps.
 #########################################
 Current training session (v6, commit 495618)
 Time: 2019/05/10
