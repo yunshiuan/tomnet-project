@@ -361,14 +361,22 @@ def lstm_layer(input_layer, train, num_classes):
     initial_state = cell.zero_state(batch_size, dtype=tf.float32)
     
     # (3) lstm_input.shape = (16, 10, 32)
-    outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
+    # lstm_input = (batch_size, time_steps, input_channels (= num_filters x feature_w)) 
+    # sequence_length = (batch_size)  
+    # - An int32/int64 vector sized [batch_size].  
+    # - Used to copy-through state and zero-out outputs when  
+    # - past a batch element's sequence length.  
+    # - So it's more for performance than correctness. 
+    # initial_state = (batch_size, num_hiddens) 
+    outputs, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
+    # outputs.shape = (batch_size, time_steps, num_hidden) 
+    # final_state[-1] = (batch_size, num_hidden) 
     
     # (4) outputs.shape = (16, 10, 64)
     # tf.nn.dynamic_rnn()
-    # - cell:
-    # - param lstm_input: shape = (16, 10, 396) 
+    # - param lstm_input = (batch_size, time_steps, input_channels) 
     # Edwinn's codes: [16: batch_size, 6: width (after average pooling), 64: height (after average pooling) x channels]
-    # should be: [16: batch_size, 16: max_time, 396: depth] (see the param 'time_major')
+    # should be: (batch_size, time_steps, input_channels) (see the param 'time_major')
     # 
     # - param seq_len: shape = (16, )
     # - param initial_state:
