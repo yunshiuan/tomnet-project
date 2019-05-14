@@ -17,6 +17,27 @@ Note:
 Note:
 (1) Not sure how well the performance is. Should try more steps.
 #########################################
+Current training session (v7, commit 6f14c6)
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+Add:
+(1) Add a full validation set performance metric (instead of validation batch performance)
+(2) Add another version of test accuracy (proportion accuracy). This version of accuracy is defined by proportion.
+Note:
+(1) It is learning.
+(2) Test accuracy = 
+vali: match_estimation()
+Accuracy: 43.15%
+vali: proportion_accuracy()
+Accuracy: 43.31%
+test: match_estimation()
+Accuracy: BUG QAQ
+test: proportion_accuracy()
+Accuracy: 45.22%
+
+#########################################
 Current training session (v6, commit 495618)
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
