@@ -146,7 +146,7 @@ class Model:
           # pdb.set_trace()
           _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss], {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
         
-        val_error_list.append(validation_error_value)
+          val_error_list.append(validation_error_value)
       
       start_time = time.time()
 
@@ -178,23 +178,22 @@ class Model:
 
       # Save checkpoints every 10000 steps
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
+          #pdb.set_trace()          
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
-
           df = pd.DataFrame(data={'step':step_list, 'train_error':train_error_list,
-                          'validation_error': val_error_list})
+                                  'validation_error': val_error_list})
           df.to_csv(self.train_path + '_error.csv')
-
+          
   def test(self):
     '''
-    This function is used to evaluate the test data. Please finish pre-precessing in advance
-    :param test_image_array: 4D numpy array with shape [num_test_traj_steps, maze_height, maze_width, maze_depth]
-    :return: the softmax probability with shape [num_test_traj_steps, num_labels]
+    This function is used to evaluate the validation and test data. Please finish pre-precessing in advance
+    It will write a csv file with both validation and test perforance.
     '''
 
     num_test_trajs = len(self.test_data)
     num_batches = num_test_trajs // self.BATCH_SIZE_TEST
-    remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
+    # remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
     print('%i test batches in total...' %num_batches)
 
     # Create the test image and labels placeholders
@@ -214,9 +213,10 @@ class Model:
     saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
     print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
 
-    prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
+    test_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
 
     # Test by batches
+    #pdb.set_trace()
     for step in range(num_batches):
       if step % 10 == 0:
           print('%i batches finished!' %step)
@@ -224,7 +224,7 @@ class Model:
       test_traj_batch = self.test_data[offset:offset+self.BATCH_SIZE_TEST, ...]
 
       batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
-      prediction_array = np.concatenate((prediction_array, batch_prediction_array))
+      test_set_prediction_array = np.concatenate((test_set_prediction_array, batch_prediction_array))
 
     # TODO: For now we dont have a way to handle batches of size != 32, so we are gonna have to skip the last few datapoints.
     '''
@@ -240,14 +240,132 @@ class Model:
 
       prediction_array = np.concatenate((prediction_array, batch_prediction_array))
     '''
+    # --------------------------------------------------------------
+    # My codes
+    # Add a full validation set performance metric (instead of validation batch performance)
+    # Call the full_validation() function
+    # --------------------------------------------------------------
+    # pdb.set_trace()
+    df_vali_all = self.full_validation()
     
-    rounded_array = np.around(prediction_array,2).tolist()
+    # write the csv
+    # df_test_v1.to_csv(self.train_path + '_test_accuracy_v2.csv')
+    
+    # --------------------------------------------------------------
+    # Edwinn's codes
+    # Test accuracy by match_estimation()
+    # --------------------------------------------------------------
+    test_set_rounded_array = np.around(test_set_prediction_array,2).tolist()
     length = num_batches*self.BATCH_SIZE_TEST  
-    self.match_estimation(self.test_labels, rounded_array, length)
+    df_test_match_estimation = self.match_estimation(test_set_rounded_array, self.vali_labels, length, 'test')
+
+    # --------------------------------------------------------------
+    # My codes
+    # Test accuracy by definition
+    # --------------------------------------------------------------
+    df_test_proportion = self.proportion_accuracy(test_set_prediction_array, self.test_labels, length, 'test')
+
+    # --------------------------------------------------------------
+    # My codes
+    # Combine all dfs into one
+    # -------------------------------------------------------------- 
+    #pdb.set_trace()
+
+    df_test_all = df_test_proportion.append(df_test_match_estimation, ignore_index = True) 
+    df_vali_and_test_all = df_vali_all.append(df_test_all)
     
-    return prediction_array
+    df_vali_and_test_all.to_csv(self.train_path + '_test_and_validation_accuracy.csv')
+
+    return df_vali_and_test_all
   
-  def match_estimation(self, labels, predictions, length):
+  def full_validation(self):
+      '''
+      Runs validation on all the validation datapoints
+      '''
+      # pdb.set_trace()
+     
+      num_vali_steps = len(self.vali_data)
+      num_batches = num_vali_steps // self.BATCH_SIZE_TEST
+      # remain_trajs = num_vali_steps % self.BATCH_SIZE_TEST
+      print('%i validation batches in total...' %num_batches)
+  
+      # Create the vali image and labels placeholders
+      self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TEST, self.HEIGHT, self.WIDTH, self.DEPTH])
+  
+      # Build the vali graph
+      logits = rn.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
+      # logits = (batch_size, num_classes)
+      predictions = tf.nn.softmax(logits)
+      # predictions = (batch_size, num_classes)
+  
+      # Initialize a new session and restore a checkpoint
+      saver = tf.train.Saver(tf.all_variables())
+      sess = tf.Session()
+  
+      saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+      print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+  
+      # collecting prediction_array for each batch
+      # will be size of (batch_size * num_batches, num_classes)
+      vali_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
+  
+      # Test by batches
+      #pdb.set_trace()
+      for step in range(num_batches):
+        if step % 10 == 0:
+            print('%i batches finished!' %step)
+        offset = step * self.BATCH_SIZE_TEST
+        vali_traj_batch = self.vali_data[offset:offset+self.BATCH_SIZE_TEST, ...]
+  
+        batch_prediction_array = sess.run(predictions, feed_dict={self.vali_traj_placeholder: vali_traj_batch})
+        # batch_prediction_array = (batch_size, num_classes)
+        
+        vali_set_prediction_array = np.concatenate((vali_set_prediction_array, batch_prediction_array))
+        # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
+      
+  
+      # --------------------------------------------------------------
+      # Edwinn's codes
+      # Test accuracy by match_estimation()
+      # --------------------------------------------------------------
+      # vali_set_prediction_array = (batch_size * num_batches) x num_classes
+      # length = (batch_size * num_batches)
+      rounded_array = np.around(vali_set_prediction_array,2).tolist()
+      length = num_batches*self.BATCH_SIZE_TEST  
+      df_vali_match_estimation = self.match_estimation(rounded_array, self.vali_labels, length, 'vali')
+      
+      # --------------------------------------------------------------
+      # My codes
+      # Test accuracy by definition
+      # --------------------------------------------------------------
+      # pdb.set_trace()
+      df_vali_proportion = self.proportion_accuracy(vali_set_prediction_array, self.vali_labels, length, 'vali')
+  
+      # --------------------------------------------------------------
+      # My codes
+      # Combine all dfs into one
+      # -------------------------------------------------------------- 
+      #pdb.set_trace()
+  
+      df_vali_all = df_vali_proportion.append(df_vali_match_estimation, ignore_index = True) 
+  
+      return df_vali_all
+
+  def match_estimation(self,predictions, labels, length, mode):
+    '''
+    Evaluate model accuracy defined by Edwinn's method.
+    Return a df that contains the accuracy metric.
+    
+    :param labels: ground truth labels (including both in-batch and out-of-batch
+    labels. Note that only in-batch labels (size = length) are tested because 
+    they have corresponding predicted labels.
+    :param predicitons: predicted labels (num_batches * batch_size, num_classes).
+    :param length: (num_batches * batch_size, 1). This defines the number of 
+    labels that are in batches. Note that some remaining labels are not
+    included in batches.
+    :param mode: should be either 'vali' or 'test'
+    :return df_summary: a a dataframe that stores the acuuracy metrics
+    '''
     
     #Initialize zeroes for each possible arrangement
     matches = [0 for item in range(math.factorial(self.NUM_CLASS))]
@@ -265,14 +383,54 @@ class Model:
           matches[j] += 1
 
     best = matches.index(max(matches))
-    print('Combination with best matches was ' + str(combinations[best]))
+    print('\n' + str(mode) +': match_estimation()')
+    print( 'Combination with best matches was ' + str(combinations[best]))
     print('Matches: ' + str(matches[best]) + '/' + str(length))
     print('Accuracy: ' + str(round(matches[best]*100/length,2)) + '%')
-    df = pd.DataFrame(data={'matches':str(str(matches[best]) + '/' + str(length)),
-                            'test_accurary':str(str(round(matches[best]*100/length,2)) + '%')},
+    df_summary = pd.DataFrame(data={'matches':str(str(matches[best]) + '/' + str(length)),
+                                    'accurary':str(str(round(matches[best]*100/length,2)) + '%'),
+                                    'mode': str(mode) + '_match_estimation'},
                       index = [0])
-    # write the csv
-    df.to_csv(self.train_path + '_test_accuracy.csv')
+    ## write the csv
+    #df.to_csv(self.train_path + '_test_accuracy_v1.csv')
+    return df_summary
+  
+  def proportion_accuracy(self, prediction_array, labels, length, mode):
+    '''
+    Evaluate model accuracy defined by proportion (num_matches/num_total).
+    Return a df that contains the accuracy metric.
+    
+    :param prediction_array: a tensor with (num_batches * batch_size, num_classes).
+    :param labels: ground truth labels (including both in-batch and out-of-batch
+    labels. Note that only in-batch labels (size = length) are tested because 
+    they have corresponding predicted labels.
+    :param mode: should be either 'vali' or 'test'
+    :param length: (num_batches * batch_size, 1). This defines the number of 
+    labels that are in batches. Note that some remaining labels are not
+    included in batches.
+    :return df_summary: a a dataframe that stores the acuuracy metrics
+    '''
+    total_predictions = len(prediction_array)
+    # match_predictions
+    predicted_labels = np.argmax(prediction_array,1)
+    
+    # Retrieve corresponding labels
+    groud_truth_labels = labels.astype(int)[0:length]
+    # pdb.set_trace()
+    match_predictions = sum(predicted_labels == groud_truth_labels)
+
+    matches_percentage = str(match_predictions) + '/' + str(total_predictions)
+    accuracy = str(round(match_predictions*100/total_predictions, 2)) + '%'
+    
+    print('\n' + str(mode)+ ': proportion_accuracy()')
+    print('Matches: ' + matches_percentage)
+    print('Accuracy: ' + accuracy)
+    
+    df_summary = pd.DataFrame(data={'matches':matches_percentage,
+                                    'accurary':accuracy,
+                                    'mode': str(mode + '_proportion')},
+                        index = [0])
+    return df_summary
   
   def loss(self, logits, labels):
     '''
@@ -383,39 +541,6 @@ class Model:
     
     return batch_data, batch_label
     
-  def full_validation(self, loss, top1_error, session, vali_data, vali_labels, batch_data, batch_label):
-    '''
-    Runs validation on all the validation datapoints
-    :param loss: tensor with shape [1]
-    :param top1_error: tensor with shape [1]
-    :param session: the current tensorflow session
-    :param vali_data: 4D numpy array
-    :param vali_labels: 1D numpy array
-    :param batch_data: 4D numpy array. training batch to feed dict and fetch the weights
-    :param batch_label: 1D numpy array. training labels to feed the dict
-    :return: float, float
-    '''
-    num_batches = 10000 // self.BATCH_SIZE_VAL
-    order = np.random.choice(10000, num_batches * self.BATCH_SIZE_VAL)
-    vali_data_subset = vali_data[order, ...]
-    vali_labels_subset = vali_labels[order]
-
-    loss_list = []
-    error_list = []
-
-    for step in range(num_batches):
-      offset = step * self.BATCH_SIZE_VAL
-      feed_dict = {self.traj_placeholder: batch_data, self.goal_placeholder: batch_label,
-        self.vali_traj_placeholder: vali_data_subset[offset:offset+self.BATCH_SIZE_VAL, ...],
-        self.vali_goal_placeholder: vali_labels_subset[offset:offset+self.BATCH_SIZE_VAL],
-        self.lr_placeholder: self.INIT_LR}
-      loss_value, top1_error_value = session.run([loss, top1_error], feed_dict=feed_dict)
-      loss_list.append(loss_value)
-      error_list.append(top1_error_value)
-
-    return np.mean(loss_list), np.mean(error_list)
-
-
 if __name__ == "__main__":
     tf.reset_default_graph()
     parser = argparse.ArgumentParser()
@@ -427,12 +552,12 @@ if __name__ == "__main__":
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
-        TRAIN_STEPS = 4000000
+        TRAIN_STEPS = 200000
         EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S002a_commit_495618_epoch80000_tuning_batch96_train_step_40M_INIT_LR_10-5' + str(times)
-        train_fname = 'training_result/caches/cache_S002a_commit_495618_epoch80000_tuning_batch96_train_step_40M_INIT_LR_10-5' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S002a_v7_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S002a_v7_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
