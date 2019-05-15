@@ -19,7 +19,6 @@ import argparse
 import itertools
 
 # For debugging
-
 import pdb
 
 class Model:
@@ -51,7 +50,7 @@ class Model:
   
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 4000000
+  TRAIN_STEPS = 30
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 100,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
@@ -60,11 +59,11 @@ class Model:
   
   # EPOCH_SIZE = 8000
   # --------------------------------------
-  # for testing on the local machine with 100 file
+  # for testing on the local machine with 1000 files
   # --------------------------------------
-  EPOCH_SIZE = 80000
+  EPOCH_SIZE = 8000
   
-  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
+  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
 
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
@@ -79,8 +78,9 @@ class Model:
   NUM_CLASS = 4 # number of unique classes in the training set
 
   use_ckpt = False
-  ckpt_path = 'cache_S002a_commit_3de45a_10000files/logs/model.ckpt'
-  train_path = 'cache_S002a_commit_3de45a_10000files/train/'
+  txt_data_path = os.getcwd() + '/../S002a_1000files/'
+  ckpt_fname = 'training_result/caches/cache_S002a_v?_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
+  train_fname = 'training_result/caches/cache_S002a_v?_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
 
   def __init__(self, args):
     '''
@@ -114,6 +114,11 @@ class Model:
     # (batch size = 16: batch_size, 10: MAX_TRAJECTORY_SIZE, HEIGHT = 12, WIDTH = 12, DEPTH = 11)
     # --------------------------------------------------------------
     
+    ckpt_path = self.ckpt_fname + '/logs/model.ckpt'
+    train_path = self.train_fname + '/train/'
+    
+    self.ckpt_path = ckpt_path
+    self.train_path = train_path    
     self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
     # placeholder for the trainging goal
     self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
@@ -125,16 +130,16 @@ class Model:
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
         
     # Load data
-    dir = os.getcwd() + '/S002a/'
+    dir = self.txt_data_path
     # pdb.set_trace()
     data_handler = dh.DataHandler(dir)
     # For S002a:
     # Get the data by "data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)"
     # self.train_data.shape: (800, 12, 12, 11)
-    # self.vali_data.shape: (100, 12, 12, 11)
+    # self.test_data.shape: (100, 12, 12, 11)
     # self.test_data.shape: (100, 12, 12, 11)
     # self.train_labels.shape: (800, )
-    # self.vali_labels.shape: (100, )
+    # self.test_labels.shape: (100, )
     # self.test_labels.shape: (100, )
     # len (files) = 100
     # Each data example is one trajectory (each contains 10 steps, MAX_TRAJECTORY_SIZE)
@@ -395,199 +400,238 @@ class Model:
 
   def test(self):
     '''
-    This function is used to evaluate the test data. Please finish pre-precessing in advance
-    :param test_image_array: 4D numpy array with shape [num_test_traj_steps, maze_height, maze_width, maze_depth]
-    :return: the softmax probability with shape [num_test_traj_steps, num_labels]
+    This function is used to evaluate the validation and test data. Please finish pre-precessing in advance
+    It will write a csv file with both validation and test perforance.
     '''
-    # pdb.set_trace()
-    # self.test_data = (100, 12, 12, 11) [when totol steps = 10,000 with 8:1:1 data split]
-    num_test_files = int(len(self.test_data)/self.MAX_TRAJECTORY_SIZE)
-    assert(len(self.test_data) % self.MAX_TRAJECTORY_SIZE == 0)
-    # num_test_files = 10 [when totol steps = 1,000 with 8:1:1 data split]
-  
-    # num_batches = 10//batch_size = 0
-    num_batches = int(num_test_files // self.BATCH_SIZE_TEST)
-    # remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
-    print('%i test batches in total...' %num_batches)
-   
+
     # --------------------------------------------------------------
-    # Paper
-    # self.test_traj_placeholder  (for input_tensor)
-    # - shape: 
-    # (batch size, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
+    # Evaluate the model on the whole validation set
     # --------------------------------------------------------------
+    pdb.set_trace()
+    df_vali_all = self.evaluate_on_validation_set()
+
+    # --------------------------------------------------------------
+    # Evaluate the model on the whole test set
+    # --------------------------------------------------------------
+    pdb.set_trace()
+    df_test_all = self.evaluate_on_test_set()
     
-    # self.test_traj_placeholder.shape = (batch_size, MAX_TRAJECTORY_SIZE, 12, 12, 11)
-    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32,
-                                                shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
-
     # --------------------------------------------------------------
-    # Paper
-    # Reshape test_data and test label
-    # self.test_data = (num_files * MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH) ->
-    # self.test_data = (num_files, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
-    #
-    # self.test_labels = (num_files * MAX_TRAJECTORY_SIZE,) ->
-    # self.test_labels = (num_files,)    
-    # --------------------------------------------------------------
-    # self.test_data = (num_files * MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
-    self.test_data = self.test_data.reshape([num_test_files, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
-    # self.test_data = (num_files, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH)
-
-    # self.test_labels = (num_files * MAX_TRAJECTORY_SIZE,)
-    self.test_labels = self.test_labels[0:-1:self.MAX_TRAJECTORY_SIZE]
-    # self.test_labels = (num_files,)        
-    
-    # Build the test graph
-    if args.mode == 'all':
-      # logits.shape = (batch_size, num_classes)
-      logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
-    else:
-      logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=False)
-
-    # predictions = (batch_size, num_classes)
-    predictions = tf.nn.softmax(logits)
-
-    # Initialize a new session and restore a checkpoint
-    saver = tf.train.Saver(tf.all_variables())
-    sess = tf.Session()
-
-    saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-    print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-
-    prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
-
-    # Test by batches (sequentially)
+    # My codes
+    # Combine all dfs into one
+    # -------------------------------------------------------------- 
     #pdb.set_trace()
-    for step in range(num_batches):
-      if step % 10 == 0:
-          print('%i batches finished!' %step)
-      # pdb.set_trace()         
+
+    df_vali_and_test = df_vali_all.append(df_test_all)
+    
+    df_vali_and_test.to_csv(self.train_path + '_test_and_validation_accuracy.csv')
+
+    return df_vali_and_test
+
+  def evaluate_on_test_set(self):
+      '''
+      Evaluate a model with the test data (instead of a single batch).
+      It will evaluate the data batch-by-batch and summarize the performance.
+      It will return a dataframe with model accuracy.
+      
+      Returns:
+        :df_accuracy_all: a dataframe with model accuracy.
+      '''
+  
+      df_accuracy_all = self.evaluate_whole_data_set(self.test_files, self.test_data, self.test_labels, self.BATCH_SIZE_TEST, 'test')
+      
+      return df_accuracy_all
+    
+  def evaluate_on_validation_set(self):
+      '''
+      Evaluate a model with the validation data (instead of a single batch).
+      It will evaluate the data batch-by-batch and summarize the performance.
+      It will return a dataframe with model accuracy.
+      
+      Returns:
+        :df_accuracy_all: a dataframe with model accuracy.
+      '''
+  
+      df_accuracy_all = self.evaluate_whole_data_set(self.vali_files, self.vali_data, self.vali_labels, self.BATCH_SIZE_VAL, 'vali')
+      
+      return df_accuracy_all
+    
+  def evaluate_whole_data_set(self, files, data, labels, batch_size, mode):
+      '''
+      Evaluate a model with a set of data (instead of a single batch).
+      It will evaluate the data batch-by-batch and summarize the performance.
+      It will return a dataframe with model accuracy.
+      
+      Args:
+        :param files: the txt files to be test (only used to compute the number of trajectories)
+        :param data: the data to be test the model on (num_files * MAX_TRAJECTORY_SIZE, height, width, depth)
+        :param labels: the ground truth labels to be test the model on (num_files * MAX_TRAJECTORY_SIZE, 1)
+        :param batch_size: the batch size
+        :param mode: should be either 'vali' or 'test'
+        
+      Returns:
+        :df_accuracy_all: a dataframe with model accuracy.
+      '''
+      # pdb.set_trace()
+     
+      num_vali_files = len(files)
+      num_batches = num_vali_files // batch_size
+      # remain_trajs = num_vali_steps % self.BATCH_SIZE_TEST
+      print('%i validation batches in total...' %num_batches)
+  
+      # Create the image and labels placeholders
+      traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
+  
+      # Build the vali graph
+      logits = rn.build_charnet(traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
+      # logits = (batch_size, num_classes)
+      predictions = tf.nn.softmax(logits)
+      # predictions = (batch_size, num_classes)
+  
+      # Initialize a new session and restore a checkpoint
+      saver = tf.train.Saver(tf.all_variables())
+      sess = tf.Session()
+  
+      saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+      print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+  
+      # collecting prediction_array for each batch
+      # will be size of (batch_size * num_batches, num_classes)
+      data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
+      
+      # collecting ground truth labels for each batch
+      # will be size of (batch_size * num_batches, 1)
+      data_set_ground_truth_labels = np.array([]).reshape(-1, )
+      
+      # Test by batches
+      #pdb.set_trace()
+      for step in range(num_batches):
+        if step % 10 == 0:
+            print('%i batches finished!' %step)
+        # pdb.set_trace() 
+        file_index = step * self.BATCH_SIZE_VAL
+        batch_data, batch_labels = self.generate_vali_batch(data, labels, batch_size, file_index)
+        # pdb.set_trace()
+        batch_prediction_array = sess.run(predictions, feed_dict={traj_placeholder: batch_data})
+        # batch_prediction_array = (batch_size, num_classes)
+        data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
+        # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
+        data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels))
       # --------------------------------------------------------------
       # Edwinn's codes
-      # generate test_traj_batch = (batch_size, height, width, depth)
+      # Test accuracy by match_estimation()
+      # Only work for data format (batch, ...)
+      # Turned off for data format (batch, timesteps, ...)
       # --------------------------------------------------------------
-      # offset = step * self.BATCH_SIZE_TEST
-      # test_traj_batch = self.test_data[offset:offset+self.BATCH_SIZE_TEST, ...]
-
+#      # vali_set_prediction_array = (batch_size * num_batches) x num_classes
+#      # length = (batch_size * num_batches)
+#      rounded_array = np.around(vali_set_prediction_array,2).tolist()
+#      length = num_batches*self.BATCH_SIZE_TEST  
+#      df_vali_match_estimation = self.match_estimation(rounded_array, self.vali_labels, length, 'vali')
+#      
       # --------------------------------------------------------------
-      # Paper
-      # Select the batch of this iteration
-      # self.test_data = (num_files, MAX_TRAJECTORY_SIZE, HEIGHT, WIDTH, DEPTH) ->
-      # test_batch = (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
+      # My codes
+      # Test accuracy by definition
       # --------------------------------------------------------------
-      file_indexes = range(step * self.BATCH_SIZE_TEST, (step+1) * self.BATCH_SIZE_TEST)
-      test_batch = self.test_data[file_indexes, ...]
-
-
+      # pdb.set_trace()
+      # vali_set_prediction_array = (num_batches*batch_size, num_classes)
+      # vali_set_ground_truth = (num_batches*batch_size, 1)
+      
+      df_accuracy_proportion = self.proportion_accuracy(data_set_prediction_array, data_set_ground_truth_labels, mode)
+  
       # --------------------------------------------------------------
-      # Paper
-      # Making predictions
-      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth) ->
-      # (batch_size, num_classes)
-      #  test_traj_batch = 
-      # (batch_size, MAX_TRAJECTORY_SIZE, height, width, depth)
-      #
-      # np.array(rounded_array).shape = 
-      # (batch_size, num_classes)
-      # --------------------------------------------------------------
-      # predictions = (batch_size, num_classes)
-      batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_batch})
-      # batch_prediction_array = (batch_size, num_classes)
-
-      # prediction_array = (0, num_classes)
-      # concatenating it to collect results from diefference testing batches
-      prediction_array = np.concatenate((prediction_array, batch_prediction_array))
-      # after all interaion
-      # prediction_array = (num_batches * batch_size, num_classes)
-
-    # TODO: For now we dont have a way to handle batches of size != 32, so we are gonna have to skip the last few datapoints.
-    '''
-    if remain_trajs != 0:
-      self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[remain_trajs, self.HEIGHT, self.WIDTH, self.DEPTH])
-      # Build the test graph
-      logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
-      predictions = tf.nn.softmax(logits)
-
-      test_traj_batch = test_trajectories[-remain_trajs:, ...]
-
-      batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
-
-      prediction_array = np.concatenate((prediction_array, batch_prediction_array))
-    '''
-    # --------------------------------------------------------------
-    # Edwinn's codes
-    # Evaluate testing performance
-    # --------------------------------------------------------------
-#    # prediction_array = (batch_size, num_classes)
-#    rounded_array = np.around(prediction_array,2).tolist()
-#    # rounded_array = (batch_size, num_classes)
-#
-#    # length = (number of all testing trajectories) = (num_batches * batch_size)
-#    length = num_batches*self.BATCH_SIZE_TEST  
-#    
-#    # self.test_labels = (batch_size * MAX_TRAJECTORY_SIZE)
-#    # rounded_array = (batch_size, num_classes)
-#    # length = (number of all testing trajectories) = (num_batches * batch_size)
-#    # pdb.set_trace()
-#    self.match_estimation(self.test_labels, rounded_array, length) #print out performance metrics
+      # My codes
+      # Combine all dfs into one
+      # -------------------------------------------------------------- 
+      #pdb.set_trace()
+  
+#      df_vali_all = df_vali_proportion.append(df_vali_match_estimation, ignore_index = True) 
+      df_accuracy_all = df_accuracy_proportion
+  
+      return df_accuracy_all
     
-    # --------------------------------------------------------------
-    # Paper codes
-    # Accurary: match_predictions/total_predictions
-    # --------------------------------------------------------------   
-    # pdb.set_trace()
-
+#  def match_estimation(self,predictions, labels, length, mode):
+#    '''
+#    [Deprecated! Use proportion_accuracy() instead.
+    # Only work for data format (batch, ...)
+    # Turned off for data format (batch, timesteps, ...)]
+    
+#    Evaluate model accuracy defined by Edwinn's method.
+#    Return a df that contains the accuracy metric.
+#    
+#    :param labels: ground truth labels (including both in-batch and out-of-batch
+#    labels. Note that only in-batch labels (size = length) are tested because 
+#    they have corresponding predicted labels.
+#    :param predicitons: predicted labels (num_batches * batch_size, num_classes).
+#    :param length: (num_batches * batch_size, 1). This defines the number of 
+#    labels that are in batches. Note that some remaining labels are not
+#    included in batches.
+#    :param mode: should be either 'vali' or 'test'
+#    :return df_summary: a a dataframe that stores the acuuracy metrics
+#    '''
+#    
+#    #Initialize zeroes for each possible arrangement
+#    matches = [0 for item in range(math.factorial(self.NUM_CLASS))]
+#    
+#    for i in range(length):
+#      #Initialize a 2d zeroes array
+#      test = [[0 for item in range(self.NUM_CLASS)] for item in range(math.factorial(self.NUM_CLASS))]
+#      combinations = list(itertools.permutations(range(self.NUM_CLASS),self.NUM_CLASS))
+#      for j in range(math.factorial(self.NUM_CLASS)):
+#        for k in range(self.NUM_CLASS):
+#          test[j][k] = predictions[i][combinations[j][k]]
+#      
+#      for j in range(math.factorial(self.NUM_CLASS)):
+#        if int(labels[i]) == test[j].index(max(test[j])):
+#          matches[j] += 1
+#
+#    best = matches.index(max(matches))
+#    print('\n' + str(mode) +': match_estimation()')
+#    print( 'Combination with best matches was ' + str(combinations[best]))
+#    print('Matches: ' + str(matches[best]) + '/' + str(length))
+#    print('Accuracy: ' + str(round(matches[best]*100/length,2)) + '%')
+#    df_summary = pd.DataFrame(data={'matches':str(str(matches[best]) + '/' + str(length)),
+#                                    'accurary':str(str(round(matches[best]*100/length,2)) + '%'),
+#                                    'mode': str(mode) + '_match_estimation'},
+#                      index = [0])
+#    ## write the csv
+#    #df.to_csv(self.train_path + '_test_accuracy_v1.csv')
+#    return df_summary  
+  
+  def proportion_accuracy(self, prediction_array, labels, mode):
+    '''
+    Evaluate model accuracy defined by proportion (num_matches/num_total).
+    Return a df that contains the accuracy metric.
+    
+    Args:
+      :param prediction_array: a tensor with (num_batches * batch_size, num_classes).
+      :param labels: in-batch labels. Note that only in-batch labels (size = length) 
+        are tested because they have corresponding predicted labels.
+      :param mode: should be either 'vali' or 'test'
+    Returns:
+      :df_summary: a a dataframe that stores the acuuracy metrics
+    '''
     total_predictions = len(prediction_array)
     # match_predictions
     predicted_labels = np.argmax(prediction_array,1)
-    match_predictions = sum(predicted_labels == self.test_labels)
-    print('Matches: ' + str(match_predictions) + '/' + str(total_predictions))
-    print('Accuracy: ' + str(round(match_predictions*100/total_predictions,2)) + '%')
-  
-    df = pd.DataFrame(data={'matches':str(str(match_predictions) + '/' + str(total_predictions)),
-                            'test_accurary':str(str(round(match_predictions*100/total_predictions,2))+'%')},
-                      index = [0])
-    # overwrite the csv
-    df.to_csv(self.train_path + '_test_accuracy.csv')
+    
+    # Retrieve corresponding labels
+    groud_truth_labels = labels.astype(int)
+    # pdb.set_trace()
+    match_predictions = sum(predicted_labels == groud_truth_labels)
 
-    return prediction_array
-  
-  def match_estimation(self, labels, predictions, length):
-    '''
-    Evaluate model performance on the testing set
+    matches_percentage = str(match_predictions) + '/' + str(total_predictions)
+    accuracy = str(round(match_predictions*100/total_predictions, 2)) + '%'
     
-    :param labels: the ground truth labels (batch_size, num_classes)
-    :param predicitons: the predicted labels with softmax probabilities (batch_size, num_classes)
-    :param length: number of all testing trajectories (num_batches * batch_size)
-    '''
+    print('\n' + str(mode)+ ': proportion_accuracy()')
+    print('Matches: ' + matches_percentage)
+    print('Accuracy: ' + accuracy)
     
-    #Initialize zeroes for each possible arrangement
-    # matches = 24 = 4! = num_classes!
-    matches = [0 for item in range(math.factorial(self.NUM_CLASS))]
-    
-    for i in range(length): # number of all testing trajectories (num_batches * batch_size)
-      #Initialize a 2d zeroes array
-      # test = 24 x 4 = 4! x 4 = num_classes! x num_classes
-      # filled by zeros
-      test = [[0 for item in range(self.NUM_CLASS)] for item in range(math.factorial(self.NUM_CLASS))]
-      # test = 24 x 4 = 4! x 4 = num_classes! x num_classes
-      # all possible combination in 4!
-      combinations = list(itertools.permutations(range(self.NUM_CLASS),self.NUM_CLASS))
-      
-      for j in range(math.factorial(self.NUM_CLASS)): # range(0, 24)
-        for k in range(self.NUM_CLASS): # range(0, 4)
-          test[j][k] = predictions[i][combinations[j][k]]
-      
-      for j in range(math.factorial(self.NUM_CLASS)): # range(0, 24)
-        if int(labels[i]) == test[j].index(max(test[j])):
-          matches[j] += 1
-
-    best = matches.index(max(matches))
-    print('Combination with best matches was ' + str(combinations[best]))
-    print('Matches: ' + str(matches[best]) + '/' + str(length))
-    print('Accuracy: ' + str(round(matches[best]*100/length,2)) + '%')
-    
+    df_summary = pd.DataFrame(data={'matches':matches_percentage,
+                                    'accurary':accuracy,
+                                    'mode': str(mode + '_proportion')},
+                        index = [0])
+    return df_summary
   
   def loss(self, logits, labels):
     '''
@@ -646,6 +690,7 @@ class Model:
   def train_operation(self, global_step, total_loss, top1_error):
     '''
     Defines train operations
+    
     :param global_step: tensor variable with shape [1]
     :param total_loss: tensor with shape [1]
     :param top1_error: tensor with shape [1]
@@ -670,6 +715,7 @@ class Model:
   def validation_op(self, validation_step, top1_error, loss):
     '''
     Defines validation operations
+    
     :param validation_step: tensor with shape [1]
     :param top1_error: tensor with shape [1]
     :param loss: tensor with shape [1]
@@ -697,16 +743,84 @@ class Model:
     
     return val_op
   
-  def generate_vali_batch(self, vali_data, vali_labels, vali_batch_size):
+  def generate_train_batch(self, train_data, train_labels, train_batch_size, file_index = -1):
     '''
-    If you want to use a random batch of validation data to validate instead of using the
-    whole validation data, this function helps you generate a batch of validation data
-    :param vali_data: 4D numpy array (total_steps, height, width, depth)
-    :param vali_labels: 1D numpy array total_steps, ）
-    :param vali_batch_size: int
-    :return: one batch of validation data and labels.
-    4D numpy array (num_batches, trajectory_size, height, width, depth) and 
-    1D numpy array (num_batches, )
+    This function helps you generate a batch of training data.
+    
+    Args:
+      :param train_data: 4D numpy array (total_steps, height, width, depth)
+      :param train_labels: 1D numpy array (total_steps, ）
+      :param batch_size: int
+      :param file_index: the starting index of the batch in the data set. 
+        If set to the special number -1, a random batch will be chosen from the data set.
+  
+    Returns: 
+      :train_batch_data:
+        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+      :train_batch_labels: a batch of labels. 1D numpy array (batch_size, )
+    '''
+    # geneate random batches
+    train_batch_data, train_batch_labels = self.generate_batch(train_data, train_labels, train_batch_size, file_index)
+      
+    return train_batch_data, train_batch_labels
+  
+  def generate_vali_batch(self, vali_data, vali_labels, vali_batch_size, file_index = -1):
+    '''
+    This function helps you generate a batch of validation data.
+    
+    Args:
+      :param vali_data: 4D numpy array (total_steps, height, width, depth)
+      :param vali_labels: 1D numpy array (total_steps, ）
+      :param vali_batch_size: int
+      :param file_index: the starting index of the batch in the data set. 
+        If set to the special number -1 (default),
+        a random batch will be chosen from the data set.
+  
+    Returns: 
+      :vali_batch_data:
+        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+      :vali_batch_labels: a batch of labels. 1D numpy array (batch_size, )
+    '''
+    # geneate random batches
+    vali_batch_data, vali_batch_labels = self.generate_batch(vali_data, vali_labels, vali_batch_size, file_index)
+      
+    return vali_batch_data, vali_batch_labels
+
+  def generate_test_batch(self, test_data, test_labels, test_batch_size, file_index):
+    '''
+    This function helps you generate a batch of test data.
+    
+    Args:
+      :param test_data: 4D numpy array (total_steps, height, width, depth)
+      :param test_labels: 1D numpy array (total_steps, ）
+      :param batch_size: int
+      :param file_index: the starting index of the batch in the data set. 
+        If set to the special number -1, a random batch will be chosen from the data set.
+  
+    Returns: 
+      :test_batch_data:
+        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+      :test_batch_labels: a batch of labels. 1D numpy array (batch_size, )
+    '''
+
+    test_batch_data, test_batch_labels = self.generate_batch(test_data, test_labels, test_batch_size, file_index)
+    return test_batch_data, test_batch_labels
+  
+  def generate_batch(self, data, labels, batch_size, file_index):
+    '''
+    This function helps you generate a batch of data.
+    
+    Args:
+      :param data: 4D numpy array (total_steps, height, width, depth)
+      :param labels: 1D numpy array (total_steps, ）
+      :param batch_size: int
+      :param file_index: the starting index of the batch in the data set. 
+        If set to the special number -1, a random batch will be chosen from the data set.
+
+    Returns: 
+      :batch_data:
+        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+      :batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
     # --------------------------------------------------------------
     # Edwinn's codes
@@ -717,9 +831,9 @@ class Model:
     # batch_data shape = (16, 6, 6, 11)
     # batch_label shape = (16, 1)
     # --------------------------------------------------------------
-#    offset = np.random.choice(self.EPOCH_SIZE - vali_batch_size, 1)[0]
-#    vali_data_batch = vali_data[offset:offset+vali_batch_size, ...]
-#    vali_label_batch = vali_label[offset:offset+vali_batch_size]
+#    offset = np.random.choice(self.EPOCH_SIZE - test_batch_size, 1)[0]
+#    test_data_batch = test_data[offset:offset+test_batch_size, ...]
+#    vali_label_batch = vali_label[offset:offset+test_batch_size]
     
     # --------------------------------------------------------------
     # Paper codes
@@ -733,7 +847,7 @@ class Model:
         
     # the total number of batch equals the total number of steps devided by the steps for each trajectory
     # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_file = 800)
-    num_files = int(np.ceil(len(vali_data)/self.MAX_TRAJECTORY_SIZE)) 
+    num_files = int(np.ceil(len(data)/self.MAX_TRAJECTORY_SIZE)) 
 
     # --------------------------------------------------------------
     # Reshape train_data
@@ -743,168 +857,45 @@ class Model:
     # --------------------------------------------------------------
     
     # train_data = (num_steps, height, width, depth)
-    vali_data = vali_data.reshape((num_files, self.MAX_TRAJECTORY_SIZE,
-                                    self.HEIGHT, self.WIDTH, self.DEPTH))
+    data = data.reshape((num_files, self.MAX_TRAJECTORY_SIZE,
+                         self.HEIGHT, self.WIDTH, self.DEPTH))
     # train_data = (num_files, num_steps, height, width, depth)
 
     # --------------------------------------------------------------
     # Chose train_batch_size random files from all the files
-    # vali_data = (num_files, num_steps, height, width, depth)->
+    # test_data = (num_files, num_steps, height, width, depth)->
     # batch_data = (batch_size, num_steps, height, width, depth)->
     # --------------------------------------------------------------
-    
-    indexes_files = np.random.choice(num_files, vali_batch_size)
-    batch_data = vali_data[indexes_files,...]
+    if file_index == -1:
+      # choose a random set of files (could be not continuous)
+      indexes_files = np.random.choice(num_files, batch_size)
+    else:
+      # choose a continuous series of files 
+      indexes_files = range(file_index, file_index + batch_size)
+      
+    batch_data = data[indexes_files,...]
 
     # --------------------------------------------------------------
     # Only retain unique labels
-    # vali_labels = （total_steps, ） ->
-    # vali_labels = (num_files, )
+    # test_labels = （total_steps, ） ->
+    # test_labels = (num_files, )
     # --------------------------------------------------------------
-    # vali_labels = (1000,)    
-    vali_labels = vali_labels[0:-1:self.MAX_TRAJECTORY_SIZE]
-    # vali_labels = (100, ) 
+    # test_labels = (1000,)    
+    labels = labels[0:-1:self.MAX_TRAJECTORY_SIZE]
+    # test_labels = (100, ) 
     
     # --------------------------------------------------------------    
     # Choose the labels coresponding to the indexes files
-    # vali_labels = （num_files, ） ->
+    # test_labels = （num_files, ） ->
     # batch_labels = (batch_size, )
     # (100,) -> (16,)
     # --------------------------------------------------------------   
-    batch_labels = vali_labels[indexes_files]
+    batch_labels = labels[indexes_files]
     # pdb.set_trace()
-    assert(batch_labels.shape[0]==vali_batch_size)
+    assert(batch_labels.shape[0]==batch_size)
+    
     return batch_data, batch_labels
 
-
-  def generate_train_batch(self, train_data, train_labels, train_batch_size):
-    '''
-    This function helps generate a batch of train data
-    :param train_data: 4D numpy array (total_steps, height, width, depth)
-    (note: total_steps = trajectory_size * num_files)
-    :param train_labels: 1D numpy array （total_steps, ）
-    :param train_batch_size: int
-    :return: one batch of train data and labels.
-    4D numpy array (num_batches, trajectory_size, height, width, depth) and 
-    1D numpy array (num_batches, )
-    '''
-    # -----------
-    # numpy.random.choice:
-    # If an ndarray, a random sample is generated from its elements. 
-    # If an int, the random sample is generated as if a were np.arange(a)
-    # -----------
-    # > np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
-    # this generates an array with one random interger in it 
-    # (from 0 to 84, 84: self.EPOCH_SIZE - train_batch_size)
-    # -----------
-    
-    # --------------------------------------------------------------
-    # Edwinn's codes
-    # Generate a batch. 
-    # Each batch is a step.
-    # Each batch contains 16 steps (span from 2 trajectories, which
-    # each contains 10 steps).
-    # batch_data shape = (16, 6, 6, 11)
-    # batch_label shape = (16, 1)
-    # --------------------------------------------------------------
-#    # Offsetting is to ensure that the batch ending index does not exceed the boundary of the epoch.
-#    offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
-#    # pdb.set_trace()
-#    # subsetting a batch from traning data starting at index 'offet'
-#    batch_data = train_data[offset:offset + train_batch_size, ...]
-#    batch_label = train_labels[offset:offset + train_batch_size]
-    
-    # --------------------------------------------------------------
-    # Paper codes
-    # Generate a batch. 
-    # Each example is a trejectory.
-    # Each batch contains 16 examples (trajectories). Each trajectory contains 10 steps.
-    # batch_data shape = (16, 10, 12, 12, 11)
-    # batch_label shape = (16, 1)
-    # --------------------------------------------------------------
-    #pdb.set_trace()
-        
-    # the total number of batch equals the total number of steps devided by the steps for each trajectory
-    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_file = 800)
-    num_files = int(np.ceil(self.EPOCH_SIZE/self.MAX_TRAJECTORY_SIZE)) 
-
-    # --------------------------------------------------------------
-    # Reshape train_data
-  
-    # train_data = (num_steps, height, width, depth) ->
-    # train_data = (num_files, num_steps, height, width, depth)
-    # --------------------------------------------------------------
-    
-    # train_data = (num_steps, height, width, depth)
-    train_data = train_data.reshape((num_files, self.MAX_TRAJECTORY_SIZE,
-                                     self.HEIGHT, self.WIDTH, self.DEPTH))
-    # train_data = (num_files, num_steps, height, width, depth)
-
-    # --------------------------------------------------------------
-    # Chose train_batch_size random files from all the files
-    # train_data = (num_files, num_steps, height, width, depth)->
-    # batch_data = (batch_size, num_steps, height, width, depth)->
-    # --------------------------------------------------------------
-    
-    indexes_files = np.random.choice(num_files, train_batch_size)
-    batch_data = train_data[indexes_files,...]
-
-    # --------------------------------------------------------------
-    # Only retain unique labels
-    # train_labels = （total_steps, ） ->
-    # train_labels = (num_files, )
-    # --------------------------------------------------------------
-    # train_labels = (1000,)    
-    train_labels = train_labels[0:-1:self.MAX_TRAJECTORY_SIZE]
-    # train_labels = (100, ) 
-    
-    # --------------------------------------------------------------    
-    # Choose the labels coresponding to the indexes files
-    # train_labels = （num_files, ） ->
-    # batch_labels = (batch_size, )
-    # (100,) -> (16,)
-    # --------------------------------------------------------------   
-    batch_labels = train_labels[indexes_files]
-    # pdb.set_trace()
-    assert(batch_labels.shape[0]==train_batch_size)
-    # batch_label = (16,)
-    #pdb.set_trace()
-    return batch_data, batch_labels
-    
-  def full_validation(self, loss, top1_error, session, vali_data, vali_labels, batch_data, batch_label):
-    '''
-    Runs validation on all the validation datapoints
-    :param loss: tensor with shape [1]
-    :param top1_error: tensor with shape [1]
-    :param session: the current tensorflow session
-    :param vali_data: 4D numpy array
-    :param vali_labels: 1D numpy array
-    :param batch_data: 4D numpy array. training batch to feed dict and fetch the weights
-    :param batch_label: 1D numpy array. training labels to feed the dict
-    :return: float, float
-    '''
-    # This whole funciton is remained to be fixed ##TODO
-    # (1) It should also comply with 
-    # the batch = (16: batch_size, 10: MAX_TRAJECTORY_SIZE, HEIGHT = 12, WIDTH = 12, DEPTH = 11) rule
-    num_batches = 10000 // self.BATCH_SIZE_VAL
-    order = np.random.choice(10000, num_batches * self.BATCH_SIZE_VAL)
-    vali_data_subset = vali_data[order, ...]
-    vali_labels_subset = vali_labels[order]
-
-    loss_list = []
-    error_list = []
-
-    for step in range(num_batches):
-      offset = step * self.BATCH_SIZE_VAL
-      feed_dict = {self.traj_placeholder: batch_data, self.goal_placeholder: batch_label,
-        self.vali_traj_placeholder: vali_data_subset[offset:offset+self.BATCH_SIZE_VAL, ...],
-        self.vali_goal_placeholder: vali_labels_subset[offset:offset+self.BATCH_SIZE_VAL],
-        self.lr_placeholder: self.INIT_LR}
-      loss_value, top1_error_value = session.run([loss, top1_error], feed_dict=feed_dict)
-      loss_list.append(loss_value)
-      error_list.append(top1_error_value)
-
-    return np.mean(loss_list), np.mean(error_list)
 
 
 if __name__ == "__main__":
