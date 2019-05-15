@@ -1,3 +1,5 @@
+#########################################
+
 This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 
@@ -11,6 +13,8 @@ Output file name: /cache_S002a_v8_commit_??????_epoch80000_tuning_batch96_train_
 Add:
 (1) Take LSTM result from the final state instead of results from all time steps (like v4)
 
+Remove:
+(1) Remove the match_estimation() metric. Deprecate the function.
 
 #########################################
 Finished training session (v7, commit 6f14c6)[At benchmark/temporary]
