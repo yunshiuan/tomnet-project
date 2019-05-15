@@ -362,25 +362,14 @@ def lstm_layer(input_layer, train, num_classes):
     initial_state = cell.zero_state(batch_size, dtype=tf.float32)
     
     # (3) lstm_input.shape = (16, 10, 32)
-    # lstm_input = (batch_size, time_steps, input_channels (= num_filters x feature_w)) 
-    # sequence_length = (batch_size)  
-    # - An int32/int64 vector sized [batch_size].  
-    # - Used to copy-through state and zero-out outputs when  
-    # - past a batch element's sequence length.  
-    # - So it's more for performance than correctness. 
-    # initial_state = (batch_size, num_hiddens) 
-    outputs, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
-    # outputs.shape = (batch_size, time_steps, num_hidden) 
-    # final_state[-1] = (batch_size, num_hidden) 
-    
-    # (4) outputs.shape = (16, 10, 64)
     # tf.nn.dynamic_rnn()
-    # - param lstm_input = (batch_size, time_steps, input_channels) 
-    # Edwinn's codes: [16: batch_size, 6: width (after average pooling), 64: height (after average pooling) x channels]
-    # should be: (batch_size, time_steps, input_channels) (see the param 'time_major')
-    # 
-    # - param seq_len: shape = (16, )??Why did I set it to batch_size instead of num_time_steps? #TODO
-    # - param initial_state = (batch_size, num_hiddens)
+    # - param lstm_input = (batch_size, time_steps, input_filters) 
+    # - param seq_len: shape = (16, )??Why did I set it to batch_size instead of num_time_steps? 
+    # An int32/int64 vector sized [batch_size].  
+    # Used to copy-through state and zero-out outputs when  
+    # past a batch element's sequence length.  
+    # So it's more for performance than correctness. 
+    # initial_state = (batch_size, num_hiddens) 
     # - param time_major: False.
     # The shape format of the inputs and outputs Tensors. 
     # If true, these Tensors must be shaped [max_time, batch_size, depth].
@@ -389,15 +378,26 @@ def lstm_layer(input_layer, train, num_classes):
     # transposes at the beginning and end of the RNN calculation. 
     # However, most TensorFlow data is batch-major, 
     # so by default this function accepts input and emits output in batch-major form.
-    # 
+
+    outputs, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
+    
     # - return outputs: 
     # If time_major == False (default), this will be 
     # a Tensor shaped: [16: batch_size, 10: max_time, 64: cell.output_size].
     # Edwinn's codes: [16: batch_size, 6: width (after average pooling), 64: num_hidden]
-    #   Note that the output size = num_hidden because the output of LSTM
-    #   is 'a' (a = g(Waa * a + Wax * x + ba)) per se. Therefore, the 
-    #   dimension of a is the dimension of the output.
+    # Note that the output size = num_hidden because the output of LSTM
+    # is 'a' (a = g(Waa * a + Wax * x + ba)) per se. Therefore, the 
+    # dimension of a is the dimension of the output.
     # should be: [16: batch_size, 10: max_time, 64: cell.output_size]
+    # - return final_state: 
+    # outputs.shape = (batch_size, time_steps, num_hidden) 
+    # final_state[-1] = (batch_size, num_hidden) 
+    
+    # (4) outputs.shape = (16, 10, 64)
+    # Edwinn's codes: [16: batch_size, 6: width (after average pooling), 64: height (after average pooling) x channels]
+    # should be: (batch_size, time_steps, input_channels) (see the param 'time_major')
+    
+
     
     # ==============================================================
     # This section is to reshape for feeding in the linear layer
@@ -538,7 +538,10 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     # 10: each trajectory has 10 steps
     # 12, 12, 11: maze height, width, depth
     # --------------------------------------------------------------    
+    #TODO: Check if this is working as expected
+    # pdb.set_trace()
     layers.append(input_tensor)
+    # pdb.set_trace()
     batch_size, trajectory_size, height, width, depth  = layers[-1].get_shape().as_list()
     # layers[-1] = input_tensor = (16, 10, 12, 12, 11)
     step_wise_input = tf.reshape(layers[-1], [batch_size * trajectory_size, height, width, depth])
