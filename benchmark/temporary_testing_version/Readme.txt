@@ -16,10 +16,10 @@ Add:
     has done)
 
 #########################################
-Current training session (v9, commit ?????)[At benchmark]
+Current training session (v9, commit 2a3d5e)[At benchmark]
 Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_9_commit_??????_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4
+Output file name: /cache_S002a_v9_commit_2a3d5e_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4
 
 
 Modify:

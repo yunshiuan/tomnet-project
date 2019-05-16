@@ -72,7 +72,7 @@ class Model:
   FULL_VALIDATION = False 
 
   # Initial learning rate (LR) # paper: 10−4
-  INIT_LR = 0.0001  # 10-5
+  INIT_LR = 0.0001  # 10-4
   #DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
   #DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
   
@@ -83,8 +83,8 @@ class Model:
   ## txt_data_path = os.getcwd() + '/../S002a_1000files/'
   
   txt_data_path = os.getcwd() + '/S002a/'
-  ckpt_fname = 'training_result/caches/cache_S002a_v8_commit_478c9f_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
-  train_fname = 'training_result/caches/cache_S002a_v8_commit_478c9f_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
+  ckpt_fname = 'training_result/caches/cache_S002a_v9_commit_2a3d5e_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S002a_v9_commit_2a3d5e_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-4'
 
   def __init__(self, args):
     '''
