@@ -4,17 +4,31 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 
 #########################################
-Current training session (v8, commit ?????)[At benchmark]
-Time: 2019/05/10
+Future training session (v9, commit ?????)[At benchmark]
+Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v8_commit_??????_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_9_commit_??????_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 
 Add:
 (1) Take LSTM result from the final state instead of results from all time steps (like v4)
 
+
+#########################################
+Current training session (v8, commit ?????)[At benchmark]
+Time: 2019/05/16
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v8_commit_??????_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
+
+
+Modify:
+(1) Add parent function (i) generate_batch() and (ii) evaluate_whole_data_set
+(2) Adapt the test() function for data format (batch_size, trajectory_size, width, height,  depth)
+
 Remove:
 (1) Remove the match_estimation() metric. Deprecate the function.
+
+Note:
 
 #########################################
 Finished training session (v7, commit 6f14c6)[At benchmark/temporary]
@@ -64,6 +78,7 @@ Add:
 
 Note:
 (1) Not sure how well the performance is. Should try more steps.
+-> According to v6 results, it performes well.
 #########################################
 Finished training session (v4, commit 71297d) [At benchmark/temporary]
 Time: 2019/05/10

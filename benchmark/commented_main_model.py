@@ -407,13 +407,13 @@ class Model:
     # --------------------------------------------------------------
     # Evaluate the model on the whole validation set
     # --------------------------------------------------------------
-    pdb.set_trace()
+    # pdb.set_trace()
     df_vali_all = self.evaluate_on_validation_set()
 
     # --------------------------------------------------------------
     # Evaluate the model on the whole test set
     # --------------------------------------------------------------
-    pdb.set_trace()
+    # pdb.set_trace()
     df_test_all = self.evaluate_on_test_set()
     
     # --------------------------------------------------------------
