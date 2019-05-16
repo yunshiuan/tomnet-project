@@ -72,9 +72,9 @@ class Model:
   FULL_VALIDATION = False 
 
   # Initial learning rate (LR) # paper: 10−4
-  INIT_LR = 0.00001  # 10-5
-  DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
-  DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
+  INIT_LR = 0.0001  # 10-5
+  #DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
+  #DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
   
   NUM_CLASS = 4 # number of unique classes in the training set
 
@@ -388,9 +388,9 @@ class Model:
         #print('End of training report-----------------')
         #pdb.set_trace()
             
-      if step == self.DECAY_STEP_0 or step == self.DECAY_STEP_1:
-        self.INIT_LR = 0.1 * self.INIT_LR
-        print('Learning rate decayed to ', self.INIT_LR)
+      #if step == self.DECAY_STEP_0 or step == self.DECAY_STEP_1:
+      #  self.INIT_LR = 0.1 * self.INIT_LR
+      #  print('Learning rate decayed to ', self.INIT_LR)
         
       # Save checkpoints every 10000 steps and also at the last step      
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
