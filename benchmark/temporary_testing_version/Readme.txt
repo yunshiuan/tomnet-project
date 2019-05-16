@@ -15,10 +15,10 @@ Add:
 
 
 #########################################
-Current training session (v8, commit ?????)[At benchmark]
+Current training session (v8, commit 478c9f)[At benchmark]
 Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v8_commit_??????_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v8_commit_478c9f_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 
 Modify:

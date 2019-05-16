@@ -50,18 +50,19 @@ class Model:
   
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 30
+  TRAIN_STEPS = 200000
+  
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 100,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
   
-  # EPOCH_SIZE = 8000
   # --------------------------------------
   # for testing on the local machine with 1000 files
+  # EPOCH_SIZE = 8000
   # --------------------------------------
-  EPOCH_SIZE = 8000
+  EPOCH_SIZE = 80000
   
   REPORT_FREQ = 10 # the frequency of writing the error to error.csv
 
@@ -78,9 +79,12 @@ class Model:
   NUM_CLASS = 4 # number of unique classes in the training set
 
   use_ckpt = False
-  txt_data_path = os.getcwd() + '/../S002a_1000files/'
-  ckpt_fname = 'training_result/caches/cache_S002a_v?_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
-  train_fname = 'training_result/caches/cache_S002a_v?_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
+  # For testing on 1000 files
+  ## txt_data_path = os.getcwd() + '/../S002a_1000files/'
+  
+  txt_data_path = os.getcwd() + '/S002a/'
+  ckpt_fname = 'training_result/caches/cache_S002a_v8_commit_478c9f_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
+  train_fname = 'training_result/caches/cache_S002a_v8_commit_478c9f_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5'
 
   def __init__(self, args):
     '''
