@@ -20,10 +20,10 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
 #########################################
-Future training session (v10, commit ?????)[At benchmark]
+Future training session (v10, commit 5951c9)[At benchmark]
 Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v10_commit_??????_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v10_commit_5951c9_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 
 Add:

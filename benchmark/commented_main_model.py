@@ -70,8 +70,8 @@ class Model:
   # For testing on 1000 files
   txt_data_path = os.getcwd() + '/S002a/'
 
-  ckpt_fname = 'training_result/caches/cache_S002a_v10_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S002a_v10_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S002a_v10_commit_5951c9_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S002a_v10_commit_5951c9_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
   # --------------------------------------
   
   
