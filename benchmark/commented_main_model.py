@@ -32,13 +32,6 @@ class Model:
   DEPTH = 11 
   
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-#  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
-#  BATCH_SIZE_VAL = 16 # size of the batch for validation
-#  BATCH_SIZE_TEST = 16 # size of batch for testing
-
-  # --------------------------------------
-  # for testing on the local machine with 100 file
-  # --------------------------------------
   BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
   BATCH_SIZE_VAL = 16 # size of the batch for validation
   BATCH_SIZE_TEST = 16 # size of batch for testing
@@ -48,24 +41,40 @@ class Model:
   NUM_RESIDUAL_BLOCKS = 5
   TRAIN_EMA_DECAY = 0.95
   
-  # tota number of minibatches used for training
-  # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 200000
+
+  
+  # --------------------------------------
+  ## for testing on the local machine with 1000 files and few steps
+  # EPOCH_SIZE = 8000
+  # TRAIN_STEPS = 30
+  # REPORT_FREQ = 10 # the frequency of writing the error to error.csv
+  ## For testing on 1000 files
+  # txt_data_path = os.getcwd() + '/../S002a_1000files/'
+  # --------------------------------------
+  
+  # --------------------------------------
+  # for testing on a GPU machine with 10000 files
   
   # the data size of an epoch (should equal to the traning set size)
   # e.g., given a full date set with 100,000 snapshots,
   # with a train:dev:test = 8:2:2 split,
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
-  
-  # --------------------------------------
-  # for testing on the local machine with 1000 files
-  # EPOCH_SIZE = 8000
-  # --------------------------------------
   EPOCH_SIZE = 80000
   
-  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
+  # tota number of minibatches used for training
+  # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
+  TRAIN_STEPS = 200000
+  
+  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
+  # For testing on 1000 files
+  txt_data_path = os.getcwd() + '/S002a/'
 
+  ckpt_fname = 'training_result/caches/cache_S002a_v10_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S002a_v10_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+  # --------------------------------------
+  
+  
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
   # FALSE: data split using train:vali:test = 8:1:1
@@ -79,13 +88,7 @@ class Model:
   NUM_CLASS = 4 # number of unique classes in the training set
 
   use_ckpt = False
-  # For testing on 1000 files
-  ## txt_data_path = os.getcwd() + '/../S002a_1000files/'
   
-  txt_data_path = os.getcwd() + '/S002a/'
-  ckpt_fname = 'training_result/caches/cache_S002a_v9_commit_2a3d5e_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S002a_v9_commit_2a3d5e_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-4'
-
   def __init__(self, args):
     '''
     The constructor for the Model class.
@@ -398,7 +401,7 @@ class Model:
           saver.save(sess, checkpoint_path, global_step=step)
 
           df = pd.DataFrame(data={'step':step_list, 'train_error':train_error_list,
-                          'validation_error': val_error_list})
+                                  'validation_error': val_error_list})
           # overwrite the csv
           df.to_csv(self.train_path + '_error.csv')
 
