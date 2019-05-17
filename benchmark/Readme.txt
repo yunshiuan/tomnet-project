@@ -20,16 +20,34 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
 #########################################
-Future training session (v10, commit 5951c9)[At benchmark]
+Future training session (v11, commit???)[At benchmark]
+
+Figure out what is the magic number
+vali: proportion_accuracy()
+Matches: 305/992
+Accuracy: 30.75%
+test: proportion_accuracy()
+Matches: 315/992
+Accuracy: 31.75%
+???
+#########################################
+Finshed training session (v10, commit 5951c9)[At benchmark]
 Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v10_commit_5951c9_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
-
 
 Add:
 (1) Take LSTM result from all time steps and feed them into a linear layer 
     instead of taking the result from the final state alone. (like what Edwinn
     has done)
+Note:
+(1) It is not learning.    
+vali: proportion_accuracy()
+Matches: 305/992
+Accuracy: 30.75%
+test: proportion_accuracy()
+Matches: 315/992
+Accuracy: 31.75%
 
 #########################################
 Finished training session (v9, commit 2a3d5e)[At benchmark]
