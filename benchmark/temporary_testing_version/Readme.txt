@@ -1,6 +1,8 @@
 ##################################################################
 This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
+Data path:
+'/../S002a'
 ##################################################################
 
 #########################################

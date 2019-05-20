@@ -96,37 +96,80 @@ class DataHandler(object):
         return all_data, all_labels
 
 
-    def parse_trajectory(self, filename):
+    def parse_trajectory(self, filename, human_data = False):
         '''
         This function wil return a 4-dim tensor with all the steps in a trajectory defined in the map of the given txt file.
         The tensor will be of shape (MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH).
-        '''
         
+        Args:
+          :param filename: the txt file name to parse
+          :param human_data: default to false (simulated data).
+            Note that the txt file is very similar to the simulated txt, except for
+            (i) there are commas at the start of each line
+            (ii) there is no 'S'. So should take the first position as 
+            the position of 'S'.
+            
+        Returns: 
+          :output:
+            The tensor will be of shape (MAX_TRAJECTORY_SIZE, MAZE_WIDTH,
+            MAZE_HEIGHT, MAZE_DEPTH).
+          :label:
+            the final target of the trajectory
+        '''
+        pdb.set_trace()
         steps = []
-        #output.shape(12, 12, 11, 10)
+        #output = (12, 12, 11, 10)
         output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH, self.MAX_TRAJECTORY_SIZE))
         label = ''
         with open(filename) as fp:
             lines = list(fp)
-            maze = lines[2:14]
-            
-            #Parse maze to 2d array, remove walls.
-            i=0
-            while i < 12: # in the txt file, each maze has 12 lines
-                maze[i]= list(maze[i])
-                maze[i].pop(0)
-                maze[i].pop(len(maze[i])-1)
-                maze[i].pop(len(maze[i])-1)
-                i+=1
+            # For simulated data
+            if human_data == False:
+              maze_starting_line = 2 # 2 padding lines on the top
+              maze = lines[maze_starting_line:maze_starting_line+self.MAZE_HEIGHT] 
+              
+              #Parse maze to 2d array, remove walls.
+              i=0
+              while i < self.MAZE_HEIGHT: # in the txt file, each maze has 12 lines
+                  maze[i]= list(maze[i])
+                  maze[i].pop(0) #remove the symbol '#'
+                  maze[i].pop(len(maze[i])-1)
+                  maze[i].pop(len(maze[i])-1)
+                  i+=1
+            else:
+              # For human data
+              maze_starting_line = 1 # 1 padding line on the top
+              maze = lines[maze_starting_line:maze_starting_line+self.MAZE_HEIGHT] 
+              
+              #Parse maze to 2d array, remove walls.
+              i=0
+              while i < self.MAZE_HEIGHT: # in the txt file, each maze has 12 lines
+                  maze[i]= list(maze[i])
+                  maze[i].pop(0) #remove the symbol '#'
+                  maze[i].pop(0) #remove the comma ','
+                  maze[i].pop(len(maze[i])-1)
+                  maze[i].pop(len(maze[i])-1)
+                  i+=1
 
             #Original maze (without walls)
             np_maze = np.array(maze)
             
             #Plane for obstacles
             np_obstacles = np.where(np_maze == '#', 1, 0).astype(np.int8)
+            # np_obstacles = (12, 12), where 1 is obstacle and 0 is non-obstacle
             
             #Plane for agent's initial position
-            np_agent = np.where(np_maze == 'S', 1, 0).astype(np.int8)
+            
+            # for simulated data
+            if human_data == False:
+              np_agent = np.where(np_maze == 'S', 1, 0).astype(np.int8)            
+            else:
+              # for human data
+              # there is no explicit 'S' in the maze. 
+              # So should take the first position as the position of 'S'.
+              agent_coordinate = lines[maze_starting_line + self.MAZE_HEIGHT + 1]
+              
+              pass
 
             #Planes for each possible goal
             #targets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m']
@@ -138,7 +181,8 @@ class DataHandler(object):
             np_targets = np_targets.astype(int)
             
             #Parse trajectory into 2d array
-            trajectory = lines[15:]
+            trajectory_starting_lines = maze_starting_line + self.MAZE_HEIGHT + 1
+            trajectory = lines[trajectory_starting_lines:]
             agent_locations = []
             for i in trajectory:
                 i = i[1:len(i)-2]

@@ -1,5 +1,7 @@
 #########################################
 This folder contains details for each training version.
+Data path:
+'/S002a'
 ------------------------------------------
 
 Note 
