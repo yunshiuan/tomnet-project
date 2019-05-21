@@ -2,7 +2,7 @@ import os
 import sys
 import numpy as np
 from random import shuffle
-from commented_utils import plot_trajectory
+from utils import plot_trajectory
 import re
 import pdb
 

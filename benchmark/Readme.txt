@@ -23,6 +23,9 @@ The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
 #########################################
 Future training session (v11, commit???)[At benchmark]
+Time: 2019/05/???
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v11_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 Figure out what is the magic number
 vali: proportion_accuracy()
