@@ -197,9 +197,9 @@ class DataHandler(object):
                 np_actions = np.zeros((12,12,len(possible_actions)), dtype=np.int8)
                 #Determine the type of action
                 if agent_locations[i][0] > agent_locations[i+1][0]:
-                    layer = 'right'
-                elif agent_locations[i][0] < agent_locations[i+1][0]:
                     layer = 'left'
+                elif agent_locations[i][0] < agent_locations[i+1][0]:
+                    layer = 'right'
                 elif agent_locations[i][1] > agent_locations[i+1][1]:
                     layer = 'up'
                 elif agent_locations[i][1] < agent_locations[i+1][1]:
