@@ -116,80 +116,134 @@ class DataHandler(object):
           :label:
             the final target of the trajectory
         '''
-        pdb.set_trace()
+        ##############################
+        # For testing only
+        
+        # pdb.set_trace()
+        # filename = '/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/S030/S030_1.txt'
+        # human_data = True
+        ##############################
+
         steps = []
         #output = (12, 12, 11, 10)
         output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH, self.MAX_TRAJECTORY_SIZE))
         label = ''
         with open(filename) as fp:
             lines = list(fp)
+            # -----------------------------------------------
+            # Preprocessing
+            # -----------------------------------------------
             # For simulated data
             if human_data == False:
-              maze_starting_line = 2 # 2 padding lines on the top
-              maze = lines[maze_starting_line:maze_starting_line+self.MAZE_HEIGHT] 
-              
-              #Parse maze to 2d array, remove walls.
-              i=0
-              while i < self.MAZE_HEIGHT: # in the txt file, each maze has 12 lines
-                  maze[i]= list(maze[i])
-                  maze[i].pop(0) #remove the symbol '#'
-                  maze[i].pop(len(maze[i])-1)
-                  maze[i].pop(len(maze[i])-1)
-                  i+=1
-            else:
-              # For human data
-              maze_starting_line = 1 # 1 padding line on the top
-              maze = lines[maze_starting_line:maze_starting_line+self.MAZE_HEIGHT] 
-              
-              #Parse maze to 2d array, remove walls.
-              i=0
-              while i < self.MAZE_HEIGHT: # in the txt file, each maze has 12 lines
-                  maze[i]= list(maze[i])
-                  maze[i].pop(0) #remove the symbol '#'
-                  maze[i].pop(0) #remove the comma ','
-                  maze[i].pop(len(maze[i])-1)
-                  maze[i].pop(len(maze[i])-1)
-                  i+=1
+              for line_index in range(len(lines)):
+                # Remove the first padding line
+                lines[line_index] = lines[line_index+1]
+                  
+                #remove the following '\n' at each line
+                lines[line_index] = lines[line_index][:-1]
+                   
+            else:  
+              # For human data                      
+              for line_index in range(len(lines)):
+                #remove the following '\n' at each line
+                lines[line_index] = lines[line_index][:-1]
 
-            #Original maze (without walls)
-            np_maze = np.array(maze)
+                # Starting from the second line, there is a unnecessary leading comma at each line
+                if line_index > 0:
+                  lines[line_index] = lines[line_index][1:] #remove the leading comma ','
+            # -----------------------------------------------
+            # pdb.set_trace()
             
-            #Plane for obstacles
+            # -----------------------------------------------
+            # Get the original maze (without walls)
+            # -----------------------------------------------
+            
+            maze_starting_line = 1 
+            maze = lines[maze_starting_line:maze_starting_line+self.MAZE_HEIGHT] 
+            
+            #Parse maze to 2d array, remove walls.
+            i=0
+            while i < self.MAZE_HEIGHT: # in the txt file, each maze has 12 lines
+                maze[i]= list(maze[i])
+                maze[i].pop(0) #remove the starting wall '#'
+                maze[i].pop(len(maze[i])-1) #remove the ending wall '#'
+                i+=1
+
+
+            np_maze = np.array(maze)
+            # -----------------------------------------------
+
+            # -----------------------------------------------
+            # Get trajectories
+            # -----------------------------------------------
+            
+            # -----------------------------------------------
+            # - Parse trajectory into a list of steps
+            # -----------------------------------------------
+
+            trajectory_starting_lines = maze_starting_line + self.MAZE_HEIGHT + 1
+            trajectory = lines[trajectory_starting_lines:]
+            agent_locations = []
+            for i in trajectory:
+                # Get the number more efficiently! Use Regex! 
+                tmp = re.findall(r'\d+', i)
+                # i = i[1:len(i)-1] #remove '(' and ')'
+                # tmp = i.split(",")
+                try:
+                    agent_locations.append([int(tmp[0]),int(tmp[1])])
+                except:
+                  pass
+            # pdb.set_trace()
+
+            # -----------------------------------------------
+            # Get all the planes
+            # -----------------------------------------------
+            
+            # -----------------------------------------------
+            # - Plane for obstacles
+            # -----------------------------------------------
             np_obstacles = np.where(np_maze == '#', 1, 0).astype(np.int8)
             # np_obstacles = (12, 12), where 1 is obstacle and 0 is non-obstacle
             
-            #Plane for agent's initial position
+            # -----------------------------------------------
+            # - Plane for agent's initial position
+            # -----------------------------------------------
             
+            # pdb.set_trace()
+ 
+            # Take the first position as the position of 'S'.
+            # Note that for human data,
+            # there is no explicit 'S' in the maze. 
+            # So I take the first position of the trajectory as the inital position
+            np_agent = np.zeros(np_maze.shape, dtype = np.int8)
+            # in python array (y, x) cooridinate with origin (0,0) on the top-left
+            np_initial_coordinate = (agent_locations[0][1]-1, agent_locations[0][0]-1)
+            np_agent[np_initial_coordinate] = 1
+      
+            
+            # -----------------------------------------------
+            # - Planes for each possible goal
+            # targets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m']
+            # -----------------------------------------------
+
             # for simulated data
             if human_data == False:
-              np_agent = np.where(np_maze == 'S', 1, 0).astype(np.int8)            
+              targets = ['C','D','E','F'] # for the simplified 4-targets mazes
             else:
               # for human data
-              # there is no explicit 'S' in the maze. 
-              # So should take the first position as the position of 'S'.
-              agent_coordinate = lines[maze_starting_line + self.MAZE_HEIGHT + 1]
-              
-              pass
+              targets = ['A','B','C','D']
 
-            #Planes for each possible goal
-            #targets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m']
-            targets = ['C','D','E','F'] # for the simplified 4-targets mazes
             np_targets = np.repeat(np_maze[:, :, np.newaxis], len(targets), axis=2)
             for target, i in zip(targets, range(len(targets))):
                 np_targets[:,:,i] = np.where(np_maze == target, 1, 0)
             # np_targets.shape = (12, 12, 4)
             np_targets = np_targets.astype(int)
             
-            #Parse trajectory into 2d array
-            trajectory_starting_lines = maze_starting_line + self.MAZE_HEIGHT + 1
-            trajectory = lines[trajectory_starting_lines:]
-            agent_locations = []
-            for i in trajectory:
-                i = i[1:len(i)-2]
-                tmp = i.split(",")
-                try:
-                    agent_locations.append([tmp[0],tmp[1]])
-                except:pass
+            # -----------------------------------------------            
+            # - Planes for the action of each step
+            # -----------------------------------------------
+
+            # pdb.set_trace()
             possible_actions=['right', 'left', 'up', 'down', 'goal']
             for i in range(len(agent_locations) - 1):
                 
@@ -208,16 +262,26 @@ class DataHandler(object):
                 # np_actions.shape = (12, 12, 5)
                 np_actions[int(agent_locations[i][1])-1, int(agent_locations[i][0])-1, possible_actions.index(layer)] = 1
 
-                # For each step:
+                # -----------------------------------------------
+                # Stack all the tensors together for each step:
+                # -----------------------------------------------
                 # np_tensor.shape = (12, 12, 11)
                 # DEPTH = 11 layers = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
                 np_tensor = np.dstack((np_obstacles,np_targets,np_agent,np_actions))
                 steps.append(np_tensor)
                 output = np.array(steps)
-            
-            #The last tensor of every trajectory will be the position of the goal.
+                # -----------------------------------------------
+
+            # -----------------------------------------------          
+            # Get the tensor for the tensor of the final step:
+            # Note:
+            # (1) The final aciton = 'goal'
+            #  - The last tensor of every trajectory will be the position of the goal.
+            # -----------------------------------------------          
+
             np_actions = np.zeros((12,12,len(possible_actions)), dtype=np.int8)
             np_actions[int(agent_locations[-1][1])-1, int(agent_locations[-1][0])-1, possible_actions.index('goal')] = 1
+
 
             # For the last step:
             # np_tensor.shape = (12, 12, 11)
@@ -225,7 +289,7 @@ class DataHandler(object):
             np_tensor = np.dstack((np_obstacles,np_targets,np_agent,np_actions))
 
             # ---------------------------------------
-            # Generate the label (could be training_label, valid_label, testing_label) 
+            # Get the label (could be training_label, valid_label, or testing_label) 
             # (y, an int from 0 to 3)
             # ---------------------------------------
             # Make the label from the letter in the final position of the agent 
@@ -262,7 +326,7 @@ class DataHandler(object):
                 for i in range(abs(pad_size)):
                     # remove the first step
                     output = np.delete(output, 0, axis=0)
-        
+        # pdb.set_trace()
         fp.close()
         return output, label
 
