@@ -26,7 +26,7 @@ class Model:
   #TRAIN_STEPS = 10000
   #EPOCH_SIZE = 100
   
-  REPORT_FREQ = 10
+  REPORT_FREQ = 100
   FULL_VALIDATION = False
   INIT_LR = 0.00001
   #DECAY_STEP_0 = 10000
@@ -554,12 +554,12 @@ if __name__ == "__main__":
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
-        TRAIN_STEPS = 20
+        TRAIN_STEPS = 4000000
         EPOCH_SIZE = 8000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S030_v1_commit_95ab2d_epoch80000_tuning_batch96_train_step_40M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S030_v1_commit_95ab2d_epoch80000_tuning_batch96_train_step_40M_INIT_LR_10-5_' + str(times)
         sub_dir='/S030/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
