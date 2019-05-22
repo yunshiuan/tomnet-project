@@ -10,6 +10,7 @@ Data source:
 	(ii) there is no 'S'. So should take the first position as the position of 'S'.
 	(iii) there is no 'Maze:' at the first line
 	(iv) there is 'unmoved' step which should be ignored
+	(v) it is A, B, C, D instead of C, D, E, F.
 (4) Use FileZilla SFTP to log in and download files
 
 data path:

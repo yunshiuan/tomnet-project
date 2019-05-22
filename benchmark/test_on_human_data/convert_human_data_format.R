@@ -6,6 +6,8 @@
 # (ii) there is no 'S'. So should take the first position as the position of 'S'.
 # (iii) there is no 'Maze:' at the first line
 # (iv) there is 'unmoved' step which should be ignored. E.g., S030_1189.txt
+# (v) it is A, B, C, D instead of C, D, E, F.
+
 #################
 library(stringr)
 # Constants-----------------------------------------------
@@ -67,9 +69,19 @@ lapply(txt_files, FUN = function(txt_file_name) {
     row_to_be_replaced <- paste0(row_to_be_replaced, collapse = "")
     df_txt[MAZE_UPPER_WALL_ROW_INDEX + initial_coordinate_y, ] <- row_to_be_replaced
   },
-  error = function(msg){
-    print(paste0(msg,": ", txt_file_name))
-  })
+  error = function(msg) {
+    print(paste0(msg, ": ", txt_file_name))
+  }
+  )
+  # Convert C, D, E, F to A, B, C, D
+  for (row_index in (MAZE_UPPER_WALL_ROW_INDEX + 1):(MAZE_LOWER_WALL_ROW_INDEX - 1)) {
+    df_txt$V1[row_index] <-
+      df_txt$V1[row_index] %>%
+        gsub(x = ., pattern = "D", replacement = "F") %>%
+        gsub(x = ., pattern = "C", replacement = "E") %>%
+        gsub(x = ., pattern = "B", replacement = "D") %>%
+        gsub(x = ., pattern = "A", replacement = "C")
+  }
   # Ignore unmoved steps
   step_starting_line <- MAZE_LOWER_WALL_ROW_INDEX + 1
   line_index <- step_starting_line
