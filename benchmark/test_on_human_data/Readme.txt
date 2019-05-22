@@ -17,24 +17,33 @@ data path:
 
 #########################################
 
-Future training session (v2, commit ???) [At benchmark/human_data]
-Time: 2019/05/???
+Future training session (v?, commit ???) [At benchmark/human_data]
+Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v2_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 
-=========================================
-Current training session (v1, commit 95ab2d) [At benchmark/human_data]
+-----------------------------------------
+Current training session (v2, commit df60ff) [At benchmark/human_data]
+Time: 2019/05/22
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v2_commit_df60ff_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Test the functions (v1) on simulated data and check whether the codes are working.
+-----------------------------------------
+
+Finished training session (v1, commit 95ab2d) [At benchmark/human_data]
 Time: 2019/05/21
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S030_v1_commit_95ab2d_epoch80000_tuning_batch16_train_step_40M_INIT_LR_10-5
+Output file name: /cache_S030_v1_commit_95ab2d_epoch8000_tuning_batch96_train_step_40M_INIT_LR_10-5
 
 Description:
-(1) Use the model architecture (v5, commit c8e358) [At benchmark/temporary]
+(1) Use the model architecture (v7, commit c8e358) [At benchmark/temporary]
 (2) Use the commented_data_handler.py (v10, commit 5951c9) [At benchmark]. I modify the function parse_trajectory() to handle human data, which slightly differs from the simulated data in term of format (see above at 'Folder description').
 
 Note:
 (1) Not learning at all. Terminated manully.
+(2) Mistakenly set epoch size = 8000.
 #########################################
 

@@ -203,7 +203,7 @@ class DataHandler(object):
             # -----------------------------------------------
             # - Parse trajectory into a list of steps
             # -----------------------------------------------
-            # pdb.set_trace()
+            pdb.set_trace()
 
             trajectory_starting_lines = maze_starting_line + self.MAZE_HEIGHT + 1
             trajectory = lines[trajectory_starting_lines:]
@@ -220,7 +220,7 @@ class DataHandler(object):
                   pass
                 else:
                   agent_locations.append([int(tmp[0]),int(tmp[1])])
-            # pdb.set_trace()
+            pdb.set_trace()
 
             # -----------------------------------------------
             # Get all the planes
