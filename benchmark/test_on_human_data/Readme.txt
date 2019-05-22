@@ -35,5 +35,6 @@ Description:
 (2) Use the commented_data_handler.py (v10, commit 5951c9) [At benchmark]. I modify the function parse_trajectory() to handle human data, which slightly differs from the simulated data in term of format (see above at 'Folder description').
 
 Note:
+(1) Not learning at all. Terminated manully.
 #########################################
 
