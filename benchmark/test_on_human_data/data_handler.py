@@ -4,6 +4,7 @@ import numpy as np
 from random import shuffle
 from utils import plot_trajectory
 import re
+import pdb
 
 class DataHandler(object):
 
@@ -152,9 +153,14 @@ class DataHandler(object):
             np_tensor = np.dstack((np_obstacles,np_targets,np_agent,np_actions))
 
             #Make the label from the letter in the final position of the agent in one hot encoding style
+            
             goal = np_maze[int(agent_locations[-1][1])-1][int(agent_locations[-1][0])-1]
             char_to_int = dict((c, i) for i, c in enumerate(targets))
-            integer_encoded = char_to_int[goal]
+            try:
+              integer_encoded = char_to_int[goal]
+            except Exception as error:
+              raise ValueError(filename+repr(error))
+            
             #label = [0 for _ in range(len(targets))]
             #label[integer_encoded] = 1
             
