@@ -21,7 +21,7 @@ nohup.out
 # Ignore specific dirs
 benchmark/cache_S002a_10000files/train/
 benchmark/S002a/
-benchmark/test_on_human_data/S030/
+benchmark/test_on_human_data/data
 
 
 *.pdf#
