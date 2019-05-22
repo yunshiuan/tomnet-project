@@ -17,20 +17,35 @@ data path:
 
 #########################################
 
+-----------------------------------------
+
 Future training session (v?, commit ???) [At benchmark/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
-
 -----------------------------------------
-Current training session (v2, commit df60ff) [At benchmark/human_data]
+Current training session (v3, commit ???) [At benchmark/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v2_commit_df60ff_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v3_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Copy codes again directly from benchmark/temporary.
+(2) Preprocess the txt files by R and convert them to the format of simulated data,
+ so no need to adjust the codes at all for human data.
+Note:
+(1) Not learning at all. Terminated manully.
+
+-----------------------------------------
+Finished training session (v2, commit 4a00dc) [At benchmark/human_data]
+Time: 2019/05/22
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v2_commit_4a00dc_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Test the functions (v1) on simulated data and check whether the codes are working.
+Note:
+(1) Not learning at all. Terminated manully.
 -----------------------------------------
 
 Finished training session (v1, commit 95ab2d) [At benchmark/human_data]
