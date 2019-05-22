@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import resnet as rn
-import commented_data_handler as dh
+import data_handler as dh
 import argparse
 import itertools
 import pdb
@@ -34,7 +34,6 @@ class Model:
   
   NUM_CLASS = 4
 
-  human_data = False
   use_ckpt = False
   #ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
   #train_path = 'cache_S002a_10000files/train/'
@@ -69,8 +68,7 @@ class Model:
     #Load data
     dir = os.getcwd() + sub_dir
     data_handler = dh.DataHandler(dir)
-    # pdb.set_trace()
-    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle, human_data = self.human_data)
+    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
     
             
   def _create_graphs(self):
@@ -555,11 +553,11 @@ if __name__ == "__main__":
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
         TRAIN_STEPS = 200000
-        EPOCH_SIZE = 8000
+        EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S030_v2_commit_4a00dc_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S030_v2_commit_4a00dc_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)

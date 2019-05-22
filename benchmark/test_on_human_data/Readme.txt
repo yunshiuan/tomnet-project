@@ -31,11 +31,11 @@ Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v3_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
-(1) Copy codes again directly from benchmark/temporary.
+(1) Copy codes again directly from benchmark/temporary (v7, commit c8e358).
 (2) Preprocess the txt files by R and convert them to the format of simulated data,
  so no need to adjust the codes at all for human data.
+(3)
 Note:
-(1) Not learning at all. Terminated manully.
 
 -----------------------------------------
 Finished training session (v2, commit 4a00dc) [At benchmark/human_data]
