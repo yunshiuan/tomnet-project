@@ -34,7 +34,7 @@ class Model:
   
   NUM_CLASS = 4
 
-  human_data = True
+  human_data = False
   use_ckpt = False
   #ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
   #train_path = 'cache_S002a_10000files/train/'
@@ -558,8 +558,8 @@ if __name__ == "__main__":
         EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S030_v2_commit_df60ff_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S030_v2_commit_df60ff_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S030_v2_commit_4a00dc_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S030_v2_commit_4a00dc_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
