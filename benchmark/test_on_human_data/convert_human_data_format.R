@@ -7,7 +7,8 @@
 # (iii) there is no 'Maze:' at the first line
 # (iv) there is 'unmoved' step which should be ignored. E.g., S030_1189.txt
 # (v) it is A, B, C, D instead of C, D, E, F.
-
+# (vi) do not process if the starting point and the ending point is the same
+# (don't put it to the processed data dir) E.g., S030_3660.txt
 #################
 library(stringr)
 # Constants-----------------------------------------------
@@ -106,25 +107,29 @@ lapply(txt_files, FUN = function(txt_file_name) {
     previous_step_string <- this_step_string # for the next step to use
     line_index <- line_index + 1
   }
-
-  # create the output string: replace the steps by the processed one
-  output_string <- append(
-    x = df_txt$V1[MAZE_UPPER_WALL_ROW_INDEX:MAZE_LOWER_WALL_ROW_INDEX],
-    values = processed_steps
-  )
-
-  # Add 'Maze:' at the first line
-  output_string <- append(
-    x = output_string,
-    values = PADDING_FIRST_ROW,
-    after = 0
-  )
-
-  output_file <- file.path(PATH_TXT_OUTPUT, txt_file_name)
-  write.table(
-    x = output_string,
-    file = output_file,
-    col.names = F, row.names = F,
-    quote = FALSE
-  )
+  # skip the file if the starting point and the ending point is the same
+  if(processed_steps[1]==processed_steps[length(processed_steps)]){
+    # Do nothing
+  }else{
+    # create the output string: replace the steps by the processed one
+    output_string <- append(
+      x = df_txt$V1[MAZE_UPPER_WALL_ROW_INDEX:MAZE_LOWER_WALL_ROW_INDEX],
+      values = processed_steps
+    )
+    
+    # Add 'Maze:' at the first line
+    output_string <- append(
+      x = output_string,
+      values = PADDING_FIRST_ROW,
+      after = 0
+    )
+    
+    output_file <- file.path(PATH_TXT_OUTPUT, txt_file_name)
+    write.table(
+      x = output_string,
+      file = output_file,
+      col.names = F, row.names = F,
+      quote = FALSE
+    )
+  }
 })
