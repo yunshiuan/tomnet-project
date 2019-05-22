@@ -152,16 +152,16 @@ class DataHandler(object):
         output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH, self.MAX_TRAJECTORY_SIZE))
         label = ''
         with open(filename) as fp:
+            # pdb.set_trace()
             lines = list(fp)
             # -----------------------------------------------
             # Preprocessing
             # -----------------------------------------------
             # For simulated data
             if human_data == False:
-              for line_index in range(len(lines)):
-                # Remove the first padding line
-                lines[line_index] = lines[line_index+1]
-                  
+              # Remove the first padding line
+              lines = lines[1:-1]
+              for line_index in range(len(lines)):                  
                 #remove the following '\n' at each line
                 lines[line_index] = lines[line_index][:-1]
                    
@@ -203,7 +203,7 @@ class DataHandler(object):
             # -----------------------------------------------
             # - Parse trajectory into a list of steps
             # -----------------------------------------------
-            pdb.set_trace()
+            # pdb.set_trace()
 
             trajectory_starting_lines = maze_starting_line + self.MAZE_HEIGHT + 1
             trajectory = lines[trajectory_starting_lines:]
@@ -220,7 +220,7 @@ class DataHandler(object):
                   pass
                 else:
                   agent_locations.append([int(tmp[0]),int(tmp[1])])
-            pdb.set_trace()
+            # pdb.set_trace()
 
             # -----------------------------------------------
             # Get all the planes
