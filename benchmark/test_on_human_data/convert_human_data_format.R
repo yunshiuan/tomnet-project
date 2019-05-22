@@ -22,8 +22,8 @@ SYMBOL_AGENT <- "S"
 PADDING_FIRST_ROW <- "Maze:"
 
 # Path
-#PATH_ROOT <- "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/data"
-PATH_ROOT <- "/home/.bml/Data/Bank6/Robohon_YunShiuan/observer_model_group/benchmark/test_on_human_data/data"
+PATH_ROOT <- "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/data"
+# PATH_ROOT <- "/home/.bml/Data/Bank6/Robohon_YunShiuan/observer_model_group/benchmark/test_on_human_data/data"
 PATH_DATA_INPUT <- file.path(PATH_ROOT, "raw", "S030")
 PATH_TXT_OUTPUT <- file.path(PATH_ROOT, "processed", "S030")
 # File
@@ -31,11 +31,11 @@ PATH_TXT_OUTPUT <- file.path(PATH_ROOT, "processed", "S030")
 parse_coordinate <- function(step_string) {
   coordinate_x <- as.numeric(str_extract(
     string = step_string,
-    pattern = "(?<=\\()\\d"
+    pattern = "(?<=\\()\\d+"
   ))
   coordinate_y <- as.numeric(str_extract(
     string = step_string,
-    pattern = "\\d(?=\\))"
+    pattern = "\\d+(?=\\))"
   ))
   return(list(coordinate_x = coordinate_x, coordinate_y = coordinate_y))
 }
