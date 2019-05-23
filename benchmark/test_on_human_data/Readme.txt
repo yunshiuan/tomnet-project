@@ -33,7 +33,7 @@ Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_ste
 Current training session (v4, commit ???) [At benchmark/human_data]
 Time: 2019/05/23
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v4_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v4_commit_cecb7a_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Use the same set up as v3 but use the data S002a (with epoch = 78600)
 
