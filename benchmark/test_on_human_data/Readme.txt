@@ -30,7 +30,7 @@ Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_ste
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 -----------------------------------------
-Current training session (v3, commit dd21c9) [At benchmark/human_data]
+Finished training session (v3, commit dd21c9) [At benchmark/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v3_commit_dd21c9_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -38,9 +38,19 @@ Output file name: /cache_S030_v3_commit_dd21c9_epoch78600_tuning_batch96_train_s
 (1) Copy codes again directly from benchmark/temporary (v7, commit c8e358).
 (2) Preprocess the txt files by R and convert them to the format of simulated data,
  so no need to adjust the codes at all for human data.
-(3)
-Note:
 
+Note:
+(1) The validation error by batch is not going down but final validation performace is
+not bad though.
+(2) Performace:
+vali: match_estimation()
+Accuracy: 40.46%
+vali: proportion_accuracy()
+Accuracy: 40.46%
+test: match_estimation()
+Accuracy: 38.01%
+test: proportion_accuracy()
+Accuracy: 38.01%
 -----------------------------------------
 Finished training session (v2, commit 4a00dc) [At benchmark/human_data]
 Time: 2019/05/22

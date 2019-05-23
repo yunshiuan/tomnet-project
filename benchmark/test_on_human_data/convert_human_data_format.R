@@ -22,8 +22,8 @@ SYMBOL_AGENT <- "S"
 PADDING_FIRST_ROW <- "Maze:"
 
 # Path
-PATH_ROOT <- "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/data"
-# PATH_ROOT <- "/home/.bml/Data/Bank6/Robohon_YunShiuan/observer_model_group/benchmark/test_on_human_data/data"
+#PATH_ROOT <- "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/data"
+PATH_ROOT <- "/home/.bml/Data/Bank6/Robohon_YunShiuan/observer_model_group/benchmark/test_on_human_data/data"
 PATH_DATA_INPUT <- file.path(PATH_ROOT, "raw", "S030")
 PATH_TXT_OUTPUT <- file.path(PATH_ROOT, "processed", "S030")
 # File
