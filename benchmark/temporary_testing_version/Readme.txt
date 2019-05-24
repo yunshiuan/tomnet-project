@@ -6,10 +6,10 @@ Data path:
 ##################################################################
 
 #########################################
-Current training session (v10, commit ???[At benchmark/temporary]
+Current training session (v10, commit 0b68f9[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v10_commit_???_epoch8000_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v10_commit_0b68f9_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Follow the set up of v8.
 
