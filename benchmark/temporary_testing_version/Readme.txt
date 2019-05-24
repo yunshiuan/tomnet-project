@@ -20,10 +20,10 @@ Note:
 
 
 #########################################
-Current training session (v9, commit ???)[At benchmark/temporary]
+Current training session (v9, commit f1e33a)[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v9_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v9_commit_f1e33a_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Follow the set up of v7.
 Modify:
