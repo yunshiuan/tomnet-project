@@ -6,10 +6,10 @@ Data path:
 ##################################################################
 
 #########################################
-Current training session (v8, commit ???)[At benchmark/temporary]
+Current training session (v8, commit 7d8cff)[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v8_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v8_commit_7d8cff_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 Modify:
 (1) Set everything same as v7, but use steps = 78600 instead of 80000.
