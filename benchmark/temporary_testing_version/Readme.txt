@@ -6,6 +6,23 @@ Data path:
 ##################################################################
 
 #########################################
+Current training session (v8, commit 7d8cff)[At benchmark/temporary]
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v8_commit_7d8cff_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+Modify:
+(1) Set everything same as v7, but use steps = 78600 instead of 80000.
+
+Note:
+(1)
+(2) 
+vali: match_estimation()
+vali: proportion_accuracy()
+test: match_estimation()
+test: proportion_accuracy()
+
+#########################################
 Finished training session (v7, commit 6f14c6)[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan

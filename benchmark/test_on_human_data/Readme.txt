@@ -36,7 +36,23 @@ Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_ste
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 -----------------------------------------
-Current training session (v3, commit dd21c9) [At benchmark/human_data]
+Current training session (v5, commit a207fa) [At benchmark/human_data]
+Time: 2019/05/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S030_v5_commit_a207fa_epoch78600_tuning_batch96_train_step_40M_INIT_LR_10-5
+
+(1) Use the same set up as v3 with 40M steps
+
+-----------------------------------------
+Current training session (v4, commit cecb7a) [At benchmark/human_data]
+Time: 2019/05/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v4_commit_cecb7a_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Use the same set up as v3 but use the data S002a (with epoch = 78600)
+
+-----------------------------------------
+Finished training session (v3, commit dd21c9) [At benchmark/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v3_commit_dd21c9_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -44,9 +60,19 @@ Output file name: /cache_S030_v3_commit_dd21c9_epoch78600_tuning_batch96_train_s
 (1) Copy codes again directly from benchmark/temporary (v7, commit c8e358).
 (2) Preprocess the txt files by R and convert them to the format of simulated data,
  so no need to adjust the codes at all for human data.
-(3)
-Note:
 
+Note:
+(1) The validation error by batch is not going down but final validation performace is
+not bad though.
+(2) Performace:
+vali: match_estimation()
+Accuracy: 40.46%
+vali: proportion_accuracy()
+Accuracy: 40.46%
+test: match_estimation()
+Accuracy: 38.01%
+test: proportion_accuracy()
+Accuracy: 38.01%
 -----------------------------------------
 Finished training session (v2, commit 4a00dc) [At benchmark/human_data]
 Time: 2019/05/22
