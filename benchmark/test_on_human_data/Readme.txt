@@ -16,6 +16,12 @@ Data source:
 
 (4) Use FileZilla SFTP to log in and download files
 
+Note:
+To derive the scores that participants see:
+(1) http://gibms.mc.ntu.edu.tw/phpmyadmin
+(2) See this for account name and password: https://gitlab.com/brain-and-mind-lab/notes-for-bml/bmlab-wiki-home/wikis/server#gibms_server%E6%95%99%E5%AD%B8%E6%96%87%E4%BB%B6
+(3) bmlab/ai_social_game
+(4) Note that the scores that participants see = round(averaged score * (23/9)). The column 'agent1_value' shown is rounded, but the original value to derive the score is not rounded. Rounding occurs after *(23/9).
 data path:
 '/S030'
 
