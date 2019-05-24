@@ -26,3 +26,5 @@ benchmark/test_on_human_data/S030/
 
 *.pdf#
 
+
+*.csv#
