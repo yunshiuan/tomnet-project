@@ -6,13 +6,41 @@ Data path:
 ##################################################################
 
 #########################################
+Current training session (v10, commit ???[At benchmark/temporary]
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v10_commit_???_epoch8000_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Follow the set up of v8.
+
+Modify:
+(1) Use epoch size 80000 to see if the different is a result of the epoch size.
+
+Note:
+
+
+#########################################
+Current training session (v9, commit ???)[At benchmark/temporary]
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v9_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Follow the set up of v7.
+Modify:
+(1) Set offset of validation batch as 0 instead of a random number in order
+to stabilize the result across trials.
+
+Note:
+
+
+#########################################
 Finished training session (v8, commit 7d8cff)[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v8_commit_7d8cff_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 Modify:
-(1) Set everything same as v7, but use steps = 78600 instead of 80000.
+(1) Set everything same as v7, but use epoch size = 78600 instead of 80000.
 
 Note:
 (1) It is not learing... WHY!!???

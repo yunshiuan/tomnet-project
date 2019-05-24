@@ -520,7 +520,7 @@ class Model:
     :param vali_batch_size: int
     :return: 4D numpy array and 1D numpy array
     '''
-    offset = np.random.choice(100 - vali_batch_size, 1)[0]
+    offset = 0 #np.random.choice(100 - vali_batch_size, 1)[0]
     vali_data_batch = vali_data[offset:offset+vali_batch_size, ...]
     vali_label_batch = vali_label[offset:offset+vali_batch_size]
 
@@ -556,8 +556,8 @@ if __name__ == "__main__":
         EPOCH_SIZE = 78600
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S002a_v8_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S002a_v8_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S002a_v9_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S002a_v9_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
