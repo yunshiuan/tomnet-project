@@ -6,6 +6,20 @@ Data path:
 ##################################################################
 
 #########################################
+Current training session (v11, commit ???[At benchmark/temporary]
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v10_commit_0b68f9_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Use the identical version as v7. See what has happened with v8, v9, v10.
+(2) Try 5 times and see if it is because of the random intialization.
+
+Note:
+(1)
+(2)
+
+
+#########################################
 Finished training session (v10, commit 0b68f9[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
