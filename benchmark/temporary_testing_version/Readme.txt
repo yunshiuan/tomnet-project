@@ -6,7 +6,7 @@ Data path:
 ##################################################################
 
 #########################################
-Current training session (v10, commit 0b68f9[At benchmark/temporary]
+Finished training session (v10, commit 0b68f9[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v10_commit_0b68f9_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -17,10 +17,18 @@ Modify:
 (1) Use epoch size 80000 to see if the different is a result of the epoch size.
 
 Note:
+(1) It is not learing... WHY!!??? 
+(2)
+accurary	mode
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
+
 
 
 #########################################
-Current training session (v9, commit f1e33a)[At benchmark/temporary]
+Finished training session (v9, commit f1e33a)[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v9_commit_f1e33a_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -31,6 +39,13 @@ Modify:
 to stabilize the result across trials.
 
 Note:
+(1) It is not learing... WHY!!???
+(2)
+accurary	mode
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
 
 
 #########################################
@@ -112,6 +127,13 @@ Add:
 
 Note: 
 (1) Bad result, not learning at all.
+(2)
+accurary	mode
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
+
 #########################################
 Finished training session (v3, commit 0f83ad) [At benchmark/temporary]
 Time: 2019/05/10
