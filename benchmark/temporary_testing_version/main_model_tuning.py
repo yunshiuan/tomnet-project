@@ -529,17 +529,70 @@ class Model:
   def generate_train_batch(self, train_data, train_labels, train_batch_size):
     '''
     This function helps generate a batch of train data
-    :param train_data: 4D numpy array
-    :param train_labels: 1D numpy array
-    :param train_batch_size: int
-    :return: augmented train batch data and labels. 4D numpy array and 1D numpy array
+
+    Args:
+      :param train_data: 4D numpy array
+      :param train_labels: 1D numpy array
+      :param train_batch_size: int
+      
+    Return: 
+      :batch_data: augmented train batch data. 4D numpy array.
+      :batch_label: augmented train batch labels. 1D numpy array      
     '''
-    
     offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
     batch_data = train_data[offset:offset + train_batch_size, ...]
     batch_label = train_labels[offset:offset + self.BATCH_SIZE_TRAIN]
     
     return batch_data, batch_label
+  
+  def predict_preference_ranking(ckpt_file, dir_testing_maze_txt):
+  #TODO
+  '''
+  This function predicts the target preference.
+
+  Args:
+    :param ckpt_file: The model (full path) to be evaluated.
+    :testing_maze_txt: The dir contains txt files (full path) that contain the maze where 
+    agent is in the center and target all of the same distancs to the agent.
+    
+  Return: 
+    :predicted_preference: softmax probability of (num_classes, 1).
+  '''
+
+ # Initialize a new session and restore a checkpoint
+  saver = tf.train.Saver(tf.all_variables())
+  sess = tf.Session()
+
+
+  saver.restore(sess, ckpt_file)
+  print('Model restored from ', ckpt_file)
+  print('Prediction preference based on  ', dir_testing_maze_txt)
+  
+  # Create the test image and labels placeholders
+  predict_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[BATCH_SIZE_TEST, HEIGHT, WIDTH, DEPTH])
+
+  # Set up the model
+  
+  logits = rn.build_charnet(predict_traj_placeholder, n=NUM_RESIDUAL_BLOCKS, num_classes=NUM_CLASS, reuse=True, train=False)
+  predictions = tf.nn.softmax(logits)
+
+
+
+  test_set_prediction_array = np.array([]).reshape(-1, NUM_CLASS)
+
+  # Test by batches
+  pdb.set_trace()
+  for step in range(num_batches):
+    if step % 10 == 0:
+        print('%i batches finished!' %step)
+    offset = step * self.BATCH_SIZE_TEST
+    test_traj_batch = self.test_data[offset:offset+BATCH_SIZE_TEST, ...]
+
+    batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
+    test_set_prediction_array = np.concatenate((test_set_prediction_array, batch_prediction_array))
+
+  return
+
     
 if __name__ == "__main__":
     tf.reset_default_graph()
@@ -547,8 +600,9 @@ if __name__ == "__main__":
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
-    args = parser.parse_args()	
-    for times in range(1, 4, 1):
+    args = parser.parse_args()
+    
+    for times in range(1, 2, 1):
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
@@ -561,7 +615,7 @@ if __name__ == "__main__":
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
-    
+        
         if args.mode == 'train' or args.mode == 'all':
             model.train()
         if args.mode == 'test' or args.mode == 'all':
@@ -572,3 +626,5 @@ if __name__ == "__main__":
         #del conv
         #del fc_weights
         #del fc_bias
+
+
