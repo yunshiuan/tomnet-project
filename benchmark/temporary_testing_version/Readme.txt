@@ -6,17 +6,46 @@ Data path:
 ##################################################################
 
 #########################################
-Current training session (v11, commit ???[At benchmark/temporary]
+Current training session (v11, commit d2650a[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v10_commit_0b68f9_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Use the identical version as v7. See what has happened with v8, v9, v10.
-(2) Try 5 times and see if it is because of the random intialization.
+(2) Try 4 times and see if it is because of the random intialization.
 
 Note:
-(1)
+(1) It is not learing. It is not because of the random initialization.
+Try an older version of v7!.
 (2)
+1:
+accurary	mode
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
+
+2:
+accurary	mode
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
+
+3:
+accurary	mode
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
+
+4:
+accurary	mode
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
+
 
 
 #########################################
@@ -38,8 +67,6 @@ accurary	mode
 30.79%	vali_match_estimation
 31.89%	test_proportion
 31.89%	test_match_estimation
-
-
 
 #########################################
 Finished training session (v9, commit f1e33a)[At benchmark/temporary]
