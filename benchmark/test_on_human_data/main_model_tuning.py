@@ -556,8 +556,8 @@ if __name__ == "__main__":
         EPOCH_SIZE = 78600 #9829*0.8*10
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S030_v5_commit_a207fa_epoch78600_tuning_batch96_train_step_40M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S030_v5_commit_a207fa_epoch78600_tuning_batch96_train_step_40M_INIT_LR_10-5_' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S030_v6_commit_???_epoch78600_tuning_batch96_train_step_40M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S030_v6_commit_???_epoch78600_tuning_batch96_train_step_40M_INIT_LR_10-5_' + str(times)
         #sub_dir = '/../S002a/'
         sub_dir='/data/processed/S030/'
 
