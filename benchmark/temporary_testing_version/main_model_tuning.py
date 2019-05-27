@@ -11,6 +11,7 @@ import data_handler as dh
 import argparse
 import itertools
 import pdb
+import re
 
 
 
@@ -545,59 +546,95 @@ class Model:
     
     return batch_data, batch_label
   
-  def predict_preference_ranking(self, ckpt_file, dir_testing_maze_txt):
+  def predict_preference_ranking(self, ckpt_meta_file, dir_testing_maze_txt):
     '''
     This function predicts the target preference.
+    See this tutorial for detail about restoring model:
+    https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
   
     Args:
-      :param ckpt_file: The model (full path) to be evaluated.
+      :param ckpt_meta_file: The model (full path) meta file to be evaluated.
       :testing_maze_txt: The dir contains txt files (full path) that contain the maze where 
       agent is in the center and target all of the same distancs to the agent.
       
     Return: 
       :predicted_preference: softmax probability of (num_classes, 1).
     '''
-  
-   # Initialize a new session and restore a checkpoint
+    # ------------------------------------------------
+    # Process the data for making preference ranking predictions
+    # ------------------------------------------------
+    # pdb.set_trace()
+    directory = os.path.join(os.getcwd(), dir_testing_maze_txt)
+    data_handler = dh.DataHandler(directory)
+    
+    # Only read the txt files
+    files = os.listdir(directory)
+    # Filter out the csv file (only read the txt files) 
+    r = re.compile(".*.txt") 
+    files = list(filter(r.match, files)) # Read Note  
+    #file_full_path = os.path.join(directory,files[0])
+    self.prediction_data = data_handler.parse_subset_maze_with_no_steps(directory, files)
     #pdb.set_trace()
-    num_test_trajs = len(self.test_data)
+   
+    # ------------------------------------------------
+    # Import the saved graph and restore the parameters
+    # ------------------------------------------------
+    # pdb.set_trace()
+
+    # Create the test image and labels placeholders
+#    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TEST, self.HEIGHT, self.WIDTH, self.DEPTH])
+#    sess = tf.Session()   
+#    saver = tf.train.import_meta_graph(ckpt_meta_file)
+#    # get rid of '.meta'
+#    path_formated_for_restore = re.sub(".meta$","",ckpt_meta_file)
+#    path_formated_for_restore = os.path.join('.',path_formated_for_restore)
+#    saver.restore(sess,(path_formated_for_restore))
+#      
+#    graph = tf.get_default_graph()
+#    logits = graph.get_tensor_by_name("fc")
+#    predictions = tf.nn.softmax(logits)
+    
+    logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=False)
+    predictions = tf.nn.softmax(logits)
+
+    # Initialize a new session and restore a checkpoint
+    saver = tf.train.import_meta_graph(ckpt_meta_file)
+    sess = tf.Session()
+    path_formated_for_restore = re.sub(".meta$","",ckpt_meta_file)
+    path_formated_for_restore = os.path.join('.',path_formated_for_restore)
+    saver.restore(sess,(path_formated_for_restore))
+
+
+    # Now, let's access and create placeholders variables and
+    # create feed-dict to feed new data
+
+    #Now, access the op that you want to run. 
+    
+    # Initialize a new session and restore a checkpoint
+    print('\n ----------------------------------------')
+    print('Model restored from: \n', ckpt_meta_file)
+    print('\n ----------------------------------------')
+    print('Prediction preference based on: \n  ', dir_testing_maze_txt)
+    print('\n ----------------------------------------')
+
+    # ------------------------------------------------
+    # Make predictions
+    # ------------------------------------------------
+    pdb.set_trace()
+    num_test_trajs = len(self.prediction_data)
     num_batches = num_test_trajs // self.BATCH_SIZE_TEST
     # remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
     print('%i test batches in total...' %num_batches)
-
-    # Create the test image and labels placeholders
-    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TEST, self.HEIGHT, self.WIDTH, self.DEPTH])
-
-    # Build the test graph
-    pdb.set_trace()
-    logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=tf.AUTO_REUSE, train=False)
-    predictions = tf.nn.softmax(logits)
     
-    saver = tf.train.Saver(tf.all_variables())
-    sess = tf.Session()
-  
-  
-    saver.restore(sess, ckpt_file)
-    print('Model restored from ', ckpt_file)
-    print('Prediction preference based on  ', dir_testing_maze_txt)
-    
-    # Create the test image and labels placeholders
-    predict_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[BATCH_SIZE_TEST, HEIGHT, WIDTH, DEPTH])
-  
-    # Set up the model
-    
-    logits = rn.build_charnet(predict_traj_placeholder, n=NUM_RESIDUAL_BLOCKS, num_classes=NUM_CLASS, reuse=True, train=False)
-    predictions = tf.nn.softmax(logits)
-  
-  
-  
-    test_set_prediction_array = np.array([]).reshape(-1, NUM_CLASS)
+    test_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
   
     # Test by batches
-    pdb.set_trace()
+    # pdb.set_trace()
     for step in range(num_batches):
       if step % 10 == 0:
           print('%i batches finished!' %step)
+          
+
       offset = step * self.BATCH_SIZE_TEST
       test_traj_batch = self.test_data[offset:offset+BATCH_SIZE_TEST, ...]
   
@@ -631,9 +668,9 @@ if __name__ == "__main__":
         
         #############
         # Make prediction based on a trained model
-        ckpt_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999'
+        ckpt_meta_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999.meta'
         dir_testing_maze_txt = 'data_for_making_preference_predictions'
-        model.predict_preference_ranking(ckpt_file, dir_testing_maze_txt)
+        model.predict_preference_ranking(ckpt_meta_file, dir_testing_maze_txt)
         #############
         if args.mode == 'train' or args.mode == 'all':
             model.train()
