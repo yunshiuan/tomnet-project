@@ -548,7 +548,7 @@ if __name__ == "__main__":
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
     args = parser.parse_args()	
-    for times in range(1, 2, 1):
+    for times in range(1, 4, 1):
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
@@ -556,8 +556,8 @@ if __name__ == "__main__":
         EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S002a_v7_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S002a_v7_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S002a_v12_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S002a_v12_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
