@@ -36,6 +36,16 @@ Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_ste
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 -----------------------------------------
+
+Finished training session (v6, commit ???) [At benchmark/human_data]
+Time: 2019/05/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S030_v6_commit_???_epoch78600_tuning_batch96_train_step_40M_INIT_LR_10-5
+
+(1) Fix LSTM layer.
+Note:
+(1) 
+-----------------------------------------
 Finished training session (v5, commit a207fa) [At benchmark/human_data]
 Time: 2019/05/23
 Author: Chuang, Yun-Shiuan
