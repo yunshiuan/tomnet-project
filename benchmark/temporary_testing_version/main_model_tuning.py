@@ -668,9 +668,9 @@ if __name__ == "__main__":
         
         #############
         # Make prediction based on a trained model
-        ckpt_meta_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999.meta'
-        dir_testing_maze_txt = 'data_for_making_preference_predictions'
-        model.predict_preference_ranking(ckpt_meta_file, dir_testing_maze_txt)
+        #ckpt_meta_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999.meta'
+        #dir_testing_maze_txt = 'data_for_making_preference_predictions'
+        #model.predict_preference_ranking(ckpt_meta_file, dir_testing_maze_txt)
         #############
         if args.mode == 'train' or args.mode == 'all':
             model.train()

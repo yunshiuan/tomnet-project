@@ -4,6 +4,19 @@ The codes root from Edwinn's codes with step-by-step modification.
 Data path:
 '/../S002a'
 ##################################################################
+Current training session (v13, commit ???)[At benchmark/temporary]
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v13_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Reume to v8 , with the LSTM issue fixed.
+
+Note:
+(1)
+(2) 
+
+
+#########################################
 
 Finished training session (v12, commit 62c0e8[At benchmark/temporary]
 Time: 2019/05/10
@@ -16,6 +29,10 @@ refresh the S002a data.
 Note:
 (1) It actually works! WOW! What's happened between the newer v7 (as in v11)
 and older v7 (as in v12) ?
+-> I found the reason! It is because v8~v11 is based on v4 version 
+(commit 71297d, where the final state is extracted from LSTM
+ instead of the real v7)
+
 (2)
 1.
 45.23%	vali_proportion
