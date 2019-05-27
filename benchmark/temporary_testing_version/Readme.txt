@@ -5,17 +5,34 @@ Data path:
 '/../S002a'
 ##################################################################
 
-Current training session (v12, commit ???[At benchmark/temporary]
+Finished training session (v12, commit 62c0e8[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v12_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v12_commit_62c0e8_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Try an older version of v7 and see if it works. If not, then I should probably
 refresh the S002a data.
 
 Note:
-
-
+(1) It actually works! WOW! What's happened between the newer v7 (as in v11)
+and older v7 (as in v12) ?
+(2)
+1.
+45.23%	vali_proportion
+45.27%	vali_match_estimation
+BUG	test_proportion
+30.54%	test_match_estimation
+2.
+52.07%	vali_proportion
+52.0%	vali_match_estimation
+BUG	test_proportion
+30.12%	test_match_estimation
+3.
+accurary	mode
+46.8%	vali_proportion
+46.9%	vali_match_estimation
+BUG	test_proportion
+28.81%	test_match_estimation
 
 #########################################
 Finished training session (v11, commit d2650a[At benchmark/temporary]
