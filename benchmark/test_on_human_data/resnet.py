@@ -113,7 +113,7 @@ def lstm_layer(input_layer, train, num_classes):
     # outputs.shape = (batch_size, time_steps, num_hidden)
     # final_state[-1] = (batch_size, num_hidden)
     
-#    outputs = tf.reshape(outputs, [-1, num_hidden])
+    outputs = tf.reshape(outputs, [-1, num_hidden])
     
     W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
     b = tf.get_variable(name='b_out', shape=[num_classes], dtype=tf.float32, initializer=tf.constant_initializer())
