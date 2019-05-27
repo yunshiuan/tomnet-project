@@ -114,15 +114,15 @@ def lstm_layer(input_layer, train, num_classes):
     # final_state[-1] = (batch_size, num_hidden)
     
 #    outputs = tf.reshape(outputs, [-1, num_hidden])
-#    
-#    W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
-#    b = tf.get_variable(name='b_out', shape=[num_classes], dtype=tf.float32, initializer=tf.constant_initializer())
-#
-#    #Linear output
-#    lstm_h = tf.matmul(outputs, W) + b
-#    shape = lstm_input.shape
-#    lstm_h = tf.reshape(lstm_h, [shape[0], -1, num_classes])
-    return final_state[-1]
+    
+    W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
+    b = tf.get_variable(name='b_out', shape=[num_classes], dtype=tf.float32, initializer=tf.constant_initializer())
+
+    #Linear output
+    lstm_h = tf.matmul(outputs, W) + b
+    shape = lstm_input.shape
+    lstm_h = tf.reshape(lstm_h, [shape[0], -1, num_classes])
+    return lstm_h
 
 def output_layer(input_layer, num_labels):
     '''
@@ -173,9 +173,9 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     # pdb.set_trace()
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
-        # global_pool = tf.reduce_mean(layers[-1], [1])
-        # assert global_pool.get_shape().as_list()[-1:] == [num_classes]
-        output = output_layer(layers[-1], num_classes)
+        global_pool = tf.reduce_mean(layers[-1], [1])
+        assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+        output = output_layer(global_pool, num_classes)
         layers.append(output)
     
     return layers[-1]
