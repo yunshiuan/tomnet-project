@@ -5,8 +5,20 @@ Data path:
 '/../S002a'
 ##################################################################
 
+Current training session (v12, commit ???[At benchmark/temporary]
+Time: 2019/05/10
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v12_commit_???_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Try an older version of v7 and see if it works. If not, then I should probably
+refresh the S002a data.
+
+Note:
+
+
+
 #########################################
-Current training session (v11, commit d2650a[At benchmark/temporary]
+Finished training session (v11, commit d2650a[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v10_commit_0b68f9_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -45,8 +57,6 @@ accurary	mode
 30.79%	vali_match_estimation
 31.89%	test_proportion
 31.89%	test_match_estimation
-
-
 
 #########################################
 Finished training session (v10, commit 0b68f9[At benchmark/temporary]
