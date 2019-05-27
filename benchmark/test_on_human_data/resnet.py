@@ -173,9 +173,9 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     # pdb.set_trace()
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
-        # global_pool = tf.reduce_mean(layers[-1], [1])
-        # assert global_pool.get_shape().as_list()[-1:] == [num_classes]
-        output = output_layer(layers[-1], num_classes)
+        global_pool = tf.reduce_mean(layers[-1], [1])
+        assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+        output = output_layer(global_pool, num_classes)
         layers.append(output)
     
     return layers[-1]

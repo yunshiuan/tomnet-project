@@ -130,9 +130,9 @@ def output_layer(input_layer, num_labels):
     :param num_labels: int. How many output labels in total?
     :return: output layer Y = WX + B
     '''
-    
+    #pdb.set_trace()    
     input_dim = input_layer.get_shape().as_list()[-1]
-
+    
     fc_w = create_variables(name='fc_weights', shape=[input_dim, num_labels], is_fc_layer=True, initializer=tf.uniform_unit_scaling_initializer(factor=1.0))
     fc_b = create_variables(name='fc_bias', shape=[num_labels], is_fc_layer=True, initializer=tf.zeros_initializer())
     fc_h = tf.matmul(input_layer, fc_w) + fc_b
@@ -173,9 +173,9 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
     # pdb.set_trace()
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
-        # global_pool = tf.reduce_mean(layers[-1], [1])
-        # assert global_pool.get_shape().as_list()[-1:] == [num_classes]
-        output = output_layer(layers[-1], num_classes)
+        global_pool = tf.reduce_mean(layers[-1], [1])
+        assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+        output = output_layer(global_pool, num_classes)
         layers.append(output)
     
     return layers[-1]
