@@ -1,0 +1,5 @@
+,matches,accurary,mode
+0,4516/9984,45.23%,vali_proportion
+1,4520/9984,45.27%,vali_match_estimation
+0,4501/9984,45.08%,test_proportion
+1,3049/9984,30.54%,test_match_estimation
