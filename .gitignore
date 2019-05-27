@@ -24,3 +24,5 @@ benchmark/S002a/
 
 
 *.pdf#
+
+*.csv#
