@@ -4,10 +4,10 @@ The codes root from Edwinn's codes with step-by-step modification.
 Data path:
 '/../S002a'
 ##################################################################
-Current training session (v13, commit ???)[At benchmark/temporary]
+Current training session (v13, commit 62cae2)[At benchmark/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v13_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v13_commit_62cae2_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Reume to v8 , with the LSTM issue fixed.
 
