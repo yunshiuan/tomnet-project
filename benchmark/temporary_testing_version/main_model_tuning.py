@@ -39,7 +39,7 @@ class Model:
   #ckpt_path = 'cache_S002a_10000files/logs/model.ckpt'
   #train_path = 'cache_S002a_10000files/train/'
 
-  def __init__(self, args, BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE, DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir):
+  def __init__(self, args, BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE, DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir, subset_size):
     
     ckpt_path = ckpt_fname + '/logs/model.ckpt'
     train_path = train_fname + '/train/'
@@ -67,9 +67,9 @@ class Model:
 
     
     #Load data
-    dir = os.getcwd() + sub_dir
+    dir = os.path.join(os.getcwd(), sub_dir)
     data_handler = dh.DataHandler(dir)
-    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)
+    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels = data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle, subset_size = subset_size)
     
             
   def _create_graphs(self):
@@ -129,13 +129,14 @@ class Model:
 
     for step in range(self.TRAIN_STEPS):
       #Generate batches for training and validation
-      # pdb.set_trace()
+      #pdb.set_trace()
       train_batch_data, train_batch_labels = self.generate_train_batch(self.train_data, self.train_labels, self.BATCH_SIZE_TRAIN)
       validation_batch_data, validation_batch_labels = self.generate_vali_batch(self.vali_data, self.vali_labels, self.BATCH_SIZE_VAL)
 
       #Validate first?
       if step % self.REPORT_FREQ == 0:
         if self.FULL_VALIDATION:
+          pass
           # validation_loss_value, validation_error_value = self.full_validation(loss=self.vali_loss, top1_error=self.vali_top1_error, vali_data=vali_data, vali_labels=vali_labels, session=sess, batch_data=train_batch_data, batch_label=train_batch_labels)
     
           # vali_summ = tf.Summary()
@@ -144,7 +145,7 @@ class Model:
           # summary_writer.flush()
         
         else:
-          # pdb.set_trace()
+          #pdb.set_trace()
           _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss], {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
         
           val_error_list.append(validation_error_value)
@@ -658,21 +659,26 @@ if __name__ == "__main__":
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
         TRAIN_STEPS = 50000
-        EPOCH_SIZE = 80000
+        EPOCH_SIZE = 78600
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
+
+        subset_size = -1
         # path_mode = '.'
-        path_mode = './../test_on_human_data/'
-        ckpt_fname = 'training_result/caches/cache_S030_v7_commit_???_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S030_v7_commit_???_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
-        sub_dir='/../S002a/'
+        path_mode =  '../test_on_human_data/' # Necessary when the output dir and script dir is different
+        ckpt_fname = 'training_result/caches/cache_S030_v7_commit_0050d9_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S030_v7_commit_0050d9_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
+        sub_dir='data/processed/S030/'
         ckpt_fname = os.path.join(path_mode,ckpt_fname)
         train_fname = os.path.join(path_mode,train_fname)
-        sub_dir = os.path.join(path_mode,tsub_dir)
-
-
-        model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
+        sub_dir = os.path.join(path_mode,sub_dir)
+        # pdb.set_trace()
         
+
+
+        model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir, subset_size)
+        # pdb.set_trace()
+
         #############
         # Make prediction based on a trained model
         #ckpt_meta_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999.meta'

@@ -18,13 +18,22 @@ class DataHandler(object):
         #self.find_max_path(dir)
         pass
 
-    def parse_trajectories(self, directory, mode, shuf):
+    def parse_trajectories(self, directory, mode, shuf, subset_size = -1):
+        ''' 
+          Args: 
+          :param subset_size: The size of the subset (number of files) to be parsed.  
+            Default to the special number -1, which means using all the files in  
+            the directory. When testing the code, this could help reducing the parsing time. 
+ 
+        ''' 
         
         #Make a trajectory with each step same label
         files = os.listdir(directory)
         # Filter out the csv file (only read the txt files) 
         r = re.compile(".*.txt") 
         files = list(filter(r.match, files)) # Read Note    
+        if subset_size != -1: 
+          files = files[0:subset_size]   
 
         print('Found', len(files), 'files in', directory)
         
