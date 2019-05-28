@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.contrib import rnn
+import pdb
 
 BN_EPSILON = 0.001
 WEIGHT_DECAY = 0.00002
@@ -73,7 +74,7 @@ def lstm_layer(input_layer, train, num_classes):
     num_hidden = 64
     # batch_size = 16 # get from the input_layer directly
     # out_channels = 11 #get from the input_layer directly
-    output_keep_prob = 0.8
+    output_keep_prob = 0.8 # regularization for LSTM
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -82,9 +83,11 @@ def lstm_layer(input_layer, train, num_classes):
     
     lstm_input = tf.transpose(input_layer,[0,2,1,3])
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
-    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
+    # seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
+    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]],0)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     if train:
+        # pdb.set_trace()
         cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
@@ -95,7 +98,21 @@ def lstm_layer(input_layer, train, num_classes):
 
     initial_state = cell.zero_state(batch_size, dtype=tf.float32)
 
-    outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
+    # pdb.set_trace()
+    
+
+    # lstm_input = (batch_size, time_steps, input_channels (= num_filters x feature_w))
+    # sequence_length = (batch_size) 
+    # - An int32/int64 vector sized [batch_size]. 
+    # - Used to copy-through state and zero-out outputs when 
+    # - past a batch element's sequence length. 
+    # - So it's more for performance than correctness.
+    # initial_state = (batch_size, num_hiddens)
+    
+    outputs, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
+    # outputs.shape = (batch_size, time_steps, num_hidden)
+    # final_state[-1] = (batch_size, num_hidden)
+    
     outputs = tf.reshape(outputs, [-1, num_hidden])
     
     W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
@@ -113,9 +130,9 @@ def output_layer(input_layer, num_labels):
     :param num_labels: int. How many output labels in total?
     :return: output layer Y = WX + B
     '''
-    
+    #pdb.set_trace()    
     input_dim = input_layer.get_shape().as_list()[-1]
-
+    
     fc_w = create_variables(name='fc_weights', shape=[input_dim, num_labels], is_fc_layer=True, initializer=tf.uniform_unit_scaling_initializer(factor=1.0))
     fc_b = create_variables(name='fc_bias', shape=[num_labels], is_fc_layer=True, initializer=tf.zeros_initializer())
     fc_h = tf.matmul(input_layer, fc_w) + fc_b
@@ -153,7 +170,7 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         
     #TODO:One convolutional layer
 
-
+    # pdb.set_trace()
     #Fully connected
     with tf.variable_scope('fc', reuse=reuse):
         global_pool = tf.reduce_mean(layers[-1], [1])

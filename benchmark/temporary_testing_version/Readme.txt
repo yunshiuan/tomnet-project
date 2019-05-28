@@ -6,12 +6,27 @@ Data path:
 
 ##################################################################
 
-Current training session (v16, commit 324934)[At benchmark/temporary]
-Time: 2019/05/27
+Future training session (v17, commit 324934)[At benchmark/temporary]
+Time: 2019/05/28
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v16_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v17_commit_???_epoch78600_tuning_batch96_train_step_0.5M_INIT_LR_10-5
+    
+    
+(1) Cherrypick useful commits after older v7.
+    (1) Set offset = 0 for validation batch to stabalize results.
+    
+##################################################################
 
-(1) Set offset = 0 for validation batch to stabalize results.
+Current training session (v16, commit 324934)[At benchmark/temporary]
+Time: 2019/05/28
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v16_commit_???_epoch78600_tuning_batch96_train_step_0.5M_INIT_LR_10-5
+    
+(1) Replace the scripts by v15 (older v7).
+(2) Put the deprecated script to the folder 'scripts_not_working_v8'
+
+Note
+(1)
 
 ##################################################################
 

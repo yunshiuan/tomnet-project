@@ -11,6 +11,7 @@ import data_handler as dh
 import argparse
 import itertools
 import pdb
+import re
 
 
 
@@ -520,7 +521,7 @@ class Model:
     :param vali_batch_size: int
     :return: 4D numpy array and 1D numpy array
     '''
-    offset = np.random.choice(100 - vali_batch_size, 1)[0]
+    offset = 0 #np.random.choice(100 - vali_batch_size, 1)[0]
     vali_data_batch = vali_data[offset:offset+vali_batch_size, ...]
     vali_label_batch = vali_label[offset:offset+vali_batch_size]
 
@@ -529,17 +530,119 @@ class Model:
   def generate_train_batch(self, train_data, train_labels, train_batch_size):
     '''
     This function helps generate a batch of train data
-    :param train_data: 4D numpy array
-    :param train_labels: 1D numpy array
-    :param train_batch_size: int
-    :return: augmented train batch data and labels. 4D numpy array and 1D numpy array
+
+    Args:
+      :param train_data: 4D numpy array
+      :param train_labels: 1D numpy array
+      :param train_batch_size: int
+      
+    Return: 
+      :batch_data: augmented train batch data. 4D numpy array.
+      :batch_label: augmented train batch labels. 1D numpy array      
     '''
-    
     offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
     batch_data = train_data[offset:offset + train_batch_size, ...]
     batch_label = train_labels[offset:offset + self.BATCH_SIZE_TRAIN]
     
     return batch_data, batch_label
+  
+  def predict_preference_ranking(self, ckpt_meta_file, dir_testing_maze_txt):
+    '''
+    This function predicts the target preference.
+    See this tutorial for detail about restoring model:
+    https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
+  
+    Args:
+      :param ckpt_meta_file: The model (full path) meta file to be evaluated.
+      :testing_maze_txt: The dir contains txt files (full path) that contain the maze where 
+      agent is in the center and target all of the same distancs to the agent.
+      
+    Return: 
+      :predicted_preference: softmax probability of (num_classes, 1).
+    '''
+    # ------------------------------------------------
+    # Process the data for making preference ranking predictions
+    # ------------------------------------------------
+    # pdb.set_trace()
+    directory = os.path.join(os.getcwd(), dir_testing_maze_txt)
+    data_handler = dh.DataHandler(directory)
+    
+    # Only read the txt files
+    files = os.listdir(directory)
+    # Filter out the csv file (only read the txt files) 
+    r = re.compile(".*.txt") 
+    files = list(filter(r.match, files)) # Read Note  
+    #file_full_path = os.path.join(directory,files[0])
+    self.prediction_data = data_handler.parse_subset_maze_with_no_steps(directory, files)
+    #pdb.set_trace()
+   
+    # ------------------------------------------------
+    # Import the saved graph and restore the parameters
+    # ------------------------------------------------
+    # pdb.set_trace()
+
+    # Create the test image and labels placeholders
+#    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TEST, self.HEIGHT, self.WIDTH, self.DEPTH])
+#    sess = tf.Session()   
+#    saver = tf.train.import_meta_graph(ckpt_meta_file)
+#    # get rid of '.meta'
+#    path_formated_for_restore = re.sub(".meta$","",ckpt_meta_file)
+#    path_formated_for_restore = os.path.join('.',path_formated_for_restore)
+#    saver.restore(sess,(path_formated_for_restore))
+#      
+#    graph = tf.get_default_graph()
+#    logits = graph.get_tensor_by_name("fc")
+#    predictions = tf.nn.softmax(logits)
+    
+    logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=False)
+    predictions = tf.nn.softmax(logits)
+
+    # Initialize a new session and restore a checkpoint
+    saver = tf.train.import_meta_graph(ckpt_meta_file)
+    sess = tf.Session()
+    path_formated_for_restore = re.sub(".meta$","",ckpt_meta_file)
+    path_formated_for_restore = os.path.join('.',path_formated_for_restore)
+    saver.restore(sess,(path_formated_for_restore))
+
+
+    # Now, let's access and create placeholders variables and
+    # create feed-dict to feed new data
+
+    #Now, access the op that you want to run. 
+    
+    # Initialize a new session and restore a checkpoint
+    print('\n ----------------------------------------')
+    print('Model restored from: \n', ckpt_meta_file)
+    print('\n ----------------------------------------')
+    print('Prediction preference based on: \n  ', dir_testing_maze_txt)
+    print('\n ----------------------------------------')
+
+    # ------------------------------------------------
+    # Make predictions
+    # ------------------------------------------------
+    pdb.set_trace()
+    num_test_trajs = len(self.prediction_data)
+    num_batches = num_test_trajs // self.BATCH_SIZE_TEST
+    # remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
+    print('%i test batches in total...' %num_batches)
+    
+    test_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
+  
+    # Test by batches
+    # pdb.set_trace()
+    for step in range(num_batches):
+      if step % 10 == 0:
+          print('%i batches finished!' %step)
+          
+
+      offset = step * self.BATCH_SIZE_TEST
+      test_traj_batch = self.test_data[offset:offset+BATCH_SIZE_TEST, ...]
+  
+      batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
+      test_set_prediction_array = np.concatenate((test_set_prediction_array, batch_prediction_array))
+  
+    return
+
     
 if __name__ == "__main__":
     tf.reset_default_graph()
@@ -547,8 +650,9 @@ if __name__ == "__main__":
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
-    args = parser.parse_args()	
-    for times in range(1, 4, 1):
+    args = parser.parse_args()
+    
+    for times in range(1, 2, 1):
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
@@ -561,7 +665,13 @@ if __name__ == "__main__":
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
-    
+        
+        #############
+        # Make prediction based on a trained model
+        #ckpt_meta_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999.meta'
+        #dir_testing_maze_txt = 'data_for_making_preference_predictions'
+        #model.predict_preference_ranking(ckpt_meta_file, dir_testing_maze_txt)
+        #############
         if args.mode == 'train' or args.mode == 'all':
             model.train()
         if args.mode == 'test' or args.mode == 'all':
@@ -572,3 +682,5 @@ if __name__ == "__main__":
         #del conv
         #del fc_weights
         #del fc_bias
+
+
