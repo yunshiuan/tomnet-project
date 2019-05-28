@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.contrib import rnn
+import pdb
 
 BN_EPSILON = 0.001
 WEIGHT_DECAY = 0.00002
@@ -73,7 +74,7 @@ def lstm_layer(input_layer, train, num_classes):
     num_hidden = 64
     # batch_size = 16 # get from the input_layer directly
     # out_channels = 11 #get from the input_layer directly
-    output_keep_prob = 0.8
+    output_keep_prob = 0.8 # regularization for LSTM
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())
@@ -82,9 +83,10 @@ def lstm_layer(input_layer, train, num_classes):
     
     lstm_input = tf.transpose(input_layer,[0,2,1,3])
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
-    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
+    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], 0)
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     if train:
+        # pdb.set_trace()
         cell = tf.nn.rnn_cell.DropoutWrapper(cell=cell, output_keep_prob=output_keep_prob)
 
     #cell1 = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
@@ -94,8 +96,19 @@ def lstm_layer(input_layer, train, num_classes):
     #stack = tf.nn.rnn_cell.MultiRNNCell([cell, cell1], state_is_tuple=True)
 
     initial_state = cell.zero_state(batch_size, dtype=tf.float32)
+    
+    # pdb.set_trace()
+    
 
-    outputs, _ = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
+    # lstm_input = (batch_size, time_steps, input_channels (= num_filters x feature_w))
+    # sequence_length = (batch_size) 
+    # - An int32/int64 vector sized [batch_size]. 
+    # - Used to copy-through state and zero-out outputs when 
+    # - past a batch element's sequence length. 
+    # - So it's more for performance than correctness.
+    # initial_state = (batch_size, num_hiddens)
+    
+    outputs, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
     outputs = tf.reshape(outputs, [-1, num_hidden])
     
     W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
