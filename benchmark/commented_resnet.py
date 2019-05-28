@@ -339,7 +339,9 @@ def lstm_layer(input_layer, train, num_classes):
     # An int32/int64 vector sized [batch_size]. 
     # Used to copy-through state and zero-out outputs when past a batch 
     # element's sequence length. So it's more for performance than correctness.
-    seq_len = tf.fill([batch_size], 0)
+    # (should be a vector of length batch_size, with each element represents the length of the
+    # input)
+    seq_len = tf.fill([batch_size], time_steps)
 
     # cell:
     # the cell will be fed in to 
