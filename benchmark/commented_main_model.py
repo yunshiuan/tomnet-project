@@ -10,10 +10,13 @@ import sys
 import time
 import math
 import datetime
-import numpy as np
+import numpy as npc
 import pandas as pd
 import tensorflow as tf
 import commented_resnet as rn
+import sys
+#sys.path.insert(0, '/temporary_testing_version')
+#import data_handler as dh
 import commented_data_handler as dh
 import argparse
 import itertools
@@ -45,7 +48,6 @@ class Model:
   
   # --------------------------------------
 #  ## for testing on the local machine with 1000 files and few steps
-# human_data = True
 #  subset_size = 1000
 #
 #  EPOCH_SIZE = 8000
@@ -67,13 +69,13 @@ class Model:
   # with a train:dev:test = 8:2:2 split,
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
-  human_data = False
   
   EPOCH_SIZE = 80000
   subset_size = -1 # use all files
 
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
+  
   TRAIN_STEPS = 50000
 
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
@@ -165,7 +167,7 @@ class Model:
     # during data_handler.parse_trajectories()
     
     # pdb.set_trace()
-    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_trajectories(dir,mode=args.mode,shuf=args.shuffle, human_data = self.human_data, subset_size = self.subset_size)
+    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_trajectories(dir,mode=args.mode,shuf=args.shuffle, subset_size = self.subset_size)
     # on my local machine: 
     # 'S002_83.txt', 'S002_97.txt', 'S002_68.txt', 'S002_40.txt', 'S002_54.txt', 'S002_55.txt'
     #print('End of __init__-----------------')
