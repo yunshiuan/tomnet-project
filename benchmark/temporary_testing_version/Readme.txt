@@ -4,22 +4,40 @@ The codes root from Edwinn's codes with step-by-step modification.
 Data path:
 '/../S002a'
 ##################################################################
+
+Future training session (v14, commit ???)[At benchmark/temporary]
+Time: 2019/05/27
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v14_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Try to identify the differences other than the LSTM issue.
+(2) See if setting epoch size to 80000 would make a difference.
+
+Note:
+
+#########################################
+
 Current training session (v13, commit 62cae2)[At benchmark/temporary]
-Time: 2019/05/10
+Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v13_commit_62cae2_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
-(1) Reume to v8 , with the LSTM issue fixed.
+(1) Resume to v8 , with the LSTM issue fixed.
 
 Note:
-(1)
+(1) Is is still NOT learning! It should not only because of the LSTM issue.
+There should be something else.
 (2) 
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
 
 
 #########################################
 
 Finished training session (v12, commit 62c0e8[At benchmark/temporary]
-Time: 2019/05/10
+Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v12_commit_62c0e8_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
 
