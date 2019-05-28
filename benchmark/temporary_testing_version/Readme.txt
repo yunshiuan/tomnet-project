@@ -24,6 +24,16 @@ Output file name: /cache_S002a_v17_commit_99cc5f_epoch78600_tuning_batch96_train
     seq_len = tf.fill([lstm_input.get_shape().as_list()[0]],0)
     See this for details:
     https://stackoverflow.com/questions/34670112/how-to-deal-with-batches-with-variable-length-sequences-in-tensorflow
+
+Note:
+(1) It is leanring.
+(2) 
+accurary	mode
+51.67%	vali_proportion
+51.79%	vali_match_estimation
+49.83%	test_proportion
+50.1%	test_match_estimation
+
 ##################################################################
 
 Current training session (v16, commit a01ef9)[At benchmark/temporary]
