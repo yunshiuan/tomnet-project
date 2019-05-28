@@ -3,9 +3,23 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 Data path:
 '/../S002a'
+
 ##################################################################
 
-Current training session (v14, commit 1f58ab)[At benchmark/temporary]
+Finished training session (v15, commit ??)[At benchmark/temporary]
+Time: 2019/05/27
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v15_commit_??_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Use the older v7 (as in v12)
+(2) Set epoch size to 78600. See if it is the epoch size that matters.
+
+Note:
+(1)
+
+##################################################################
+
+Finished training session (v14, commit 1f58ab)[At benchmark/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_1f58ab_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -13,12 +27,21 @@ Output file name: /cache_S002a_v14_commit_1f58ab_epoch78600_tuning_batch96_train
 (1) Try to identify the differences other than the LSTM issue.
 (2) Identify other differences:
 	(1)Add in regularization for LSTM (keep_prob = 0.8)
+(3) Note that I still use offset = 0 (instead of #np.random.choice(100 - vali_batch_size, 1)[0]) 
+to stabilize the batch-wise validation results. 
+
 
 Note:
+(1) It is still not learning!
+(2) 
+30.79%	vali_proportion
+30.79%	vali_match_estimation
+31.89%	test_proportion
+31.89%	test_match_estimation
 
 #########################################
 
-Current training session (v13, commit 62cae2)[At benchmark/temporary]
+Finished training session (v13, commit 62cae2)[At benchmark/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v13_commit_62cae2_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
