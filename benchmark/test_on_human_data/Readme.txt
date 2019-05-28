@@ -35,6 +35,9 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
+(2) Daprecate the scripts in this folder. Use the scripts in 'temporary'
+and set the output to here. This is because the human data format is identical to 
+the simulated data (thanks to the R script), sso there is no need to separate two set of scripts.
 -----------------------------------------
 
 Current training session (v6, commit f912f8) [At benchmark/human_data]
