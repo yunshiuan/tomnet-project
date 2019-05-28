@@ -4,6 +4,8 @@ import numpy as np
 from random import shuffle
 from utils import plot_trajectory
 import re
+import pdb
+
 
 class DataHandler(object):
 
@@ -180,7 +182,112 @@ class DataHandler(object):
         
         fp.close()
         return output, label
+    def parse_subset_maze_with_no_steps(self, directory, files):
+      '''
+      Only parse the subset of mazes without parsing steps. This is especially useful for
+      making preditions without having the ground truth labels. 
+      This uses the function parse_one_maze_with_no_steps()
+      
+      Return:
+        :output: the 4D tensor (num_files * num_steps, height, width, depth)
+      '''      
+      all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH])
+      all_labels = np.empty([1])
+      
+      i = 0
+      j = 0
+      for file in files:
+          i += 1
+          if i > j*len(files)/100:
+              print('Parsed ' + str(j) + '%')
+              j+=10
+          file_full_path = os.path.join(directory, file)  
+          traj = self.parse_one_maze_with_no_steps(file_full_path)
+          all_data = np.vstack((all_data,traj))
 
+      print('Parsed ' + str(j) + '%')
+      for i in range(10):
+          all_data = np.delete(all_data,(0), axis=0)
+      all_labels = np.delete(all_labels,(0), axis=0)
+      print('Got ' + str(all_data.shape) + ' datapoints')
+      prediction_data = all_data
+      return prediction_data
+    
+    def parse_one_maze_with_no_steps(self, filename):
+      '''
+      Only parse the maze without parsing steps. This is especially useful for
+      making preditions without having the ground truth labels. 
+      The layers for acitons will be filled with zeros.
+      
+      
+      Return:
+        :output: the 4D tensor (num_steps, height, width, depth)
+      '''
+      steps = []
+      with open(filename) as fp:
+          lines = list(fp)
+          maze = lines[2:14]
+          
+          #Parse maze to 2d array, remove walls.
+          i=0
+          while i < 12:
+              maze[i]= list(maze[i])
+              maze[i].pop(0)
+              maze[i].pop(len(maze[i])-1)
+              maze[i].pop(len(maze[i])-1)
+              i+=1
+
+          #Original maze (without walls)
+          np_maze = np.array(maze)
+          
+          #Plane for obstacles
+          np_obstacles = np.where(np_maze == '#', 1, 0).astype(np.int8)
+          
+          #Plane for agent's initial position
+          np_agent = np.where(np_maze == 'S', 1, 0).astype(np.int8)
+
+          #Planes for each possible goal
+          #targets = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m']
+          targets = ['C','D','E','F']
+          np_targets = np.repeat(np_maze[:, :, np.newaxis], len(targets), axis=2)
+          
+          for target, i in zip(targets, range(len(targets))):
+              np_targets[:,:,i] = np.where(np_maze == target, 1, 0)
+          np_targets = np_targets.astype(int)
+          
+          possible_actions=['right', 'left', 'up', 'down', 'goal']
+          np_actions = np.zeros((12,12,len(possible_actions)), dtype=np.int8)
+
+          np_tensor = np.dstack((np_obstacles,np_targets,np_agent,np_actions))
+          
+          #Put everything together in a 4-dim tensor            
+          steps.append(np_tensor)
+          output_one_maze = np.array(steps)
+          # output_one_maze = (1, height, width, depth)
+          # this will be stacked up to (num_steps, height, width, depth)
+          # pdb.set_trace()
+          
+          index_step = 1
+          collect_output = output_one_maze
+          #Repeat the maze for MAX_TRAJECTORY_SIZE times
+          # pdb.set_trace()
+          while index_step < self.MAX_TRAJECTORY_SIZE:
+            collect_output = np.insert(collect_output, 0, output_one_maze, axis = 0)
+            index_step+=1
+
+#            pad_size = int(self.MAX_TRAJECTORY_SIZE - output.shape[0])
+#          if pad_size > 0:
+#              np_pad = np.zeros((self.MAZE_HEIGHT,self.MAZE_WIDTH,self.MAZE_DEPTH), dtype=np.int8)
+#              for i in range(pad_size):
+#                  output = np.insert(output, 0, np_pad, axis=0)
+#          
+#          #Truncating trajectory to max length
+#          elif pad_size < 0:
+#              for i in range(abs(pad_size)):
+#                  output = np.delete(output, 0, axis=0)                     
+          # pdb.set_trace()
+      return collect_output
+      
     def find_max_path(self, dir):
         paths = []
         for filename in os.listdir(dir):
