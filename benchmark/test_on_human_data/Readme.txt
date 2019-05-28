@@ -1,7 +1,9 @@
 #########################################
 Folder description:
-This folder contains analysis on human data.
-
+(1) This folder contains analysis on human data.
+(2) All python scripts are located in benchmark/temporary_testing_version or benchmark.
+(3) This folder only contains training results as well as a Rscript to convert the
+format of human data.
 Data source:
 (1) Sign in to server: ssh gibmsadmin@140.112.122.160 (pw: See https://gitlab.com/brain-and-mind-lab/notes-for-bml/bmlab-wiki-home/wikis/server#gibms_server%E6%95%99%E5%AD%B8%E6%96%87%E4%BB%B6)
 (2) Data path: '/var/www/html/bmlab/ai-robo/game/data'
@@ -35,9 +37,9 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
-(2) Daprecate the scripts in this folder. Use the scripts in 'temporary'
+(2) Remove the scripts in this folder. Use the scripts in 'temporary'
 and set the output to here. This is because the human data format is identical to 
-the simulated data (thanks to the R script), sso there is no need to separate two set of scripts.
+the simulated data (thanks to the R script), so there is no need to separate two set of scripts.
 -----------------------------------------
 
 Current training session (v6, commit f912f8) [At benchmark/human_data]
