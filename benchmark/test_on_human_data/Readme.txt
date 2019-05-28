@@ -31,10 +31,10 @@ data path:
 
 -----------------------------------------
 
-Future training session (v?, commit ???) [At benchmark/human_data]
+Future training session (v7, commit ???) [At benchmark/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v?_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v7_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 (2) Remove the scripts in this folder. Use the scripts in 'temporary'

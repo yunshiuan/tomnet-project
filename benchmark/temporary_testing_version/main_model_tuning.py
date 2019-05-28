@@ -657,13 +657,19 @@ if __name__ == "__main__":
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
-        TRAIN_STEPS = 200000
+        TRAIN_STEPS = 50000
         EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S002a_v13_commit_62cae2_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S002a_v13_commit_62cae2_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        # path_mode = '.'
+        path_mode = './../test_on_human_data/'
+        ckpt_fname = 'training_result/caches/cache_S030_v7_commit_???_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S030_v7_commit_???_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
         sub_dir='/../S002a/'
+        ckpt_fname = os.path.join(path_mode,ckpt_fname)
+        train_fname = os.path.join(path_mode,train_fname)
+        sub_dir = os.path.join(path_mode,tsub_dir)
+
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
         
