@@ -6,16 +6,32 @@ Data path:
 
 ##################################################################
 
-Finished training session (v15, commit ??)[At benchmark/temporary]
+Current training session (v16, commit 324934)[At benchmark/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v15_commit_??_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+Output file name: /cache_S002a_v16_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
+
+(1) Set offset = 0 for validation batch to stabalize results.
+
+##################################################################
+
+Finished training session (v15, commit 324934)[At benchmark/temporary]
+Time: 2019/05/27
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v15_commit_324934_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Use the older v7 (as in v12)
 (2) Set epoch size to 78600. See if it is the epoch size that matters.
 
 Note:
-(1)
+(1) It is leanring. The epoch size being 80,000 or 78,600 does not matter.
+(2)
+accurary	mode
+51.27%	vali_proportion
+51.51%	vali_match_estimation
+50.73%	test_proportion
+50.58%	test_match_estimation
+
 
 ##################################################################
 
