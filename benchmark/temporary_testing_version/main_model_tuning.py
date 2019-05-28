@@ -14,7 +14,7 @@ import pdb
 import re
 
 
-
+ 
 class Model:
   HEIGHT = 12
   WIDTH = 12
@@ -136,12 +136,12 @@ class Model:
       #Validate first?
       if step % self.REPORT_FREQ == 0:
         if self.FULL_VALIDATION:
-          validation_loss_value, validation_error_value = self.full_validation(loss=self.vali_loss, top1_error=self.vali_top1_error, vali_data=vali_data, vali_labels=vali_labels, session=sess, batch_data=train_batch_data, batch_label=train_batch_labels)
-
-          vali_summ = tf.Summary()
-          vali_summ.value.add(tag='full_validation_error', simple_value=validation_error_value.astype(np.float))
-          summary_writer.add_summary(vali_summ, step)
-          summary_writer.flush()
+          # validation_loss_value, validation_error_value = self.full_validation(loss=self.vali_loss, top1_error=self.vali_top1_error, vali_data=vali_data, vali_labels=vali_labels, session=sess, batch_data=train_batch_data, batch_label=train_batch_labels)
+    
+          # vali_summ = tf.Summary()
+          # vali_summ.value.add(tag='full_validation_error', simple_value=validation_error_value.astype(np.float))
+          # summary_writer.add_summary(vali_summ, step)
+          # summary_writer.flush()
         
         else:
           # pdb.set_trace()
@@ -150,6 +150,7 @@ class Model:
           val_error_list.append(validation_error_value)
       
       start_time = time.time()
+      
 
       #Actual training
       _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error], {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
@@ -521,8 +522,7 @@ class Model:
     :param vali_batch_size: int
     :return: 4D numpy array and 1D numpy array
     '''
-    # Set to zero to stabilize the vali batch result across trials
-    offset =  0# np.random.choice(100 - vali_batch_size, 1)[0]
+    offset = 0 #np.random.choice(100 - vali_batch_size, 1)[0]
     vali_data_batch = vali_data[offset:offset+vali_batch_size, ...]
     vali_label_batch = vali_label[offset:offset+vali_batch_size]
 
@@ -541,13 +541,12 @@ class Model:
       :batch_data: augmented train batch data. 4D numpy array.
       :batch_label: augmented train batch labels. 1D numpy array      
     '''
-    
     offset = np.random.choice(self.EPOCH_SIZE - train_batch_size, 1)[0]
     batch_data = train_data[offset:offset + train_batch_size, ...]
     batch_label = train_labels[offset:offset + self.BATCH_SIZE_TRAIN]
     
     return batch_data, batch_label
-    
+  
   def predict_preference_ranking(self, ckpt_meta_file, dir_testing_maze_txt):
     '''
     This function predicts the target preference.
@@ -644,24 +643,26 @@ class Model:
       test_set_prediction_array = np.concatenate((test_set_prediction_array, batch_prediction_array))
   
     return
-        
+
+    
 if __name__ == "__main__":
     tf.reset_default_graph()
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
     
-    args = parser.parse_args()	
+    args = parser.parse_args()
+    
     for times in range(1, 2, 1):
         BATCH_SIZE_TRAIN = 96
         BATCH_SIZE_VAL = BATCH_SIZE_TRAIN
         BATCH_SIZE_TEST = BATCH_SIZE_TRAIN
-        TRAIN_STEPS = 50000
-        EPOCH_SIZE = 78600
+        TRAIN_STEPS = 200000
+        EPOCH_SIZE = 80000
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
-        ckpt_fname = 'training_result/caches/cache_S002a_v17_commit_99cc5f_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
-        train_fname = 'training_result/caches/cache_S002a_v17_commit_99cc5f_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-5_' + str(times)
+        ckpt_fname = 'training_result/caches/cache_S002a_v13_commit_62cae2_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S002a_v13_commit_62cae2_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
         sub_dir='/../S002a/'
 
         model = Model(args,BATCH_SIZE_TRAIN,BATCH_SIZE_VAL, BATCH_SIZE_TEST, TRAIN_STEPS, EPOCH_SIZE,DECAY_STEP_0, DECAY_STEP_1, ckpt_fname, train_fname, sub_dir)
@@ -672,7 +673,6 @@ if __name__ == "__main__":
         #dir_testing_maze_txt = 'data_for_making_preference_predictions'
         #model.predict_preference_ranking(ckpt_meta_file, dir_testing_maze_txt)
         #############
-            
         if args.mode == 'train' or args.mode == 'all':
             model.train()
         if args.mode == 'test' or args.mode == 'all':
@@ -683,3 +683,5 @@ if __name__ == "__main__":
         #del conv
         #del fc_weights
         #del fc_bias
+
+
