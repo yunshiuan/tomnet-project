@@ -74,7 +74,7 @@ def lstm_layer(input_layer, train, num_classes):
     num_hidden = 64
     # batch_size = 16 # get from the input_layer directly
     # out_channels = 11 #get from the input_layer directly
-    output_keep_prob = 1 # no regularization for LSTM
+    output_keep_prob = 0.8 # regularization for LSTM
 
     #Show the shape of the LSTM input layer
     #print(input_layer.get_shape().as_list())

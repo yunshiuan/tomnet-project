@@ -5,13 +5,14 @@ Data path:
 '/../S002a'
 ##################################################################
 
-Future training session (v14, commit ???)[At benchmark/temporary]
+Current training session (v14, commit ???)[At benchmark/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_???_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
 (1) Try to identify the differences other than the LSTM issue.
-(2) See if setting epoch size to 80000 would make a difference.
+(2) Identify other differences:
+	(1)Add in regularization for LSTM (keep_prob = 0.8)
 
 Note:
 
