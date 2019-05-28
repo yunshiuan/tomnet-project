@@ -15,6 +15,15 @@ Output file name: /cache_S002a_v17_commit_???_epoch78600_tuning_batch96_train_st
 (1) Cherrypick useful commits after older v7.
     (1) Set offset = 0 for validation batch to stabalize results.
     (2) Add back preference_predictions()-relevant functions.
+    (3) IMPORTANT!!
+    I think I found the bug for v8:
+    # seq_len is to specify the length of each sequence is (batch_size x feature_w)
+    Correct:
+    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]],feature_w)
+    Incorrect:  
+    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]],0)
+    See this for details:
+    https://stackoverflow.com/questions/34670112/how-to-deal-with-batches-with-variable-length-sequences-in-tensorflow
 ##################################################################
 
 Current training session (v16, commit a01ef9)[At benchmark/temporary]
@@ -26,7 +35,13 @@ Output file name: /cache_S002a_v16_commit_a01ef9_epoch78600_tuning_batch96_train
 (2) Put the deprecated script to the folder 'scripts_not_working_v8'
 
 Note
-(1)
+(1) It is learning.
+(2)
+accurary	mode
+47.52%	vali_proportion
+47.41%	vali_match_estimation
+46.98%	test_proportion
+46.45%	test_match_estimation
 
 ##################################################################
 
