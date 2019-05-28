@@ -30,7 +30,7 @@ class DataHandler(object):
           
           Args:
           :param human_data: default to false (simulated data).
-          :param subset_size: The size of the subset to be parsed. 
+          :param subset_size: The size of the subset (number of txt files) to be parsed. 
             Default to the special number -1, which means using all the files in 
             the directory. When testing the code, this could help reducing the parsing time.
 

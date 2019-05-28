@@ -70,7 +70,8 @@ class Model:
   human_data = False
   
   EPOCH_SIZE = 80000
-  
+  subset_size = -1 # use all files
+
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   TRAIN_STEPS = 50000
@@ -79,8 +80,8 @@ class Model:
   # For testing on 1000 files
   txt_data_path = os.getcwd() + '/S002a/'
 
-  ckpt_fname = 'training_result/caches/cache_S002a_v11_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S002a_v11_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S002a_v11_commit_ce0992_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S002a_v11_commit_ce0992_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
   # --------------------------------------
 
 
