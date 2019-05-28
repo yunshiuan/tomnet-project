@@ -83,7 +83,10 @@ def lstm_layer(input_layer, train, num_classes):
     
     lstm_input = tf.transpose(input_layer,[0,2,1,3])
     lstm_input = tf.reshape(lstm_input, [batch_size, feature_w, feature_h * out_channels])
-    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], 0)
+    
+    # seq_len is to specify the length of each sequence is (batch_size x feature_w) 
+    seq_len = tf.fill([lstm_input.get_shape().as_list()[0]], feature_w)
+
     cell = tf.nn.rnn_cell.LSTMCell(num_hidden, state_is_tuple=True)
     if train:
         # pdb.set_trace()
