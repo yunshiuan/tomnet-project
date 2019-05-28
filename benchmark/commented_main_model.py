@@ -44,46 +44,46 @@ class Model:
 
   
   # --------------------------------------
-  ## for testing on the local machine with 1000 files and few steps
-  human_data = True
-  subset_size = 1000
-
-  EPOCH_SIZE = 8000
-  TRAIN_STEPS = 30
-  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
-  # For testing on 1000 files
-  txt_data_path = os.getcwd() + '/test_on_human_data/S030/'
-  
-  ckpt_fname = 'test_on_human_data/training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
-  train_fname = 'test_on_human_data/training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
-
-  # --------------------------------------
-  
-  # --------------------------------------
-#  # for testing on a GPU machine with 10000 files
-#  
-#  # the data size of an epoch (should equal to the traning set size)
-#  # e.g., given a full date set with 100,000 snapshots,
-#  # with a train:dev:test = 8:2:2 split,
-#  # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
-#  # because each file contains 10 steps
-#  human_data = True
-#  
-#  EPOCH_SIZE = 80000
-#  
-#  # tota number of minibatches used for training
-#  # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-#  TRAIN_STEPS = 200000
-#  
-#  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
-#  # For testing on 1000 files
-#  txt_data_path = os.getcwd() + '/S002a/'
+#  ## for testing on the local machine with 1000 files and few steps
+# human_data = True
+#  subset_size = 1000
 #
-#  ckpt_fname = 'training_result/caches/cache_S002a_v10_commit_5951c9_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
-#  train_fname = 'training_result/caches/cache_S002a_v10_commit_5951c9_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+#  EPOCH_SIZE = 8000
+#  TRAIN_STEPS = 30
+#  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
+#  # For testing on 1000 files
+#  txt_data_path = os.getcwd() + '/test_on_human_data/S030/'
+#  
+#  ckpt_fname = 'test_on_human_data/training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+#  train_fname = 'test_on_human_data/training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+
   # --------------------------------------
   
+  # --------------------------------------
+  # for testing on a GPU machine with 10000 files
   
+  # the data size of an epoch (should equal to the traning set size)
+  # e.g., given a full date set with 100,000 snapshots,
+  # with a train:dev:test = 8:2:2 split,
+  # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
+  # because each file contains 10 steps
+  human_data = False
+  
+  EPOCH_SIZE = 80000
+  
+  # tota number of minibatches used for training
+  # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
+  TRAIN_STEPS = 50000
+
+  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
+  # For testing on 1000 files
+  txt_data_path = os.getcwd() + '/S002a/'
+
+  ckpt_fname = 'training_result/caches/cache_S002a_v11_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S002a_v11_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
+  # --------------------------------------
+
+
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
   # FALSE: data split using train:vali:test = 8:1:1
@@ -93,7 +93,7 @@ class Model:
   INIT_LR = 0.0001  # 10-4
   #DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
   #DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
-  
+
   NUM_CLASS = 4 # number of unique classes in the training set
 
   use_ckpt = False
