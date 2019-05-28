@@ -27,3 +27,5 @@ benchmark/test_on_human_data/data
 *.pdf#
 
 *.csv#
+
+*.json
