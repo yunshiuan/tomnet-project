@@ -20,7 +20,7 @@ import sys
 import commented_data_handler as dh
 import argparse
 import itertools
-
+import numpy as np
 # For debugging
 import pdb
 
