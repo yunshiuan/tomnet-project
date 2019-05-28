@@ -28,4 +28,6 @@ benchmark/test_on_human_data/data
 
 *.csv#
 
+benchmark/test_on_human_data/data/
+
 *.json
