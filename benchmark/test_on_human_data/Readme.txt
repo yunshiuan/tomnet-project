@@ -46,7 +46,14 @@ Output file name: /cache_S030_v6_commit_f912f8_epoch78600_tuning_batch96_train_s
 (2) Use the same set up as v3 with 2M steps and epoch = 78600.
 
 Note:
-(1) 
+(1) Is is still NOT learning! It should not only because of the LSTM issue.
+There should be something else.
+(2)
+40.46%	vali_proportion
+40.46%	vali_match_estimation
+38.01%	test_proportion
+38.01%	test_match_estimation
+
 -----------------------------------------
 Finished training session (v5, commit a207fa) [At benchmark/human_data]
 Time: 2019/05/23
