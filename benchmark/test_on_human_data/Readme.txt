@@ -29,17 +29,35 @@ data path:
 
 #########################################
 
+Future training session (v?, commit ???) [At benchmark/human_data]
+Time: 2019/0?/?
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v?_commit_???_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+
+(1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
+
+-----------------------------------------
+Current training session (v8, commit ???) [At benchmark/human_data]
+Time: 2019/0?/?
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S030_v8_commit_???_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+
+(1) Use the scripts in 'benchmark' (v12).
+
+Note
+(1)
 -----------------------------------------
 
-Future training session (v7, commit 0050d9) [At benchmark/human_data]
+Finished training session (v7, commit 0050d9) [At benchmark/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v7_commit_0050d9_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
-(1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
-(2) Remove the scripts in this folder. Use the scripts in 'temporary'
-and set the output to here. This is because the human data format is identical to 
-the simulated data (thanks to the R script), so there is no need to separate two set of scripts.
+(1) Remove the scripts in this folder.
+(2) Use the scripts in 'benchmark/temporary' and set the output to here. 
+This is because the human data format is identical to 
+the simulated data (thanks to the R script), 
+so there is no need to separate two set of scripts.
 
 Note
 (1)
@@ -50,7 +68,7 @@ Note
 
 -----------------------------------------
 
-Current training session (v6, commit f912f8) [At benchmark/human_data]
+Finished training session (v6, commit f912f8) [At benchmark/human_data]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v6_commit_f912f8_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
