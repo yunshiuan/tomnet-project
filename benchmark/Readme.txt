@@ -21,20 +21,32 @@ See README in it for detail.
 This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
+
 #########################################
-Current training session (v12, commit 29151f)[At benchmark]
-Time: 2019/05/28
+Future training session (v13, commit ???)[At benchmark]
+Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v11_commit_29151f_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v13_commit_???_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+
+(1) Train the model with variable sequence lengths:
+https://danijar.com/variable-sequence-lengths-in-tensorflow/
+(2) Only use the final state from LSTM instead of using the whole sequence outputs.
+
+#########################################
+Finished training session (v12, commit 29151f)[At benchmark]
+Time: 2019/06/03
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v12_commit_29151f_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Following v11, use full size = 80000. If the machine could not handle,
 consider refactor the data_handler() function.
 
 Note:
-(1) 
+(1) Perfect results!
 (2)
 accurary	mode
-
+99.8%	vali_proportion
+99.9%	test_proportion
 
 #########################################
 Finished training session (v11, commit ce0992)[At benchmark]
