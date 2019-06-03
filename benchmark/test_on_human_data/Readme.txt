@@ -34,12 +34,20 @@ data path:
 Future training session (v7, commit 0050d9) [At benchmark/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v7_commit_0050d9_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v7_commit_0050d9_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 (2) Remove the scripts in this folder. Use the scripts in 'temporary'
 and set the output to here. This is because the human data format is identical to 
 the simulated data (thanks to the R script), so there is no need to separate two set of scripts.
+
+Note
+(1)
+51.52%	vali_proportion
+51.32%	vali_match_estimation
+48.46%	test_proportion
+48.3%	test_match_estimation
+
 -----------------------------------------
 
 Current training session (v6, commit f912f8) [At benchmark/human_data]
