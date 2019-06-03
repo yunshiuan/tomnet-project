@@ -40,7 +40,7 @@ Output file name: /cache_S002a_v?_commit_???_epoch78600_tuning_batch16_train_ste
 Current training session (v8, commit ???) [At benchmark/human_data]
 Time: 2019/0?/?
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S030_v8_commit_???_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S030_v8_commit_0c7df5_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Use the scripts in 'benchmark' (v12).
 
