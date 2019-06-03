@@ -70,8 +70,8 @@ class Model:
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
   
-  EPOCH_SIZE = 8000
-  subset_size = 1000 # use all files
+  EPOCH_SIZE = 80000
+  subset_size = -1 # use all files
 
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -82,8 +82,8 @@ class Model:
   # For testing on 1000 files
   txt_data_path = os.getcwd() + '/S002a/'
 
-  ckpt_fname = 'training_result/caches/cache_S002a_v11_commit_ce0992_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S002a_v11_commit_ce0992_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S002a_v12_commit_??_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S002a_v12_commit_??_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
   # --------------------------------------
 
 
