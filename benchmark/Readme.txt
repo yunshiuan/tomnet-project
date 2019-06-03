@@ -22,10 +22,10 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
 #########################################
-Current training session (v12, commit ???)[At benchmark]
+Current training session (v12, commit 29151f)[At benchmark]
 Time: 2019/05/28
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v11_commit_???_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v11_commit_29151f_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Following v11, use full size = 80000. If the machine could not handle,
 consider refactor the data_handler() function.
