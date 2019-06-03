@@ -22,7 +22,7 @@ This folder contains temporary testing files.
 The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
 #########################################
-Future training session (v11, commit ce0992)[At benchmark]
+Current training session (v12, commit ce0992)[At benchmark]
 Time: 2019/05/28
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v11_commit_ce0992_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
@@ -32,6 +32,27 @@ Output file name: /cache_S002a_v11_commit_ce0992_epoch8000_tuning_batch16_train_
 Note:
 (1) Because our machine could not handle size = 80000, I first use size = 8000
 to see if it will work.
+(2)
+accurary	mode
+51.04%	vali_proportion
+54.17%	test_proportion
+
+#########################################
+Finished training session (v11, commit ce0992)[At benchmark]
+Time: 2019/05/28
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v11_commit_ce0992_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+
+(1) Fix the seq_len in LSTM from 0 to the correct length (i.e.,10).
+
+Note:
+(1) Because our machine could not handle size = 80000, I first use size = 8000
+to see if it will work.
+(2)
+accurary	mode
+51.04%	vali_proportion
+54.17%	test_proportion
+
 #########################################
 Finshed training session (v10, commit 5951c9)[At benchmark]
 Time: 2019/05/16
