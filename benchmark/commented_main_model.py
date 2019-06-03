@@ -70,8 +70,8 @@ class Model:
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
   
-  EPOCH_SIZE = 80000
-  subset_size = -1 # use all files
+  EPOCH_SIZE = 8000
+  subset_size = 1000 # use all files
 
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
