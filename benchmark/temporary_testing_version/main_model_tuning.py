@@ -84,7 +84,7 @@ class Model:
     #Training loss and error
     loss = self.loss(logits, self.goal_placeholder)
     self.full_loss = tf.add_n([loss] + regu_losses)
-    predictions = tf.nn.softmax(logits)
+    predictions = tf.nn.softmax(logits, name = "op_predictions") #  to be restored
     self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
 
     #Validation loss and error
@@ -183,6 +183,7 @@ class Model:
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
           #pdb.set_trace()          
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
+          # Save the meta grach (to be restored)
           saver.save(sess, checkpoint_path, global_step=step)
           df = pd.DataFrame(data={'step':step_list, 'train_error':train_error_list,
                                   'validation_error': val_error_list})
@@ -576,7 +577,7 @@ class Model:
     files = list(filter(r.match, files)) # Read Note  
     #file_full_path = os.path.join(directory,files[0])
     self.prediction_data = data_handler.parse_subset_maze_with_no_steps(directory, files)
-    #pdb.set_trace()
+    pdb.set_trace()
    
     # ------------------------------------------------
     # Import the saved graph and restore the parameters
@@ -595,20 +596,33 @@ class Model:
 #    graph = tf.get_default_graph()
 #    logits = graph.get_tensor_by_name("fc")
 #    predictions = tf.nn.softmax(logits)
+    ## Build graphs
+    #self._create_graphs()
     
-    logits = rn.build_charnet(self.test_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=False)
-    predictions = tf.nn.softmax(logits)
 
     # Initialize a new session and restore a checkpoint
-    saver = tf.train.import_meta_graph(ckpt_meta_file)
+    # initialize
+    
     sess = tf.Session()
+#    init = tf.initialize_all_variables()
+#    sess.run(init)
+    
+    # Load in the meta graph and restore weights
+    saver = tf.train.import_meta_graph(ckpt_meta_file)    
     path_formated_for_restore = re.sub(".meta$","",ckpt_meta_file)
     path_formated_for_restore = os.path.join('.',path_formated_for_restore)
     saver.restore(sess,(path_formated_for_restore))
+    
+    
+
 
 
     # Now, let's access and create placeholders variables and
+    graph = tf.get_default_graph()
+    self.test_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TEST, self.HEIGHT, self.WIDTH, self.DEPTH])
+
     # create feed-dict to feed new data
+    op_predictions = graph.get_tensor_by_name("op_predictions:0")
 
     #Now, access the op that you want to run. 
     
@@ -622,25 +636,25 @@ class Model:
     # ------------------------------------------------
     # Make predictions
     # ------------------------------------------------
-    pdb.set_trace()
+    # pdb.set_trace()
     num_test_trajs = len(self.prediction_data)
     num_batches = num_test_trajs // self.BATCH_SIZE_TEST
     # remain_trajs = num_test_trajs % self.BATCH_SIZE_TEST
-    print('%i test batches in total...' %num_batches)
+    print('%i prediction batches in total...' %num_batches)
     
     test_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
   
     # Test by batches
-    # pdb.set_trace()
+    pdb.set_trace()
     for step in range(num_batches):
       if step % 10 == 0:
           print('%i batches finished!' %step)
           
 
       offset = step * self.BATCH_SIZE_TEST
-      test_traj_batch = self.test_data[offset:offset+BATCH_SIZE_TEST, ...]
+      test_traj_batch = self.prediction_data[offset:offset+BATCH_SIZE_TEST, ...]
   
-      batch_prediction_array = sess.run(predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
+      batch_prediction_array = sess.run(op_predictions, feed_dict={self.test_traj_placeholder: test_traj_batch})
       test_set_prediction_array = np.concatenate((test_set_prediction_array, batch_prediction_array))
   
     return
@@ -662,6 +676,10 @@ if __name__ == "__main__":
         EPOCH_SIZE = 78600
         DECAY_STEP_0 = 10000
         DECAY_STEP_1 = 15000
+        ckpt_fname = 'training_result/caches/cache_S002a_v14_commit_1f58ab_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        train_fname = 'training_result/caches/cache_S002a_v14_commit_1f58ab_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5_' + str(times)
+        sub_dir='/../S002a/'
+#        sub_dir='/../../S002a_1000files/'
 
         subset_size = -1
         # path_mode = '.'
@@ -681,9 +699,9 @@ if __name__ == "__main__":
 
         #############
         # Make prediction based on a trained model
-        #ckpt_meta_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999.meta'
-        #dir_testing_maze_txt = 'data_for_making_preference_predictions'
-        #model.predict_preference_ranking(ckpt_meta_file, dir_testing_maze_txt)
+        ckpt_meta_file = 'training_result/caches/cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5_1/train/model.ckpt-199999.meta'
+        dir_testing_maze_txt = 'data_for_making_preference_predictions'
+        model.predict_preference_ranking(ckpt_meta_file, dir_testing_maze_txt)
         #############
         if args.mode == 'train' or args.mode == 'all':
             model.train()
