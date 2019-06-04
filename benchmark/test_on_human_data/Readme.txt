@@ -37,7 +37,7 @@ Output file name: /cache_S002a_v?_commit_???_epoch78600_tuning_batch16_train_ste
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 
 -----------------------------------------
-Current training session (v8, commit ???) [At benchmark/human_data]
+Current training session (v8, commit 0c7df5) [At benchmark/human_data]
 Time: 2019/0?/?
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v8_commit_0c7df5_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
@@ -46,6 +46,10 @@ Output file name: /cache_S030_v8_commit_0c7df5_epoch78600_tuning_batch16_train_s
 
 Note
 (1)
+accurary	mode
+99.9%	vali_proportion
+99.69%	test_proportion
+
 -----------------------------------------
 
 Finished training session (v7, commit 0050d9) [At benchmark/human_data]
