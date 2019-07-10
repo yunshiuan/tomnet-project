@@ -3,7 +3,6 @@ import numpy as np
 from tensorflow.contrib import rnn
 
 # For debugging
-
 import pdb
 
 # hyperparameter for batch_normalization_layer()
@@ -550,6 +549,7 @@ def lstm_layer(input_layer, train, num_classes):
 
 def output_layer(input_layer, num_labels):
     '''
+    A linear layer to resize the tensor.
     :param input_layer: 2D tensor
     :param num_labels: int. How many output labels in total?
     :return: output layer Y = WX + B
@@ -820,6 +820,3 @@ def build_charnet(input_tensor, n, num_classes, reuse, train):
         output = output_layer(layers[-1], num_classes)
         layers.append(output)
     return layers[-1]
-
-def build_pred_head(self):
-    pass
