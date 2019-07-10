@@ -13,7 +13,7 @@ import datetime
 import numpy as npc
 import pandas as pd
 import tensorflow as tf
-import commented_resnet as rn
+import commented_charnet as cn
 import sys
 #sys.path.insert(0, '/temporary_testing_version')
 #import data_handler as dh
@@ -81,7 +81,7 @@ class Model:
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   # For testing on 1000 files
   #txt_data_path = os.getcwd() + '/S002a/'
-  path_mode =  os.getcwd() + '/test_on_human_data/' # Necessary when the output dir and script dir is different
+  path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   ckpt_fname = 'training_result/caches/cache_S030_v8_commit_0c7df5_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
   train_fname = 'training_result/caches/cache_S030_v8_commit_0c7df5_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
   txt_data_path ='../S002a_1000files/'
@@ -206,8 +206,9 @@ class Model:
     
     # "logits" is the output of the charnet (including ResNET and LSTM) 
     # and is the input for a softmax layer (see below)
-    logits = rn.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
-    vali_logits = rn.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
+    charnet = cn.CharNet()
+    logits = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
+    vali_logits = charnet.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     
     # REGULARIZATION_LOSSES: regularization losses collected during graph construction.
     # See: https://www.tensorflow.org/api_docs/python/tf/GraphKeys
