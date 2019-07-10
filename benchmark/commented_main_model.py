@@ -84,7 +84,7 @@ class Model:
   path_mode =  os.getcwd() + '/test_on_human_data/' # Necessary when the output dir and script dir is different
   ckpt_fname = 'training_result/caches/cache_S030_v8_commit_0c7df5_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
   train_fname = 'training_result/caches/cache_S030_v8_commit_0c7df5_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
-  txt_data_path ='data/processed/S030/'
+  txt_data_path ='../S002a_1000files/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
   txt_data_path = os.path.join(path_mode,txt_data_path)
