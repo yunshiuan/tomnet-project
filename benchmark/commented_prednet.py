@@ -1,3 +1,30 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+class PredNet(nnl.NeuralNetLayers): 
+
+In this and subsequent experiments, 
+we make three predictions: 
+  (1)next-step action, 
+  (2)which objects are consumed by the end of the episode, and
+  (3) successor representations. 
+  We use a shared torso for these predictions, from which separate heads branch off. 
+  
+  For the prediction torso, we 
+    (1) spatialise echar,i, 
+    (2) and concatenate with the query state; 
+    (3) this is passed into a 5-layer resnet, with 32 channels, ReLU nonlinearities, and batch-norm.
+    
+  Consumption prediction head. 
+  From the torso output: 
+    （1) a 1-layer convnet with 32 channels and ReLUs, followed by average pooling, and 
+     (2) a fully-connected layer to 4-dims, 
+     (3) followed by a sigmoid. This gives the respective Bernoulli probabilities 
+     that each of the four objects will be consumed by the end of the episode.
+@author: Chuang, Yun-Shiuan
+"""
+
+
 import tensorflow as tf
 #import numpy as np
 #from tensorflow.contrib import rnn
@@ -17,11 +44,12 @@ class PredNet(nnl.NeuralNetLayers):
       self.WEIGHT_DECAY = 0.00002
       self.MAZE_DEPTH = 11
   
-  def build_prednet(self,input_tensor, n, num_classes, reuse, train):
+  def build_prednet(self,e_char, query_state_tensor, n, num_classes, reuse, train):
       '''
       Build the character net.
       
-      :param input_tensor:
+      :param e_char: the raw character embedding remained to be spatialized.
+      :param query_state_tensor: the tensor for the query state
       :param n: the number of layers in the resnet
       :param num_classes: 
       :param reuse: ?
@@ -40,24 +68,24 @@ class PredNet(nnl.NeuralNetLayers):
       # --------------------------------------------------------------
       # Edwinn's codes
       # --------------------------------------------------------------    
-      # input_tensor.shape = (16, 12, 12, 11)
-  #    layers.append(input_tensor)
+      # query_state_tensor.shape = (16, 12, 12, 11)
+  #    layers.append(query_state_tensor)
       
       # --------------------------------------------------------------
       # Paper codes
       # Regard each step independently in the resnet
       # (16, 10, 12, 12, 11) -> (160, 12, 12, 11)
-      # input_tensor.shape = (16, 10, 12, 12, 11)
+      # query_state_tensor.shape = (16, 10, 12, 12, 11)
       # 16: 16 trajectories
       # 10: each trajectory has 10 steps
       # 12, 12, 11: maze height, width, depth
       # --------------------------------------------------------------    
       #TODO: Check if this is working as expected
       # pdb.set_trace()
-      layers.append(input_tensor)
+      layers.append(query_state_tensor)
       # pdb.set_trace()
       batch_size, trajectory_size, height, width, depth  = layers[-1].get_shape().as_list()
-      # layers[-1] = input_tensor = (16, 10, 12, 12, 11)
+      # layers[-1] = query_state_tensor = (16, 10, 12, 12, 11)
       step_wise_input = tf.reshape(layers[-1], [batch_size * trajectory_size, height, width, depth])
       # resnet_iput = (160, 12, 12, 11)
       layers.append(step_wise_input)
@@ -227,7 +255,7 @@ class PredNet(nnl.NeuralNetLayers):
           # global_pool.shape = (16, 4)
           # --------------------------------------------------------------
   #        # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
-  #        # - param input_tensor: the output from the previous LSTM layer
+  #        # - param query_state_tensor: the output from the previous LSTM layer
   #        # - param axis: The dimensions to reduce
   #        global_pool = tf.reduce_mean(layers[-1], [1])
   #        assert global_pool.get_shape().as_list()[-1:] == [num_classes]

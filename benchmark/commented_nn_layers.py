@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+class NeuralNetLayers:
+
+The parent class for both the character net and the predictio net.
+@author: Chuang, Yun-Shiuan
+"""
+
 import tensorflow as tf
 #import numpy as np
 #from tensorflow.contrib import rnn
@@ -603,7 +612,6 @@ class NeuralNetLayers:
       # 10: each trajectory has 10 steps
       # 12, 12, 11: maze height, width, depth
       # --------------------------------------------------------------    
-      #TODO: Check if this is working as expected
       # pdb.set_trace()
       layers.append(input_tensor)
       # pdb.set_trace()

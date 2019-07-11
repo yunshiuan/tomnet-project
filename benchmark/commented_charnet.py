@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+class CharNet(nnl.NeuralNetLayers): 
+
+For the single trajectory τi in the past episode, the 
+ToMnet forms the character embedding echar,i as follows. We
+ (1) pre-process the data from each time-step by spatialising the actions,
+ a(obs), concatenating these with the respective states, x(obs), 
+ (2) passing through a 5-layer resnet, with 32 channels, ReLU nonlinearities,
+ and batch-norm, followed by average pooling. 
+ (3) We pass the results through an LSTM with 64 channels, 
+ with a linear output to either a 2-dim or 8-dim echar,i (no substantial difference in results).
+@author: Chuang, Yun-Shiuan
+"""
+
 import tensorflow as tf
 #import numpy as np
 #from tensorflow.contrib import rnn
@@ -52,7 +68,6 @@ class CharNet(nnl.NeuralNetLayers):
       # 10: each trajectory has 10 steps
       # 12, 12, 11: maze height, width, depth
       # --------------------------------------------------------------    
-      #TODO: Check if this is working as expected
       # pdb.set_trace()
       layers.append(input_tensor)
       # pdb.set_trace()
