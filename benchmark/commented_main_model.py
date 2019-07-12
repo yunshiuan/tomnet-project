@@ -209,6 +209,7 @@ class Model:
     # "logits" is the output of the charnet (including ResNET and LSTM) 
     # and is the input for a softmax layer (see below)
     charnet = cn.CharNet()
+    #pdb.set_trace()
     logits = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
     vali_logits = charnet.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     

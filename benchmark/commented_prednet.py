@@ -86,23 +86,6 @@ class PredNet(nnl.NeuralNetLayers):
       #Add n residual layers
       for i in range(n):
           with tf.variable_scope('conv_%d' %i, reuse=reuse):
-  
-              # --------------------------------------------------------------
-              # Edwinn's codes
-              # (16, 12, 12, 11) -> (16, 12, 12, 11)
-              # layers[-1] = intput_tensor = (16, 12, 12, 11)
-              # 16: 16 steps
-              # 12, 12, 11: maze height, width, depth
-              #
-              # block = (16, 12, 12, 11)
-              # 16: 16 steps
-              # 12, 12, 11: maze height, width, output channels (SHOUlD be 32 as in the paper)
-              # --------------------------------------------------------------
-              
-              # block = residual_block(layers[-1], MAZE_DEPTH) #resnet_output_channels) 
-              # activation_summary(block)
-              # layers.append(block)
-              
               # --------------------------------------------------------------
               # Paper codes
               # (160, 12, 12, 32) -> (160, 12, 12, 32)
@@ -127,21 +110,7 @@ class PredNet(nnl.NeuralNetLayers):
       
       #Add average pooling
       with tf.variable_scope('average_pooling', reuse=reuse):
-          # --------------------------------------------------------------
-          # Edwinn's codes
-          # (16, 12, 12, 11) -> (16, 6, 6, 11)
-          # layers[-1] = block = (16, 12, 12, 11) (after resnet)
-          # 16: 16 steps
-          # 12, 12, 11: feature height, width, channels (SHOUlD be 32 as in the paper)
-          #
-          # avg_pool = (16, 6, 6, 11)
-          # 16: 16 steps
-          # 6, 6, 11: feature height, width, output channels 
-          # --------------------------------------------------------------
-  
-  #        avg_pool = average_pooling_layer(block)
-  #        layers.append(avg_pool)
-          
+         
           # --------------------------------------------------------------
           # Paper codes
           # (160, 12, 12, 32) ->  (160, 32)
@@ -164,23 +133,7 @@ class PredNet(nnl.NeuralNetLayers):
       # pdb.set_trace()
   
       with tf.variable_scope('LSTM', reuse=reuse):
-          # --------------------------------------------------------------
-          # Edwinn's codes
-          # (16, 6, 6, 11) -> (16, 6, 4)
-          
-          # layers[-1] = avg_pool = (16, 6, 6, 11)
-          # 16: Tx
-          # 6, 6, 11: the output width, height, and channels from average pooling
-          
-          # lstm = (16, 6, 4)
-          # 16: Ty
-          # 6: see lstm_layer(input_layer, train, num_classes) for details
-          # 4: num_classes
-          # --------------------------------------------------------------
-          
-  #        lstm = lstm_layer(layers[-1], train, num_classes)
-  #        layers.append(lstm)
-          
+  
           # --------------------------------------------------------------
           # Paper codes
           # (160, 32) ->  (16, 4)  
@@ -224,20 +177,7 @@ class PredNet(nnl.NeuralNetLayers):
           # ==============================================================
           # This section is to change the tensor shape from (16, 6, 4) to (16, 4)
           # for FC later.
-          # ==============================================================
-          
-          # global average pooling:
-          # average across the second axis:
-          # --------------------------------------------------------------
-          # Edwinn's codes
-          # from (16, 6, 4) to (16, 4) [6 2-d arrays reduce to 1 2-d array]
-          # global_pool.shape = (16, 4)
-          # --------------------------------------------------------------
-  #        # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
-  #        # - param query_state_tensor: the output from the previous LSTM layer
-  #        # - param axis: The dimensions to reduce
-  #        global_pool = tf.reduce_mean(layers[-1], [1])
-  #        assert global_pool.get_shape().as_list()[-1:] == [num_classes]
+          # ==============================================================                   
           
           # --------------------------------------------------------------
           # Paper codes
@@ -247,24 +187,7 @@ class PredNet(nnl.NeuralNetLayers):
   
           # ==============================================================
           # This section is to feed the result from LSTM to a FC layer
-          # ==============================================================
-          # --------------------------------------------------------------
-          # Edwinn's codes
-          # from (16, 6, 4) to (16, 4) [6 2-d arrays reduce to 1 2-d array]
-          # global_pool.shape = (16, 4)
-          # --------------------------------------------------------------        
-          
-  #        # def output_layer(input_layer, num_labels):
-  #        # '''
-  #        # :param input_layer: 2D tensor
-  #        # :param num_labels: int. How many output labels in total?
-  #        # :return: output layer Y = WX + B
-  #        # '''
-  #        
-  #        # output.shape = (16, 4)
-  #        output = output_layer(global_pool, num_classes)
-  #        layers.append(output)
-          
+          # ==============================================================         
           # --------------------------------------------------------------
           # Paper codes
           # Do not need 'global average pooling'
