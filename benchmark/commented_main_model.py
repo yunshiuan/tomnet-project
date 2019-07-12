@@ -78,15 +78,15 @@ class Model:
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   
-  TRAIN_STEPS = 50000
+  TRAIN_STEPS = 10000
 
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   # For testing on 1000 files
   #txt_data_path = os.getcwd() + '/S002a/'
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v8_commit_0c7df5_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v8_commit_0c7df5_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
-  txt_data_path ='../S002a_1000files/'
+  ckpt_fname = 'training_result/caches/cache_S030_v14_commit_???_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v14_commit_???_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
+  txt_data_path ='../S002a/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
   txt_data_path = os.path.join(path_mode,txt_data_path)

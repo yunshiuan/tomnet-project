@@ -188,7 +188,7 @@ class CharNet(nnl.NeuralNetLayers):
           # '''
           
           # layers[-1] = (16, 64)
-          pdb.set_trace()
+          # pdb.set_trace()
           output = self.output_layer(layers[-1], num_classes)
           # output = (16, 4)
           layers.append(output)
