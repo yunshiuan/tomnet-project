@@ -382,7 +382,7 @@ def lstm_layer(input_layer, train, num_classes):
     # so by default this function accepts input and emits output in batch-major form.
 
     outputs, final_state = tf.nn.dynamic_rnn(cell=cell, inputs=lstm_input, sequence_length=seq_len, initial_state=initial_state, dtype=tf.float32, time_major=False)
-    
+    #pdb.set_trace()
     # - return outputs: 
     # If time_major == False (default), this will be 
     # a Tensor shaped: [16: batch_size, 10: max_time, 64: cell.output_size].
@@ -433,12 +433,10 @@ def lstm_layer(input_layer, train, num_classes):
 
     # --------------------------------------------------------------
     # Paper: modified - v13
-    # (16, 10, 64) -> (16, 64)
-    # 1. Take only the final output to feed in a fc layer
+    # (16, 4) 
+    # 1. No need to resize. It is already with the correct size.
     # --------------------------------------------------------------
-    # (4) outputs.shape = (16, 10, 64)
-    outputs = final_state
-    # (5) output.shape = (16, 64)
+    final_state = final_state[1]  
 
     # ==============================================================
     # This section is to feed output from LSTM to a linear layer
@@ -559,11 +557,11 @@ def lstm_layer(input_layer, train, num_classes):
     # (16, 64)
     # 1. Directly output the final state
     # --------------------------------------------------------------
-    # (4) outputs.shape = (16, 10, 64)
+    # (4) final_state.shape = (16, 64)
     linear_output = final_state
-    # (5) output.shape = (16, 64)
-    
-    assert linear_output.get_shape().as_list()[-1:] == [num_classes]
+    # (5) linear_output.shape = (16, 64)
+    #pdb.set_trace()
+    assert linear_output.get_shape().as_list() == [batch_size, num_hidden]
      
     return linear_output
 
