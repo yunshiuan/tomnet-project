@@ -30,7 +30,6 @@ import tensorflow as tf
 #import numpy as np
 #from tensorflow.contrib import rnn
 import commented_nn_layers as nnl
-
 # For debugging
 import pdb
 class PredNet(nnl.NeuralNetLayers): 
@@ -61,34 +60,58 @@ class PredNet(nnl.NeuralNetLayers):
       layers = []
       
       # --------------------------------------------------------------    
+      # Paper codes    
       # For the query_state_tensor:
-      # Get the tensor size: (16, 2)
+      # Get the tensor size: (16, 12, 12, 11)
       # 16: batch size
       # 12: height
       # 12: width
       # 11: depth
       # --------------------------------------------------------------    
       # pdb.set_trace()
-      layers.append(query_state_tensor)
+#      layers.append(query_state_tensor)
       # pdb.set_trace()
-      batch_size, height, width, depth  = layers[-1].get_shape().as_list()
+      batch_size, height, width, depth  = query_state_tensor.get_shape().as_list()
       
       # --------------------------------------------------------------    
-      # For the character embedding:
+      # Paper codes    
+      # For the character embedding (e_char):
       # Get the tensor size: (16, 8)
       # 16: batch size
       # 8: the length of the character embedding
       # --------------------------------------------------------------    
       
       # pdb.set_trace()
-      layers.append(query_state_tensor)
       # pdb.set_trace()
-      batch_size, height, width, depth  = layers[-1].get_shape().as_list()
-
-      # --------------------------------------------------------------
+      batch_size, embedding_length  = e_char.get_shape().as_list()
+      
+      # --------------------------------------------------------------    
       # Paper codes    
-      # For the query_state_tensor:
-      # (16, 12, 12, 11) -> (16, 12, 12, 32)
+      # For e_char:
+      # Spatialize e_char. (16, 8) -> (16, 12, 12, 8)
+      # input: 
+      # 16: batch size
+      # 8: the length of the character embedding
+      #
+      # output:
+      # 16: batch size
+      # 12: height
+      # 12: width
+      # 8: the length of the character embedding
+      # -------------------------------------------------------------- 
+      e_char = tf.tile(e_char,[height, width,1])
+      
+      # --------------------------------------------------------------    
+      # Paper codes    
+      # Concatenate the query_state_tensor and the e_char    
+      # (16, 12, 12, 8) + (16, 12, 12, 11) -> (16, 12, 12, 19)
+      # -------------------------------------------------------------- 
+      input_tensor = tf.stack(query_state_tensor, e_char)
+      layers.append(input_tensor)
+      # --------------------------------------------------------------
+      
+      # Paper codes    
+      # (16, 12, 12, 19) -> (16, 12, 12, 32)
       # Use 3x3 conv layer to shape the depth to 32
       # to enable resnet to work (addition between main path and residual connection)
       # --------------------------------------------------------------
@@ -165,14 +188,6 @@ class PredNet(nnl.NeuralNetLayers):
           # --------------------------------------------------------------
   
           # --------------------------------------------------------------        
-          # for testing only        
-          # conclusion: reshaping twice result in the same np array
-          # var_test = np.array(range(0,(5*10*6*6*11))).reshape(5, 10, 6, 6, 11)
-          # var_test_reduce_dim = var_test.reshape(5 * 10, 6, 6, 11)
-          # _, feature_h, feature_w, feature_d = var_test_reduce_dim.shape
-          # var_test_resume_dim = var_test_reduce_dim.reshape(5, 10, feature_h, feature_w, feature_d)
-          # np.array_equal(var_test_reduce_dim,var_test_resume_dim)
-          # > False!??!!?? #TODO
           
           # layers[-1] = avg_pool = (160, 32)
           _, resnet_output_channels = layers[-1].get_shape().as_list()
