@@ -59,40 +59,19 @@ class PredNet(nnl.NeuralNetLayers):
       # pdb.set_trace()
       layers = []
       
-      # --------------------------------------------------------------
-      # Constants
-      # -------------------------------------------------------------- 
-      # resnet_input_channels = 32
-         
-      #Append the input tensor as the first layer
-      # --------------------------------------------------------------
-      # Edwinn's codes
       # --------------------------------------------------------------    
-      # query_state_tensor.shape = (16, 12, 12, 11)
-  #    layers.append(query_state_tensor)
-      
-      # --------------------------------------------------------------
-      # Paper codes
-      # Regard each step independently in the resnet
-      # (16, 10, 12, 12, 11) -> (160, 12, 12, 11)
-      # query_state_tensor.shape = (16, 10, 12, 12, 11)
-      # 16: 16 trajectories
-      # 10: each trajectory has 10 steps
-      # 12, 12, 11: maze height, width, depth
+      # For the query_state_tensor:
+      # Get the tensor size 
       # --------------------------------------------------------------    
-      #TODO: Check if this is working as expected
       # pdb.set_trace()
       layers.append(query_state_tensor)
       # pdb.set_trace()
-      batch_size, trajectory_size, height, width, depth  = layers[-1].get_shape().as_list()
-      # layers[-1] = query_state_tensor = (16, 10, 12, 12, 11)
-      step_wise_input = tf.reshape(layers[-1], [batch_size * trajectory_size, height, width, depth])
-      # resnet_iput = (160, 12, 12, 11)
-      layers.append(step_wise_input)
-  
+      batch_size, height, width, depth  = layers[-1].get_shape().as_list()
+
       # --------------------------------------------------------------
       # Paper codes    
-      # (160, 12, 12, 11) -> (160, 12, 12, 32)
+      # For the query_state_tensor:
+      # (16, 12, 12, 11) -> (16, 12, 12, 32)
       # Use 3x3 conv layer to shape the depth to 32
       # to enable resnet to work (addition between main path and residual connection)
       # --------------------------------------------------------------
