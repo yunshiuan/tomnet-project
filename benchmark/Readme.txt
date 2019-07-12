@@ -35,12 +35,16 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 Future training session (v13, commit 9ebcd4)[At benchmark]
 Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v13_commit_9ebcd4_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 
 (1) Only use the final state from LSTM instead of using the whole sequence outputs.
 Note:
 (1)
+accurary	mode
+99.9%	vali_proportion
+100.0%	test_proportion
+
 #########################################
 Finished training session (v12, commit 29151f)[At benchmark]
 Time: 2019/06/03
