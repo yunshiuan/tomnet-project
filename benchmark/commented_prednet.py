@@ -21,6 +21,7 @@ we make three predictions:
      (2) a fully-connected layer to 4-dims, 
      (3) followed by a sigmoid. This gives the respective Bernoulli probabilities 
      that each of the four objects will be consumed by the end of the episode.
+     [Unlike the paper, I replaced this sigmoid unit by a softmax unit.]
 @author: Chuang, Yun-Shiuan
 """
 
@@ -61,8 +62,24 @@ class PredNet(nnl.NeuralNetLayers):
       
       # --------------------------------------------------------------    
       # For the query_state_tensor:
-      # Get the tensor size 
+      # Get the tensor size: (16, 2)
+      # 16: batch size
+      # 12: height
+      # 12: width
+      # 11: depth
       # --------------------------------------------------------------    
+      # pdb.set_trace()
+      layers.append(query_state_tensor)
+      # pdb.set_trace()
+      batch_size, height, width, depth  = layers[-1].get_shape().as_list()
+      
+      # --------------------------------------------------------------    
+      # For the character embedding:
+      # Get the tensor size: (16, 8)
+      # 16: batch size
+      # 8: the length of the character embedding
+      # --------------------------------------------------------------    
+      
       # pdb.set_trace()
       layers.append(query_state_tensor)
       # pdb.set_trace()
