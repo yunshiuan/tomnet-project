@@ -85,7 +85,7 @@ class CharNet(nnl.NeuralNetLayers):
       # --------------------------------------------------------------
       with tf.variable_scope('conv_before_resnet', reuse = reuse):
           # layers[-1] = step_wise_iput = (160, 12, 12, 11)
-          pdb.set_trace()
+          #pdb.set_trace()
           conv_before_resnet = self.conv_layer_before_resnet(layers[-1])
           # conv_before_resnet = (160, 12, 12, 32)
           layers.append(conv_before_resnet)

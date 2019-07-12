@@ -435,15 +435,21 @@ class NeuralNetLayers:
       # outputs = outputs[:,-1,:]
       # (5) output.shape = (16, 64)
       
+#      # --------------------------------------------------------------
+#      # Paper: modified - v10
+#      # (16, 10, 64) -> (160, 64)
+#      # 1. Reshape to feed in a fc layer
+#      # --------------------------------------------------------------
+#      # (4) outputs.shape = (16, 10, 64)
+#      outputs = tf.reshape(outputs, [-1, num_hidden])
+#      # (5) output.shape = (160, 64)
+      
       # --------------------------------------------------------------
-      # Paper: modified - v10
-      # (16, 10, 64) -> (160, 64)
-      # 1. Reshape to feed in a fc layer
+      # Paper: modified - v13
+      # (16, 4) 
+      # 1. No need to resize. It is already with the correct size.
       # --------------------------------------------------------------
-      # (4) outputs.shape = (16, 10, 64)
-      outputs = tf.reshape(outputs, [-1, num_hidden])
-      # (5) output.shape = (160, 64)
-  
+      final_state = final_state[1]  
       # ==============================================================
       # This section is to feed output from LSTM to a linear layer
       # ==============================================================
@@ -510,55 +516,65 @@ class NeuralNetLayers:
   #    # (6) linear_outputshape = (16, 4)
        
        
-      # --------------------------------------------------------------
-      # Paper: - modified v10
-      # (160, 64) -> (160, 4) -> (16, 10, 4)
-      # --------------------------------------#    
-      # 1. Lump all steps together (160) and feed the output to a linear layer, W : (4, 64)
-      # 2. the output from the linear layer should be (total_steps = 160, num_classes = 4)
-      #
-      # the linear layer (y = xW + b)
-      # 1. For '(160, 64) -> (160, 4)':
-      # 160 x 64 (num_hidden) -> 160 x 4 (num_classes)
-      # by a linear layer (y = xW + b)
-      # - x (160, 64)
-      # - W (64, 4)
-      # - b (4, )
-      # - y (160, 4)
-      # --------------------------------------#    
-      
-      # W = (64, 4)
-      # b = (4, )
-      W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
-      b = tf.get_variable(name='b_out', shape=[num_classes], dtype=tf.float32, initializer=tf.constant_initializer())
-      # pdb.set_trace()
-  
-      #Linear output
-      # (5) output = (160, 64)
-      linear_output = tf.matmul(outputs, W) + b
-      # (6) linear_output = (160, 4)
-      
-  
-      linear_output = tf.reshape(linear_output, [batch_size, time_steps, num_classes])
-  #    # (8) lstm_h.shape = (16, 10, 4)
-  #    return lstm_h
+#      # --------------------------------------------------------------
+#      # Paper: - modified v10
+#      # (160, 64) -> (160, 4) -> (16, 10, 4)
+#      # --------------------------------------#    
+#      # 1. Lump all steps together (160) and feed the output to a linear layer, W : (4, 64)
+#      # 2. the output from the linear layer should be (total_steps = 160, num_classes = 4)
+#      #
+#      # the linear layer (y = xW + b)
+#      # 1. For '(160, 64) -> (160, 4)':
+#      # 160 x 64 (num_hidden) -> 160 x 4 (num_classes)
+#      # by a linear layer (y = xW + b)
+#      # - x (160, 64)
+#      # - W (64, 4)
+#      # - b (4, )
+#      # - y (160, 4)
+#      # --------------------------------------#    
+#      
+#      # W = (64, 4)
+#      # b = (4, )
+#      W = tf.get_variable(name='W_out', shape=[num_hidden, num_classes], dtype=tf.float32, initializer=tf.glorot_uniform_initializer())
+#      b = tf.get_variable(name='b_out', shape=[num_classes], dtype=tf.float32, initializer=tf.constant_initializer())
+#      # pdb.set_trace()
+#  
+#      #Linear output
+#      # (5) output = (160, 64)
+#      linear_output = tf.matmul(outputs, W) + b
+#      # (6) linear_output = (160, 4)
+#      
+#  
+#      linear_output = tf.reshape(linear_output, [batch_size, time_steps, num_classes])
+#  #    # (8) lstm_h.shape = (16, 10, 4)
+#  #    return lstm_h
            
-      # --------------------------------------
-      # Paper: - modified v10
-      # global average pooling:
-      # average across the second axis:
-      # --------------------------------------------------------------
-      # (16, 10, 4) -> (16, 4) [6 2-d arrays reduce to 1 2-d array]
-      # global_pool.shape = (16, 4)
-      # --------------------------------------------------------------
-      # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
-      # - param input_tensor: the output from the previous LSTM layer
-      # - param axis: The dimensions to reduce
-      # pdb.set_trace()
-      linear_output = tf.reduce_mean(linear_output, [1])
+#      # --------------------------------------
+#      # Paper: - modified v10
+#      # global average pooling:
+#      # average across the second axis:
+#      # --------------------------------------------------------------
+#      # (16, 10, 4) -> (16, 4) [6 2-d arrays reduce to 1 2-d array]
+#      # global_pool.shape = (16, 4)
+#      # --------------------------------------------------------------
+#      # tf.reduce_mean: Computes the mean of elements across dimensions of a tensor.
+#      # - param input_tensor: the output from the previous LSTM layer
+#      # - param axis: The dimensions to reduce
+#      # pdb.set_trace()
+#      linear_output = tf.reduce_mean(linear_output, [1])
+#      assert linear_output.get_shape().as_list()[-1:] == [num_classes]
+
       
-      assert linear_output.get_shape().as_list()[-1:] == [num_classes]
-       
+      # --------------------------------------------------------------
+      # Paper: modified - v13
+      # (16, 64)
+      # 1. Directly output the final state
+      # --------------------------------------------------------------
+      # (4) final_state.shape = (16, 64)
+      linear_output = final_state
+      # (5) linear_output.shape = (16, 64)
+      #pdb.set_trace()
+      assert linear_output.get_shape().as_list() == [batch_size, num_hidden]            
       return linear_output
   
   def output_layer(self,input_layer, num_labels):
