@@ -70,7 +70,8 @@ class Model:
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
   
-  EPOCH_SIZE = 78600
+#  EPOCH_SIZE = 78600 # Human data
+  EPOCH_SIZE = 80000
   subset_size = 10000 # use all files
 
   # tota number of minibatches used for training
@@ -82,9 +83,9 @@ class Model:
   # For testing on 1000 files
   #txt_data_path = os.getcwd() + '/S002a/'
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v13_commit_9ebcd4_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v13_commit_9ebcd4_epoch80000_tuning_batch96_train_step_0.5M_INIT_LR_10-4'
-  txt_data_path ='../S002a_1000files/'
+  ckpt_fname = 'training_result/caches/cache_S030_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
+  txt_data_path ='../S002a/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
   txt_data_path = os.path.join(path_mode,txt_data_path)
