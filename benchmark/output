@@ -1,0 +1,67 @@
+Found 10000 files in /home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/../S002a/
+Parsing training data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (80000, 12, 12, 11) datapoints
+Parsing validation data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (10000, 12, 12, 11) datapoints
+Parsing testing data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (10000, 12, 12, 11) datapoints
+Start training-----------------
+> /home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/commented_charnet.py(192)build_charnet()
+-> output = self.output_layer(layers[-1], num_classes)
+(Pdb) Traceback (most recent call last):
+  File "commented_main_model.py", line 943, in <module>
+    model.train()
+  File "commented_main_model.py", line 259, in train
+    self._create_graphs()
+  File "commented_main_model.py", line 213, in _create_graphs
+    logits = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
+  File "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/commented_charnet.py", line 192, in build_charnet
+    output = self.output_layer(layers[-1], num_classes)
+  File "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/commented_charnet.py", line 192, in build_charnet
+    output = self.output_layer(layers[-1], num_classes)
+  File "/home/vimchiz/.conda/envs/tf_gpu_1_8/lib/python3.6/bdb.py", line 51, in trace_dispatch
+    return self.dispatch_line(frame)
+  File "/home/vimchiz/.conda/envs/tf_gpu_1_8/lib/python3.6/bdb.py", line 69, in dispatch_line
+    self.user_line(frame)
+  File "/home/vimchiz/.conda/envs/tf_gpu_1_8/lib/python3.6/pdb.py", line 261, in user_line
+    self.interaction(frame, None)
+  File "/home/vimchiz/.conda/envs/tf_gpu_1_8/lib/python3.6/pdb.py", line 352, in interaction
+    self._cmdloop()
+  File "/home/vimchiz/.conda/envs/tf_gpu_1_8/lib/python3.6/pdb.py", line 321, in _cmdloop
+    self.cmdloop()
+  File "/home/vimchiz/.conda/envs/tf_gpu_1_8/lib/python3.6/cmd.py", line 126, in cmdloop
+    line = input(self.prompt)
+OSError: [Errno 9] Bad file descriptor
