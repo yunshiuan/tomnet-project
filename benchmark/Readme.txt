@@ -32,14 +32,13 @@ Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_ste
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 
 #########################################
-Future training session (v13, commit ???)[At benchmark]
+Future training session (v13, commit 9ebcd4)[At benchmark]
 Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v13_commit_???_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v13_commit_9ebcd4_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 
 (1) Only use the final state from LSTM instead of using the whole sequence outputs.
-
 Note:
 (1)
 #########################################
