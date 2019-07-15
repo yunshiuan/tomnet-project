@@ -71,9 +71,9 @@ class Model:
   # because each file contains 10 steps
   
   # EPOCH_SIZE = 78600 #human (<8000 files)
-  EPOCH_SIZE = 80000 #1000 files
+  EPOCH_SIZE = 8000 #1000 files
   
-  subset_size = 10000 # use all files
+  subset_size = 1000 # use all files
 
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
@@ -84,8 +84,8 @@ class Model:
   # For testing on 1000 files
   #txt_data_path = os.getcwd() + '/S002a/'
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v14_commit_95c693_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v14_commit_95c693_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S030_v15_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v15_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
   txt_data_path ='../S002a/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
@@ -548,18 +548,7 @@ class Model:
         data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
         # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
         data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels))
-      # --------------------------------------------------------------
-      # Edwinn's codes
-      # Test accuracy by match_estimation()
-      # Only work for data format (batch, ...)
-      # Turned off for data format (batch, timesteps, ...)
-      # --------------------------------------------------------------
-#      # vali_set_prediction_array = (batch_size * num_batches) x num_classes
-#      # length = (batch_size * num_batches)
-#      rounded_array = np.around(vali_set_prediction_array,2).tolist()
-#      length = num_batches*self.BATCH_SIZE_TEST  
-#      df_vali_match_estimation = self.match_estimation(rounded_array, self.vali_labels, length, 'vali')
-#      
+ 
       # --------------------------------------------------------------
       # My codes
       # Test accuracy by definition
@@ -581,54 +570,6 @@ class Model:
   
       return df_accuracy_all
     
-#  def match_estimation(self,predictions, labels, length, mode):
-#    '''
-#    [Deprecated! Use proportion_accuracy() instead.
-    # Only work for data format (batch, ...)
-    # Turned off for data format (batch, timesteps, ...)]
-    
-#    Evaluate model accuracy defined by Edwinn's method.
-#    Return a df that contains the accuracy metric.
-#    
-#    :param labels: ground truth labels (including both in-batch and out-of-batch
-#    labels. Note that only in-batch labels (size = length) are tested because 
-#    they have corresponding predicted labels.
-#    :param predicitons: predicted labels (num_batches * batch_size, num_classes).
-#    :param length: (num_batches * batch_size, 1). This defines the number of 
-#    labels that are in batches. Note that some remaining labels are not
-#    included in batches.
-#    :param mode: should be either 'vali' or 'test'
-#    :return df_summary: a a dataframe that stores the acuuracy metrics
-#    '''
-#    
-#    #Initialize zeroes for each possible arrangement
-#    matches = [0 for item in range(math.factorial(self.NUM_CLASS))]
-#    
-#    for i in range(length):
-#      #Initialize a 2d zeroes array
-#      test = [[0 for item in range(self.NUM_CLASS)] for item in range(math.factorial(self.NUM_CLASS))]
-#      combinations = list(itertools.permutations(range(self.NUM_CLASS),self.NUM_CLASS))
-#      for j in range(math.factorial(self.NUM_CLASS)):
-#        for k in range(self.NUM_CLASS):
-#          test[j][k] = predictions[i][combinations[j][k]]
-#      
-#      for j in range(math.factorial(self.NUM_CLASS)):
-#        if int(labels[i]) == test[j].index(max(test[j])):
-#          matches[j] += 1
-#
-#    best = matches.index(max(matches))
-#    print('\n' + str(mode) +': match_estimation()')
-#    print( 'Combination with best matches was ' + str(combinations[best]))
-#    print('Matches: ' + str(matches[best]) + '/' + str(length))
-#    print('Accuracy: ' + str(round(matches[best]*100/length,2)) + '%')
-#    df_summary = pd.DataFrame(data={'matches':str(str(matches[best]) + '/' + str(length)),
-#                                    'accurary':str(str(round(matches[best]*100/length,2)) + '%'),
-#                                    'mode': str(mode) + '_match_estimation'},
-#                      index = [0])
-#    ## write the csv
-#    #df.to_csv(self.train_path + '_test_accuracy_v1.csv')
-#    return df_summary  
-  
   def proportion_accuracy(self, prediction_array, labels, mode):
     '''
     Evaluate model accuracy defined by proportion (num_matches/num_total).
@@ -852,20 +793,7 @@ class Model:
       :batch_data:
         a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
       :batch_labels: a batch of labels. 1D numpy array (batch_size, )
-    '''
-    # --------------------------------------------------------------
-    # Edwinn's codes
-    # Generate a batch. 
-    # Each batch is a step.
-    # Each batch contains 16 steps (span from 2 trajectories, which
-    # each contains 10 steps).
-    # batch_data shape = (16, 6, 6, 11)
-    # batch_label shape = (16, 1)
-    # --------------------------------------------------------------
-#    offset = np.random.choice(self.EPOCH_SIZE - test_batch_size, 1)[0]
-#    test_data_batch = test_data[offset:offset+test_batch_size, ...]
-#    vali_label_batch = vali_label[offset:offset+test_batch_size]
-    
+    '''  
     # --------------------------------------------------------------
     # Paper codes
     # Generate a batch. 
