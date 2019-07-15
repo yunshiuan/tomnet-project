@@ -62,6 +62,7 @@ class NeuralNetLayers:
   def conv_layer_before_resnet(self, input_layer):
       '''
       Reshape the tensor channels before entering the resnet.
+      No ReLU and BN. Only a 3x3 conv filter.
       '''
       stride = 1
       output_channels = 32
@@ -75,7 +76,26 @@ class NeuralNetLayers:
       output = conv_layer
      
       return output
+    
+  def conv_prediction_head_layer(self, input_layer, filter_shape, stride):
+      '''
+      This conv layer is for the prediction head of the prednet, 
+      including only conv and ReLU.
       
+      :param filter_shape: filter height, filter width, input_channel, output_channels
+      '''
+      stride = 1
+      output_channels = 32
+      #filter height, filter width, input_channel, output_channels
+      filter_shape = [3, 3, input_layer.get_shape().as_list()[-1], output_channels]
+      
+      #output = conv_layer(input_layer, filter_shape, stride)
+      
+      filter = self.create_variables(name='conv', shape=filter_shape, is_fc_layer=False)
+      conv_layer = tf.nn.conv2d(input_layer, filter, strides=[1, stride, stride, 1], padding='SAME')
+      output = tf.nn.relu(conv_layer)     
+      return output     
+    
   def conv_bn_relu_layer(self,input_layer, filter_shape, stride):
       '''
       This sub-block is the first sub-block in the residual connection of the residual block.
@@ -104,7 +124,7 @@ class NeuralNetLayers:
   def conv_bn_no_relu_layer(self, input_layer, filter_shape, stride):
       '''
       This sub-block is the second sub-block in the residual connection of the residual block.
-      This block is needed because ReLU should happen after addtion.
+      This block is needed because ReLU should happen after addition.
       
       :param filter_shape: filter height, filter width, input_channel, output_channels
       '''
@@ -119,7 +139,7 @@ class NeuralNetLayers:
   
       output = bn_layer
       return output  
-    
+           
   def residual_block(self,input_layer, output_channels):
       '''
       Constructing a resudual block. Note that as in the paper, each residual block
@@ -316,7 +336,7 @@ class NeuralNetLayers:
   
   def output_layer(self,input_layer, num_labels):
       '''
-      A linear layer to resize the tensor.
+      A linear layer/ fully connected layer/ dense layer.
       :param input_layer: 2D tensor
       :param num_labels: int. How many output labels in total?
       :return: output layer Y = WX + B

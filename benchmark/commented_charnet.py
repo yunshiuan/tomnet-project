@@ -41,7 +41,8 @@ class CharNet(nnl.NeuralNetLayers):
       :param n: the number of layers in the resnet
       :param num_classes: 
       :param reuse: ?
-      :param train:  
+      :param train: If training, there will be dropout in the LSTM. For validation/testing,
+        droupout won't be applied.
       :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) and is the input for a softmax layer 
       '''
       # pdb.set_trace()
@@ -72,10 +73,8 @@ class CharNet(nnl.NeuralNetLayers):
       # to enable resnet to work (addition between main path and residual connection)
       # --------------------------------------------------------------
       with tf.variable_scope('conv_before_resnet', reuse = reuse):
-          # layers[-1] = step_wise_iput = (160, 12, 12, 11)
           #pdb.set_trace()
           conv_before_resnet = self.conv_layer_before_resnet(layers[-1])
-          # conv_before_resnet = (160, 12, 12, 32)
           layers.append(conv_before_resnet)
           _, _, _, resnet_input_channels  = layers[-1].get_shape().as_list()
   
@@ -106,21 +105,21 @@ class CharNet(nnl.NeuralNetLayers):
               self.activation_summary(block)
               layers.append(block)
       
+      # --------------------------------------------------------------
       #Add average pooling
-      with tf.variable_scope('average_pooling', reuse=reuse):
-          # --------------------------------------------------------------
-          # Paper codes
-          # (160, 12, 12, 32) ->  (160, 32)
-          # # collapse the spacial dimension
-          #
-          # layers[-1] = block = (160, 12, 12, 11)
-          # 160: 160 steps (16 trajectories x 10 steps/trajectory)
-          # 12, 12, 32: maze height, width, output channels (32 as in the paper)
-          #  
-          # avg_pool = (160, 32)
-          # 160: 160 steps (16 trajectories x 10 steps/trajectory)
-          # 32: output channels 
-          # --------------------------------------------------------------
+      # Paper codes
+      # (160, 12, 12, 32) ->  (160, 32)
+      # # collapse the spacial dimension
+      #
+      # layers[-1] = block = (160, 12, 12, 11)
+      # 160: 160 steps (16 trajectories x 10 steps/trajectory)
+      # 12, 12, 32: maze height, width, output channels (32 as in the paper)
+      #  
+      # avg_pool = (160, 32)
+      # 160: 160 steps (16 trajectories x 10 steps/trajectory)
+      # 32: output channels 
+      # --------------------------------------------------------------
+      with tf.variable_scope('average_pooling', reuse=reuse):          
           avg_pool = self.average_pooling_layer(block)
           layers.append(avg_pool)
           
@@ -128,7 +127,6 @@ class CharNet(nnl.NeuralNetLayers):
       
       #Add LSTM layer
       # pdb.set_trace()
-  
       with tf.variable_scope('LSTM', reuse=reuse):
          
           # --------------------------------------------------------------
@@ -159,29 +157,22 @@ class CharNet(nnl.NeuralNetLayers):
           
           layers.append(lstm)        
   
-      #Fully connected
-      with tf.variable_scope('fc', reuse=reuse):
-  
-
-          # ==============================================================
-          # This section is to feed the result from LSTM to a FC layer
-          # ==============================================================
-          
-          # --------------------------------------------------------------
-          # Paper codes
-          # Do not need 'global average pooling'
-          # already (16, 4)
-          # --------------------------------------------------------------
-          # def output_layer(input_layer, num_labels):
-          # '''
-          # :param input_layer: 2D tensor
-          # :param num_labels: int. How many output labels in total?
-          # :return: output layer Y = WX + B
-          # '''
-          
+      # --------------------------------------------------------------
+      #Fully connected layer
+      # Paper codes
+      # (16, 4) -> (16, 4)
+      # def output_layer(self,input_layer, num_labels):
+      #   '''
+      #   A linear layer.
+      #   :param input_layer: 2D tensor
+      #   :param num_labels: int. How many output labels in total?
+      #   :return: output layer Y = WX + B
+      #   '''
+      # --------------------------------------------------------------
+      with tf.variable_scope('fc', reuse=reuse):                  
           # layers[-1] = (16, 64)
-          # pdb.set_trace()
           output = self.output_layer(layers[-1], num_classes)
           # output = (16, 4)
           layers.append(output)
+          
       return layers[-1]
