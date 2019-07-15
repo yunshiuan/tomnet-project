@@ -243,7 +243,8 @@ class NeuralNetLayers:
       # 1. for each x_i(t) (example_i's step_t):
       # a (64, 1) = W(64, 32) * x (32, 1) 
       # --------------------------------------------------------------
-      # seq_len.shape = (16)
+      # seq_len:
+      #  - to specify the length of each batch element (i.e., trajectory)
       # An int32/int64 vector sized [batch_size]. 
       # Used to copy-through state and zero-out outputs when past a batch 
       # element's sequence length. So it's more for performance than correctness.
