@@ -144,15 +144,7 @@ class CharNet(nnl.NeuralNetLayers):
           # 4: num_classes     
           # --------------------------------------------------------------
   
-          # --------------------------------------------------------------        
-          # for testing only        
-          # conclusion: reshaping twice result in the same np array
-          # var_test = np.array(range(0,(5*10*6*6*11))).reshape(5, 10, 6, 6, 11)
-          # var_test_reduce_dim = var_test.reshape(5 * 10, 6, 6, 11)
-          # _, feature_h, feature_w, feature_d = var_test_reduce_dim.shape
-          # var_test_resume_dim = var_test_reduce_dim.reshape(5, 10, feature_h, feature_w, feature_d)
-          # np.array_equal(var_test_reduce_dim,var_test_resume_dim)
-          # > False!??!!?? #TODO
+          # --------------------------------------------------------------                 
           
           # layers[-1] = avg_pool = (160, 32)
           _, resnet_output_channels = layers[-1].get_shape().as_list()
