@@ -731,8 +731,11 @@ class Model:
         a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth)
       :train_batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
-    # geneate random batches
-    train_batch_data, train_batch_labels = self.generate_batch(train_data, train_labels, train_batch_size, file_index)
+    # geneate random batches for trajectories -> e_char
+    train_batch_data, train_batch_labels = self.generate_traj_batch(train_data, train_labels, train_batch_size, file_index)
+
+    ## geneate random batches for query_state -> final_target
+    #train_batch_data, train_batch_labels = self.generate_traj_batch(train_data, train_labels, train_batch_size, file_index)
       
     return train_batch_data, train_batch_labels
   
@@ -754,7 +757,7 @@ class Model:
       :vali_batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
     # geneate random batches
-    vali_batch_data, vali_batch_labels = self.generate_batch(vali_data, vali_labels, vali_batch_size, file_index)
+    vali_batch_data, vali_batch_labels = self.generate_traj_batch(vali_data, vali_labels, vali_batch_size, file_index)
       
     return vali_batch_data, vali_batch_labels
 
@@ -775,12 +778,16 @@ class Model:
       :test_batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
 
-    test_batch_data, test_batch_labels = self.generate_batch(test_data, test_labels, test_batch_size, file_index)
+    test_batch_data, test_batch_labels = self.generate_traj_batch(test_data, test_labels, test_batch_size, file_index)
     return test_batch_data, test_batch_labels
   
-  def generate_batch(self, data, labels, batch_size, file_index):
+  def generate_query_state_batch(self, data, labels, batch_size, file_index):
+    pass
+    return
+  def generate_traj_batch(self, data, labels, batch_size, file_index):
     '''
-    This function helps you generate a batch of data.
+    This function helps you generate a batch of trajectory data (compared to 
+    query state data).
     
     Args:
       :param data: 4D numpy array (num_files, trajectory_size, height, width, depth)
