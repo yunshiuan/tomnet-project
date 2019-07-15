@@ -23,7 +23,7 @@ The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
 
 #########################################
-Future training session (v14, commit ???)[At benchmark]
+Future training session (v14, commit 95c693)[At benchmark]
 Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_95c693_epoch8000_tuning_batch16_train_step_1K_INIT_LR_10-5
@@ -33,6 +33,9 @@ Output file name: /cache_S002a_v14_commit_95c693_epoch8000_tuning_batch16_train_
 
 Note:
 (1)
+accurary	mode
+99.7%	vali_proportion
+99.7%	test_proportion
 
 #########################################
 Future training session (v13, commit ???)[At benchmark]
