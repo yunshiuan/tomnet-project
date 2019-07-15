@@ -176,7 +176,7 @@ class Model:
     # during data_handler.parse_trajectories()
     
     # pdb.set_trace()
-    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_trajectories(dir,mode=args.mode,shuf=args.shuffle, subset_size = self.subset_size)
+    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_whole_data_set(dir,mode=args.mode,shuf=args.shuffle, subset_size = self.subset_size,parse_query_state = False)
     # on my local machine: 
     # 'S002_83.txt', 'S002_97.txt', 'S002_68.txt', 'S002_40.txt', 'S002_54.txt', 'S002_55.txt'
     #print('End of __init__-----------------')
@@ -667,7 +667,7 @@ class Model:
     :param total_loss: tensor with shape [1]
     :param top1_error: tensor with shape [1]
     :return: two operations. Running train_op will do optimization once. Running train_ema_op
-    will generate the moving average of train error and train loss for tensorboard
+      will generate the moving average of train error and train loss for tensorboard
     '''
     # Add train_loss, current learning rate and train error into the tensorboard summary ops
     tf.summary.scalar('learning_rate', self.lr_placeholder)
@@ -728,7 +728,7 @@ class Model:
   
     Returns: 
       :train_batch_data:
-        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth)
       :train_batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
     # geneate random batches
@@ -783,8 +783,8 @@ class Model:
     This function helps you generate a batch of data.
     
     Args:
-      :param data: 4D numpy array (total_steps, height, width, depth)
-      :param labels: 1D numpy array (total_steps, ）
+      :param data: 4D numpy array (num_files, trajectory_size, height, width, depth)
+      :param labels: 1D numpy array (num_files, ）
       :param batch_size: int
       :param file_index: the starting index of the batch in the data set. 
         If set to the special number -1, a random batch will be chosen from the data set.
@@ -802,27 +802,12 @@ class Model:
     # batch_data shape = (16, 10, 12, 12, 11)
     # batch_label shape = (16, 1)
     # --------------------------------------------------------------
-    # pdb.set_trace()
-        
-    # the total number of batch equals the total number of steps devided by the steps for each trajectory
-    # (e.g., # training steps = 8000, max_trajectory_size = 10, then total_number_file = 800)
-    num_files = int(np.ceil(len(data)/self.MAX_TRAJECTORY_SIZE)) 
-
-    # --------------------------------------------------------------
-    # Reshape train_data
-  
-    # train_data = (num_steps, height, width, depth) ->
-    # train_data = (num_files, num_steps, height, width, depth)
-    # --------------------------------------------------------------
-    
-    # train_data = (num_steps, height, width, depth)
-    data = data.reshape((num_files, self.MAX_TRAJECTORY_SIZE,
-                         self.HEIGHT, self.WIDTH, self.DEPTH))
-    # train_data = (num_files, num_steps, height, width, depth)
+    #pdb.set_trace()
+    num_files = data.shape[0]
 
     # --------------------------------------------------------------
     # Chose train_batch_size random files from all the files
-    # test_data = (num_files, num_steps, height, width, depth)->
+    # test_data = (total_num_files, num_steps, height, width, depth)->
     # batch_data = (batch_size, num_steps, height, width, depth)->
     # --------------------------------------------------------------
     if file_index == -1:
@@ -852,10 +837,8 @@ class Model:
     batch_labels = labels[indexes_files]
     # pdb.set_trace()
     assert(batch_labels.shape[0]==batch_size)
-    
+    #pdb.set_trace()
     return batch_data, batch_labels
-
-
 
 if __name__ == "__main__":
     # reseting the graph is necessary for running the script via spyder or other
