@@ -23,16 +23,33 @@ The codes root from Edwinn's codes with step-by-step modification.
 See README in it for detail.
 
 #########################################
-Future training session (v14, commit ???)[At benchmark]
-Time: 2019/??
+Future training session
+Time: 2019/06/03
+Future training session (v13, commit ???)[At benchmark]
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
+#########################################
+
+Finished training session (v14, commit 95c693)[At benchmark]
+Time: 2019/06/03
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v14_commit_95c693_epoch8000_tuning_batch16_train_step_1K_INIT_LR_10-5
+
+(1) Test if the OOP version of charnet works.
+(2) Use only 1000 steps to speed up the process.
+
+Note:
+(1)
+accurary	mode
+99.7%	vali_proportion
+99.7%	test_proportion
+
 
 #########################################
-Future training session (v13, commit 9ebcd4)[At benchmark]
+Finished training session (v13, commit 9ebcd4)[At benchmark]
 Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5

@@ -13,7 +13,7 @@ import datetime
 import numpy as npc
 import pandas as pd
 import tensorflow as tf
-import commented_resnet as rn
+import commented_charnet as cn
 import sys
 #sys.path.insert(0, '/temporary_testing_version')
 #import data_handler as dh
@@ -70,21 +70,22 @@ class Model:
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
   
-#  EPOCH_SIZE = 78600 # Human data
-  EPOCH_SIZE = 80000
+  # EPOCH_SIZE = 78600 #human (<8000 files)
+  EPOCH_SIZE = 80000 #1000 files
+  
   subset_size = 10000 # use all files
 
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   
-  TRAIN_STEPS = 50000
+  TRAIN_STEPS = 1000
 
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   # For testing on 1000 files
   #txt_data_path = os.getcwd() + '/S002a/'
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S030_v14_commit_95c693_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v14_commit_95c693_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
   txt_data_path ='../S002a/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
@@ -207,8 +208,10 @@ class Model:
     
     # "logits" is the output of the charnet (including ResNET and LSTM) 
     # and is the input for a softmax layer (see below)
-    logits = rn.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
-    vali_logits = rn.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
+    charnet = cn.CharNet()
+    #pdb.set_trace()
+    logits = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
+    vali_logits = charnet.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     
     # REGULARIZATION_LOSSES: regularization losses collected during graph construction.
     # See: https://www.tensorflow.org/api_docs/python/tf/GraphKeys
@@ -510,7 +513,8 @@ class Model:
       traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
   
       # Build the vali graph
-      logits = rn.build_charnet(traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
+      charnet = cn.CharNet()
+      logits = charnet.build_charnet(traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=False)
       # logits = (batch_size, num_classes)
       predictions = tf.nn.softmax(logits)
       # predictions = (batch_size, num_classes)
