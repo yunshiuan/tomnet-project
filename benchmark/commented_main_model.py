@@ -69,8 +69,9 @@ class Model:
   # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
   # because each file contains 10 steps
   
+  # Use subset_size to replace epoch_size for controling the data set size
   # EPOCH_SIZE = 78600 #human (<8000 files)
-  EPOCH_SIZE = 8000 #1000 files
+  # EPOCH_SIZE = 8000 #1000 files
   
   subset_size = 1000 # use all files
 
