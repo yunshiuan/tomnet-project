@@ -720,7 +720,7 @@ class Model:
     This function helps you generate a batch of training data.
     
     Args:
-      :param train_data: 4D numpy array (total_steps, height, width, depth)
+      :param train_data: 5D numpy array (num_files, trajectory_size, height, width, depth)
       :param train_labels: 1D numpy array (total_steps, ）
       :param batch_size: int
       :param file_index: the starting index of the batch in the data set. 
@@ -728,15 +728,14 @@ class Model:
   
     Returns: 
       :train_batch_data:
-        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth)
+        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth)
       :train_batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
     # geneate random batches for trajectories -> e_char
-    train_batch_data, train_batch_labels = self.generate_traj_batch(train_data, train_labels, train_batch_size, file_index)
+    train_batch_data_traj, train_batch_labels_traj = self.generate_traj_batch(train_data, train_labels, train_batch_size, file_index)
 
     ## geneate random batches for query_state -> final_target
-    #train_batch_data, train_batch_labels = self.generate_traj_batch(train_data, train_labels, train_batch_size, file_index)
-      
+    train_batch_data_query_state, train_batch_labels_query_state = self.generate_query_state_batch(train_data, train_labels, train_batch_size, file_index)
     return train_batch_data, train_batch_labels
   
   def generate_vali_batch(self, vali_data, vali_labels, vali_batch_size, file_index = -1):
@@ -744,7 +743,7 @@ class Model:
     This function helps you generate a batch of validation data.
     
     Args:
-      :param vali_data: 4D numpy array (total_steps, height, width, depth)
+      :param vali_data: 5D numpy array (num_files, trajectory_size, height, width, depth)
       :param vali_labels: 1D numpy array (total_steps, ）
       :param vali_batch_size: int
       :param file_index: the starting index of the batch in the data set. 
@@ -753,7 +752,7 @@ class Model:
   
     Returns: 
       :vali_batch_data:
-        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth) and 
       :vali_batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
     # geneate random batches
@@ -766,7 +765,7 @@ class Model:
     This function helps you generate a batch of test data.
     
     Args:
-      :param test_data: 4D numpy array (total_steps, height, width, depth)
+      :param test_data: 5D numpy array (num_files, trajectory_size, height, width, depth)
       :param test_labels: 1D numpy array (total_steps, ）
       :param batch_size: int
       :param file_index: the starting index of the batch in the data set. 
@@ -774,7 +773,7 @@ class Model:
   
     Returns: 
       :test_batch_data:
-        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth) and 
       :test_batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''
 
@@ -782,15 +781,12 @@ class Model:
     return test_batch_data, test_batch_labels
   
   def generate_query_state_batch(self, data, labels, batch_size, file_index):
-    pass
-    return
-  def generate_traj_batch(self, data, labels, batch_size, file_index):
     '''
-    This function helps you generate a batch of trajectory data (compared to 
-    query state data).
+    This function helps you generate a batch of query state data
+    (compared to trajectory data).
     
     Args:
-      :param data: 4D numpy array (num_files, trajectory_size, height, width, depth)
+      :param data: 4D numpy array (num_files, height, width, depth)
       :param labels: 1D numpy array (num_files, ）
       :param batch_size: int
       :param file_index: the starting index of the batch in the data set. 
@@ -798,24 +794,20 @@ class Model:
 
     Returns: 
       :batch_data:
-        a batch data. 4D numpy array (batch_size, trajectory_size, height, width, depth) and 
+        a batch data. 4D numpy array (batch_size, height, width, depth) and 
       :batch_labels: a batch of labels. 1D numpy array (batch_size, )
     '''  
-    # --------------------------------------------------------------
-    # Paper codes
-    # Generate a batch. 
-    # Each example is a trejectory.
-    # Each batch contains 16 examples (trajectories). Each trajectory contains 10 steps.
-    # batch_data shape = (16, 10, 12, 12, 11)
-    # batch_label shape = (16, 1)
-    # --------------------------------------------------------------
-    #pdb.set_trace()
     num_files = data.shape[0]
-
+    
     # --------------------------------------------------------------
     # Chose train_batch_size random files from all the files
-    # test_data = (total_num_files, num_steps, height, width, depth)->
-    # batch_data = (batch_size, num_steps, height, width, depth)->
+    # For data:
+    # data = (total_num_files, height, width, depth)->
+    # batch_data = (batch_size, height, width, depth)
+    #
+    # For labels:
+    # labels = (total_num_files,)->
+    # batch_labels = (batch_size,)
     # --------------------------------------------------------------
     if file_index == -1:
       # choose a random set of files (could be not continuous)
@@ -825,22 +817,60 @@ class Model:
       indexes_files = range(file_index, file_index + batch_size)
       
     batch_data = data[indexes_files,...]
+    batch_labels = labels[indexes_files,...]
+    
+    return batch_data, batch_labels
+  
+  def generate_traj_batch(self, data, labels, batch_size, file_index):
+    '''
+    This function helps you generate a batch of trajectory data (compared to 
+    query state data).
+    
+    Args:
+      :param data: 5D numpy array (num_files, trajectory_size, height, width, depth)
+      :param labels: 1D numpy array (num_files, ）
+      :param batch_size: int
+      :param file_index: the starting index of the batch in the data set. 
+        If set to the special number -1, a random batch will be chosen from the data set.
+
+    Returns: 
+      :batch_data:
+        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth) and 
+      :batch_labels: 
+        a batch of labels. 1D numpy array (batch_size, )
+    '''  
+    # --------------------------------------------------------------
+    # Paper codes
+    # Generate a batch. 
+    # Each example is a trejectory.
+    # Each batch contains 16 examples (trajectories). Each trajectory contains 10 steps.
+    # batch_data shape = (16, 10, 12, 12, 11)
+    # batch_label shape = (16, 1)
+    # --------------------------------------------------------------
+    # pdb.set_trace()
+    num_files = data.shape[0]
 
     # --------------------------------------------------------------
-    # Only retain unique labels
-    # test_labels = （total_steps, ） ->
-    # test_labels = (num_files, )
+    # Chose train_batch_size random files from all the files
     # --------------------------------------------------------------
-    # test_labels = (1000,)    
-    labels = labels[0:-1:self.MAX_TRAJECTORY_SIZE]
-    # test_labels = (100, ) 
+    if file_index == -1:
+      # choose a random set of files (could be not continuous)
+      indexes_files = np.random.choice(num_files, batch_size)
+    else:
+      # choose a continuous series of files 
+      indexes_files = range(file_index, file_index + batch_size)
+      
     
     # --------------------------------------------------------------    
-    # Choose the labels coresponding to the indexes files
-    # test_labels = （num_files, ） ->
+    # Choose the data and labels coresponding to the indexes files
+    # For data:
+    # data = (total_num_files, num_steps, height, width, depth)->
+    # batch_data = (batch_size, num_steps, height, width, depth)->
+    # For labels:
+    # labels = （num_files, ） ->
     # batch_labels = (batch_size, )
-    # (100,) -> (16,)
     # --------------------------------------------------------------   
+    batch_data = data[indexes_files,...]
     batch_labels = labels[indexes_files]
     # pdb.set_trace()
     assert(batch_labels.shape[0]==batch_size)
