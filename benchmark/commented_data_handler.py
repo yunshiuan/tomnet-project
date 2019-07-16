@@ -60,8 +60,12 @@ class DataHandler(object):
         files = list(filter(r.match, files)) # Read Note    
         
         if subset_size != -1: 
-          files = files[0:subset_size]   
-
+          files = files[0:subset_size]  
+        if not parse_query_state:
+          parse_mode = 'trajectories---------------'
+        else:
+          parse_mode = 'query states---------------'
+        print('Parse ', parse_mode)
         print('Found', len(files), 'files in', directory)
          
  
