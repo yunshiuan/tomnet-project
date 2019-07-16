@@ -113,47 +113,25 @@ class Model:
   def __init__(self, args):
     '''
     The constructor for the Model class.
-    '''
-    #The data points must be given one by one here?
-    #But the whole trajectory must be given to the LSTM
-    
-    # placeholder for the trainging traj
-    # --------------------------------------------------------------
-    # Edwinn's codes
-    # self.traj_placeholder, vali_traj_placeholder: (for input_tensor)
-    # - shape: 
-    # (batch size = 16, width = 12, height = 12, depth = 11)
-    # --------------------------------------------------------------
-  
-#    self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH])
-#    # placeholder for the trainging goal
-#    self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
-#    # placeholder for the validation traj
-#    self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH])
-#    # placeholder for the validation goal
-#    self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
-#    # placeholder for learning rate
-#    self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
-    
-    # --------------------------------------------------------------
-    # Paper
-    # self.traj_placeholder: (for input_tensor)
-    # - shape: 
-    # (batch size = 16: batch_size, 10: MAX_TRAJECTORY_SIZE, HEIGHT = 12, WIDTH = 12, DEPTH = 11)
-    # --------------------------------------------------------------
-    
+    ''' 
+      
     ckpt_path = self.ckpt_fname + '/logs/model.ckpt'
     train_path = self.train_fname + '/train/'
     
     self.ckpt_path = ckpt_path
-    self.train_path = train_path    
-    self.traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
+    self.train_path = train_path  
+  
+    # --------------------------------------------------------------
+    # Set up all the placeholders
+    # --------------------------------------------------------------
+    # For trajectory data    
+    self.train_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
     # placeholder for the trainging goal
-    self.goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
+    self.train_labels_traj_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
     # placeholder for the validation traj
-    self.vali_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
+    self.vali_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH])
     # placeholder for the validation goal
-    self.vali_goal_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
+    self.vali_labels_traj_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
 #    # placeholder for learning rate
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
         
@@ -242,15 +220,15 @@ class Model:
       # and is the input for a softmax layer (see below)
       charnet = cn.CharNet()
 
-      logits = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
-      vali_logits = charnet.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
+      logits = charnet.build_charnet(self.train_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
+      vali_logits = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     else:
       charnet = cn.CharNet()
       length_e_char = 8
-      e_char = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=False, train=True)
+      e_char = charnet.build_charnet(self.train_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=False, train=True)
       
       prednet = pn.PredNet()
-      prednet.build_prednet()
+      prednet.build_prednet(e_char, )
 
     # REGULARIZATION_LOSSES: regularization losses collected during graph construction.
     # See: https://www.tensorflow.org/api_docs/python/tf/GraphKeys
@@ -265,7 +243,7 @@ class Model:
     # WARNING: This op expects unscaled logits, 
     # since it performs a softmax on logits internally for efficiency. 
     # Do not call this op with the output of softmax, as it will produce incorrect results.
-    loss = self.loss(logits, self.goal_placeholder)
+    loss = self.loss(logits, self.train_labels_traj_placeholder)
     
     #  tf.add_n: Adds all input tensors element-wise.
     #  - Using sum or + might create many tensors in graph to store intermediate result.
@@ -276,12 +254,12 @@ class Model:
     # - Note that, by comparison,  the loss function 'def loss(self, logits, labels):'
     # - use the cross entropy loss.
 
-    self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
+    self.train_top1_error = self.top_k_error(predictions, self.train_labels_traj_placeholder, 1)
 
     #Validation loss and error
-    self.vali_loss = self.loss(vali_logits, self.vali_goal_placeholder)
+    self.vali_loss = self.loss(vali_logits, self.vali_labels_traj_placeholder)
     vali_predictions = tf.nn.softmax(vali_logits)
-    self.vali_top1_error = self.top_k_error(vali_predictions, self.vali_goal_placeholder, 1)
+    self.vali_top1_error = self.top_k_error(vali_predictions, self.vali_labels_traj_placeholder, 1)
 
     #Define operations
     self.train_op, self.train_ema_op = self.train_operation(global_step, self.full_loss, self.train_top1_error)
@@ -377,7 +355,7 @@ class Model:
 #          summary_writer.flush()
 #        
 #        else:
-        _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss], {self.vali_traj_placeholder: vali_batch_data_traj, self.vali_goal_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
+        _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss], {self.vali_data_traj_placeholder: vali_batch_data_traj, self.vali_labels_traj_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
         
         val_error_list.append(validation_error_value)
       
@@ -392,10 +370,10 @@ class Model:
       #                self.train_ema_op,
       #                self.full_loss,
       #                self.train_top1_error], 
-      #     feed_dict = {self.traj_placeholder: train_batch_data,
-      #                  self.goal_placeholder: train_batch_labels,
-      #                  self.vali_traj_placeholder: validation_batch_data,
-      #                  self.vali_goal_placeholder: validation_batch_labels,
+      #     feed_dict = {self.train_data_traj_placeholder: train_batch_data,
+      #                  self.train_labels_traj_placeholder: train_batch_labels,
+      #                  self.vali_data_traj_placeholder: validation_batch_data,
+      #                  self.vali_labels_traj_placeholder: validation_batch_labels,
       #                  self.lr_placeholder: self.INIT_LR})
       # Parameters:
       # -----------------------------
@@ -415,7 +393,7 @@ class Model:
       #             - comes from: self.full_loss = tf.add_n([loss] + regu_losses)
       #         - param: self.train_top1_error: 
       #             def _create_graphs(self):
-      #                self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
+      #                self.train_top1_error = self.top_k_error(predictions, self.train_labels_traj_placeholder, 1)
       #                   def top_k_error(self, predictions, labels, k):
       #                        The Top-1 error is the percentage of the time that the classifier 
       #                        did not give the correct class the highest score.
@@ -427,7 +405,7 @@ class Model:
       # (4) self.train_top1_error
       # - (1) comes from:
       # - def _create_graphs(self):
-      # --- self.train_top1_error = self.top_k_error(predictions, self.goal_placeholder, 1)
+      # --- self.train_top1_error = self.top_k_error(predictions, self.train_labels_traj_placeholder, 1)
       # --- def top_k_error(self, predictions, labels, k):
       # - (2) The Top-1 error is the percentage of the time that the classifier 
       #       did not give the correct class the highest score.
@@ -435,22 +413,22 @@ class Model:
       # -----------------------------
       # feed_dict
       # -----------------------------
-      # self.traj_placeholder: train_batch_data
+      # self.train_data_traj_placeholder: train_batch_data
       # - feed in the trajectories of the training batch
-      # self.goal_placeholder: train_batch_labels
+      # self.train_labels_traj_placeholder: train_batch_labels
       # - feed in the labels of the training batch
-      # self.vali_traj_placeholder: validation_batch_data
+      # self.vali_data_traj_placeholder: validation_batch_data
       # - feed in the trajectories of the validation batch
-      # self.vali_goal_placeholder: validation_batch_labels
+      # self.vali_labels_traj_placeholder: validation_batch_labels
       # - feed in the labels of the validation batch
       # self.lr_placeholder: self.INIT_LR
       # - feed in the initial learning rate
       
-      _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error], {self.traj_placeholder: train_batch_data_traj, self.goal_placeholder: train_batch_labels_traj, self.vali_traj_placeholder: vali_batch_data_traj, self.vali_goal_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
+      _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error], {self.train_data_traj_placeholder: train_batch_data_traj, self.train_labels_traj_placeholder: train_batch_labels_traj, self.vali_data_traj_placeholder: vali_batch_data_traj, self.vali_labels_traj_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
       duration = time.time() - start_time
 
       if step % self.REPORT_FREQ == 0:
-        summary_str = sess.run(summary_op, {self.traj_placeholder: train_batch_data_traj, self.goal_placeholder: train_batch_labels_traj, self.vali_traj_placeholder: vali_batch_data_traj, self.vali_goal_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
+        summary_str = sess.run(summary_op, {self.train_data_traj_placeholder: train_batch_data_traj, self.train_labels_traj_placeholder: train_batch_labels_traj, self.vali_data_traj_placeholder: vali_batch_data_traj, self.vali_labels_traj_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
         summary_writer.add_summary(summary_str, step)
 
         num_examples_per_step = self.BATCH_SIZE_TRAIN # trajectoris per step = trajectoris per batch = batch size
