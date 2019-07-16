@@ -8,7 +8,6 @@ import os
 import os
 import sys
 import time
-import math
 import datetime
 import numpy as npc
 import pandas as pd
@@ -19,7 +18,6 @@ import sys
 #import data_handler as dh
 import commented_data_handler as dh
 import argparse
-import itertools
 import numpy as np
 # For debugging
 import pdb
@@ -161,20 +159,9 @@ class Model:
     dir = self.txt_data_path
     # pdb.set_trace()
     data_handler = dh.DataHandler(dir)
-    # For S002a:
-    # Get the data by "data_handler.parse_trajectories(dir, mode=args.mode, shuf=args.shuffle)"
-    # self.train_data.shape: (800, 12, 12, 11)
-    # self.test_data.shape: (100, 12, 12, 11)
-    # self.test_data.shape: (100, 12, 12, 11)
-    # self.train_labels.shape: (800, )
-    # self.test_labels.shape: (100, )
-    # self.test_labels.shape: (100, )
-    # len (files) = 100
-    # Each data example is one trajectory (each contains 10 steps, MAX_TRAJECTORY_SIZE)
-    
+
     # Note that all training examples are NOT shuffled randomly (by defualt)
     # during data_handler.parse_trajectories()
-    
     # pdb.set_trace()
     self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_whole_data_set(dir,mode=args.mode,shuf=args.shuffle, subset_size = self.subset_size,parse_query_state = False)
     # on my local machine: 
