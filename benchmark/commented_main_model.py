@@ -13,6 +13,7 @@ import numpy as npc
 import pandas as pd
 import tensorflow as tf
 import commented_charnet as cn
+import commented_prednet as pn
 import sys
 #sys.path.insert(0, '/temporary_testing_version')
 #import data_handler as dh
@@ -160,19 +161,56 @@ class Model:
     # pdb.set_trace()
     data_handler = dh.DataHandler(dir)
 
+    # --------------------------------------------------------------
+    # Parse the trajectory data and labels
+    # train_data_traj = (num_train_files, trajectory_size, height, width, MAZE_DEPTH)
+    # train_labels_traj = (num_train_files, )
+    # --------------------------------------------------------------
+
     # Note that all training examples are NOT shuffled randomly (by defualt)
     # during data_handler.parse_trajectories()
     # pdb.set_trace()
-    self.train_data, self.vali_data, self.test_data, self.train_labels, self.vali_labels, self.test_labels, self.all_files, self.train_files, self.vali_files, self.test_files = data_handler.parse_whole_data_set(dir,mode=args.mode,shuf=args.shuffle, subset_size = self.subset_size,parse_query_state = False)
-    # on my local machine: 
-    # 'S002_83.txt', 'S002_97.txt', 'S002_68.txt', 'S002_40.txt', 'S002_54.txt', 'S002_55.txt'
-    #print('End of __init__-----------------')
-    # pdb.set_trace()
+    self.train_data_traj, self.vali_data_traj,\
+    self.test_data_traj, self.train_labels_traj,\
+    self.vali_labels_traj, self.test_labels_traj,\
+    self.all_files_traj, self.train_files_traj, self.vali_files_traj, self.test_files_traj\
+    = data_handler.parse_whole_data_set(dir,\
+                                        mode=args.mode,\
+                                        shuf=args.shuffle,\
+                                        subset_size = self.subset_size,\
+                                        parse_query_state = False)
+    # --------------------------------------------------------------
+    # Parse the query state data and labels
+    # train_data_traj = (num_train_files, height, width, MAZE_QUERY_STATE_DEPTH)
+    # train_labels_traj = (num_train_files, )
+    # --------------------------------------------------------------
 
-    
+    self.train_data_query_state, self.vali_data_query_state,\
+    self.test_data_query_state, self.train_labels_query_state,\
+    self.vali_labels_query_state, self.test_labels_query_state,\
+    self.all_files_query_state, self.train_files_query_state, self.vali_files_query_state, self.test_files_query_state \
+    = data_handler.parse_whole_data_set(dir,\
+                                        mode=args.mode,\
+                                        shuf=args.shuffle,\
+                                        subset_size = self.subset_size,\
+                                        parse_query_state = True)                                                                                                                                                                                                                                             
+
+    #print('End of __init__-----------------')
+    #pdb.set_trace()
             
-  def _create_graphs(self):
+  def _create_graphs(self, with_prednet):
+    '''
+    Create the graph that includes all tensforflow operations and parameters.
     
+    Args:
+      :with_prednet:
+        If `with_prednet = True`, then construct the complete model includeing
+        both charnet and prednet.
+        If `with_prednet = False`, then construct the partial model including
+        only the charnet.
+
+    '''
+       
     # > for step in range(self.TRAIN_STEPS):
     # The "step" values will be input to 
     # (1)"self.train_operation(global_step, self.full_loss, self.train_top1_error)",
@@ -184,22 +222,35 @@ class Model:
     global_step = tf.Variable(0, trainable=False)
     validation_step = tf.Variable(0, trainable=False)
     
-    # The charnet
-    # def build_charnet(input_tensor, n, num_classes, reuse, train):
-    # - Add n residual layers
-    # - Add average pooling
-    # - Add LSTM layer
-    # - Add a fully connected layer
-    # The output of charnet is "logits", which will be feeded into 
-    # the softmax layer to make predictions
-    
-    # "logits" is the output of the charnet (including ResNET and LSTM) 
-    # and is the input for a softmax layer (see below)
-    charnet = cn.CharNet()
     #pdb.set_trace()
-    logits = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
-    vali_logits = charnet.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     
+    # --------------------------------------------------------------
+    # Build the model for training and validation
+    # --------------------------------------------------------------
+    if not with_prednet:
+      # The charnet
+      # def build_charnet(input_tensor, n, num_classes, reuse, train):
+      # - Add n residual layers
+      # - Add average pooling
+      # - Add LSTM layer
+      # - Add a fully connected layer
+      # The output of charnet is "logits", which will be feeded into 
+      # the softmax layer to make predictions
+      
+      # "logits" is the output of the charnet (including ResNET and LSTM) 
+      # and is the input for a softmax layer (see below)
+      charnet = cn.CharNet()
+
+      logits = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
+      vali_logits = charnet.build_charnet(self.vali_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
+    else:
+      charnet = cn.CharNet()
+      length_e_char = 8
+      e_char = charnet.build_charnet(self.traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=False, train=True)
+      
+      prednet = pn.PredNet()
+      prednet.build_prednet()
+
     # REGULARIZATION_LOSSES: regularization losses collected during graph construction.
     # See: https://www.tensorflow.org/api_docs/python/tf/GraphKeys
     regu_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
@@ -243,7 +294,7 @@ class Model:
     #pdb.set_trace()
     
     #Build graphs
-    self._create_graphs()
+    self._create_graphs(with_prednet = False)
     
 
     # Initialize a saver to save checkpoints. Merge all summaries, so we can run all
@@ -289,25 +340,43 @@ class Model:
     
     for step in range(self.TRAIN_STEPS):
       # pdb.set_trace()
+      # --------------------------------------------------------------
+      # Generate batches for training data
+      # --------------------------------------------------------------
 
-      #Generate batches for training and validation
-      # Each example in a batch is of the shape 
-      # (maze width = 12, maze height = 12, steps of each trajectory = 11)
-      train_batch_data, train_batch_labels = self.generate_train_batch(self.train_data, self.train_labels, self.BATCH_SIZE_TRAIN)
-      validation_batch_data, validation_batch_labels = self.generate_vali_batch(self.vali_data, self.vali_labels, self.BATCH_SIZE_VAL)
+      train_batch_data_traj, train_batch_labels_traj,\
+      train_batch_data_query_state, train_batch_labels_query_state\
+      = self.generate_train_batch(self.train_data_traj,\
+                                  self.train_labels_traj,\
+                                  self.train_data_query_state,\
+                                  self.train_labels_query_state,\
+                                  self.BATCH_SIZE_TRAIN)
+
+      # --------------------------------------------------------------
+      # Generate batches for validation data
+      # --------------------------------------------------------------
+      vali_batch_data_traj, vali_batch_labels_traj,\
+      vali_batch_data_query_state, vali_batch_labels_query_state\
+      = self.generate_vali_batch(self.vali_data_traj,\
+                                  self.vali_labels_traj,\
+                                  self.vali_data_query_state,\
+                                  self.vali_labels_query_state,\
+                                  self.BATCH_SIZE_TRAIN)
 
       #Validate first?
       if step % self.REPORT_FREQ == 0:
-        if self.FULL_VALIDATION:
-          validation_loss_value, validation_error_value = self.full_validation(loss=self.vali_loss, top1_error=self.vali_top1_error, vali_data=vali_data, vali_labels=vali_labels, session=sess, batch_data=train_batch_data, batch_label=train_batch_labels)
 
-          vali_summ = tf.Summary()
-          vali_summ.value.add(tag='full_validation_error', simple_value=validation_error_value.astype(np.float))
-          summary_writer.add_summary(vali_summ, step)
-          summary_writer.flush()
-        
-        else:
-          _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss], {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
+        # Comment the block for 'FULL_VALIDATION' as it will not be run anyways
+#        if self.FULL_VALIDATION:
+#          validation_loss_value, validation_error_value = self.full_validation(loss=self.vali_loss, top1_error=self.vali_top1_error, vali_data=vali_data, vali_labels=vali_labels, session=sess, batch_data=train_batch_data, batch_label=train_batch_labels)
+#
+#          vali_summ = tf.Summary()
+#          vali_summ.value.add(tag='full_validation_error', simple_value=validation_error_value.astype(np.float))
+#          summary_writer.add_summary(vali_summ, step)
+#          summary_writer.flush()
+#        
+#        else:
+        _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss], {self.vali_traj_placeholder: vali_batch_data_traj, self.vali_goal_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
         
         val_error_list.append(validation_error_value)
       
@@ -376,11 +445,11 @@ class Model:
       # self.lr_placeholder: self.INIT_LR
       # - feed in the initial learning rate
       
-      _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error], {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
+      _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error], {self.traj_placeholder: train_batch_data_traj, self.goal_placeholder: train_batch_labels_traj, self.vali_traj_placeholder: vali_batch_data_traj, self.vali_goal_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
       duration = time.time() - start_time
 
       if step % self.REPORT_FREQ == 0:
-        summary_str = sess.run(summary_op, {self.traj_placeholder: train_batch_data, self.goal_placeholder: train_batch_labels, self.vali_traj_placeholder: validation_batch_data, self.vali_goal_placeholder: validation_batch_labels, self.lr_placeholder: self.INIT_LR})
+        summary_str = sess.run(summary_op, {self.traj_placeholder: train_batch_data_traj, self.goal_placeholder: train_batch_labels_traj, self.vali_traj_placeholder: vali_batch_data_traj, self.vali_goal_placeholder: vali_batch_labels_traj, self.lr_placeholder: self.INIT_LR})
         summary_writer.add_summary(summary_str, step)
 
         num_examples_per_step = self.BATCH_SIZE_TRAIN # trajectoris per step = trajectoris per batch = batch size
@@ -455,7 +524,7 @@ class Model:
         :df_accuracy_all: a dataframe with model accuracy.
       '''
   
-      df_accuracy_all = self.evaluate_whole_data_set(self.test_files, self.test_data, self.test_labels, self.BATCH_SIZE_TEST, 'test')
+      df_accuracy_all = self.evaluate_whole_data_set(self.test_files_traj, self.test_data_traj, self.test_labels_traj, self.BATCH_SIZE_TEST, 'test')
       
       return df_accuracy_all
     
@@ -469,7 +538,7 @@ class Model:
         :df_accuracy_all: a dataframe with model accuracy.
       '''
   
-      df_accuracy_all = self.evaluate_whole_data_set(self.vali_files, self.vali_data, self.vali_labels, self.BATCH_SIZE_VAL, 'vali')
+      df_accuracy_all = self.evaluate_whole_data_set(self.vali_files_traj, self.vali_data_traj, self.vali_labels_traj, self.BATCH_SIZE_VAL, 'vali')
       
       return df_accuracy_all
     
@@ -528,13 +597,22 @@ class Model:
             print('%i batches finished!' %step)
         # pdb.set_trace() 
         file_index = step * self.BATCH_SIZE_VAL
-        batch_data, batch_labels = self.generate_vali_batch(data, labels, batch_size, file_index)
+        
+        vali_batch_data_traj, vali_batch_labels_traj,\
+        vali_batch_data_query_state, vali_batch_labels_query_state\
+        = self.generate_vali_batch(self.vali_data_traj,\
+                                    self.vali_labels_traj,\
+                                    self.vali_data_query_state,\
+                                    self.vali_labels_query_state,\
+                                    self.BATCH_SIZE_TRAIN,\
+                                    file_index = file_index)
+#        batch_data, batch_labels = self.generate_vali_batch(data, labels, batch_size, file_index)
         # pdb.set_trace()
-        batch_prediction_array = sess.run(predictions, feed_dict={traj_placeholder: batch_data})
+        batch_prediction_array = sess.run(predictions, feed_dict={traj_placeholder: vali_batch_data_traj})
         # batch_prediction_array = (batch_size, num_classes)
         data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
         # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
-        data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels))
+        data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, vali_batch_labels_traj))
  
       # --------------------------------------------------------------
       # My codes
@@ -702,70 +780,154 @@ class Model:
     
     return val_op
   
-  def generate_train_batch(self, train_data, train_labels, train_batch_size, file_index = -1):
+  def generate_train_batch(self, train_data_traj, train_labels_traj, train_data_query_state, train_labels_query_state, train_batch_size, file_index = -1):
     '''
     This function helps you generate a batch of training data.
     
     Args:
-      :param train_data: 5D numpy array (num_files, trajectory_size, height, width, depth)
-      :param train_labels: 1D numpy array (total_steps, ）
+      :param train_data_traj: 
+        5D numpy array (num_files, trajectory_size, height, width, depth)
+      :param train_labels_traj: 
+        1D numpy array (num_files, ）
+      :param train_data_query_state: 
+        4D numpy array (num_files, height, width, depth)
+      :param train_labels_query_state: 
+        1D numpy array (num_files, ）      
       :param batch_size: int
       :param file_index: the starting index of the batch in the data set. 
-        If set to the special number -1, a random batch will be chosen from the data set.
+        If set to the special number -1 (default for training),
+        a random batch will be chosen from the data set.
   
     Returns: 
-      :train_batch_data:
+      :train_batch_data_traj:
         a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth)
-      :train_batch_labels: a batch of labels. 1D numpy array (batch_size, )
+      :train_batch_labels_traj:
+        a batch of labels. 1D numpy array (batch_size, )
+      :train_batch_data_query_state:
+        a batch data. 4D numpy array (batch_size, height, width, depth)
+      :train_batch_labels_query_state:
+        a batch of labels. 1D numpy array (batch_size, )        
     '''
-    # geneate random batches for trajectories -> e_char
-    train_batch_data_traj, train_batch_labels_traj = self.generate_traj_batch(train_data, train_labels, train_batch_size, file_index)
-
-    ## geneate random batches for query_state -> final_target
-    train_batch_data_query_state, train_batch_labels_query_state = self.generate_query_state_batch(train_data, train_labels, train_batch_size, file_index)
-    return train_batch_data, train_batch_labels
-  
-  def generate_vali_batch(self, vali_data, vali_labels, vali_batch_size, file_index = -1):
+    #pdb.set_trace()
+    train_batch_data_traj, train_batch_labels_traj, train_batch_data_query_state, train_batch_labels_query_state\
+    = self.generate_complete_batch(train_data_traj,\
+                                   train_labels_traj,\
+                                   train_data_query_state,\
+                                   train_labels_query_state,\
+                                   train_batch_size,\
+                                   file_index)  
+    return train_batch_data_traj, train_batch_labels_traj, train_batch_data_query_state, train_batch_labels_query_state
+ 
+  def generate_vali_batch(self, vali_data_traj, vali_labels_traj, vali_data_query_state, vali_labels_query_state, vali_batch_size, file_index = -1):
     '''
     This function helps you generate a batch of validation data.
     
     Args:
-      :param vali_data: 5D numpy array (num_files, trajectory_size, height, width, depth)
-      :param vali_labels: 1D numpy array (total_steps, ）
-      :param vali_batch_size: int
+      :param vali_data_traj: 
+        5D numpy array (num_files, trajectory_size, height, width, depth)
+      :param vali_labels_traj: 
+        1D numpy array (num_files, ）
+      :param vali_data_query_state: 
+        4D numpy array (num_files, height, width, depth)
+      :param vali_labels_query_state: 
+        1D numpy array (num_files, ）      
+      :param batch_size: int
       :param file_index: the starting index of the batch in the data set. 
-        If set to the special number -1 (default),
+        If set to the special number -1 (default for validation),
         a random batch will be chosen from the data set.
   
     Returns: 
-      :vali_batch_data:
-        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth) and 
-      :vali_batch_labels: a batch of labels. 1D numpy array (batch_size, )
+      :vali_batch_data_traj:
+        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth)
+      :vali_batch_labels_traj:
+        a batch of labels. 1D numpy array (batch_size, )
+      :vali_batch_data_query_state:
+        a batch data. 4D numpy array (batch_size, height, width, depth)
+      :vali_batch_labels_query_state:
+        a batch of labels. 1D numpy array (batch_size, )        
     '''
-    # geneate random batches
-    vali_batch_data, vali_batch_labels = self.generate_traj_batch(vali_data, vali_labels, vali_batch_size, file_index)
-      
-    return vali_batch_data, vali_batch_labels
+    vali_batch_data_traj, vali_batch_labels_traj, vali_batch_data_query_state, vali_batch_labels_query_state\
+    = self.generate_complete_batch(vali_data_traj,\
+                                   vali_labels_traj,\
+                                   vali_data_query_state,\
+                                   vali_labels_query_state,\
+                                   vali_batch_size,\
+                                   file_index)  
+    return vali_batch_data_traj, vali_batch_labels_traj, vali_batch_data_query_state, vali_batch_labels_query_state
 
-  def generate_test_batch(self, test_data, test_labels, test_batch_size, file_index):
+  def generate_test_batch(self, test_data_traj, test_labels_traj, test_data_query_state, test_labels_query_state, test_batch_size, file_index):
     '''
-    This function helps you generate a batch of test data.
+    This function helps you generate a batch of testing data.
     
     Args:
-      :param test_data: 5D numpy array (num_files, trajectory_size, height, width, depth)
-      :param test_labels: 1D numpy array (total_steps, ）
+      :param test_data_traj: 
+        5D numpy array (num_files, trajectory_size, height, width, depth)
+      :param test_labels_traj: 
+        1D numpy array (num_files, ）
+      :param test_data_query_state: 
+        4D numpy array (num_files, height, width, depth)
+      :param test_labels_query_state: 
+        1D numpy array (num_files, ）      
+      :param batch_size: int
+      :param file_index: the starting index of the batch in the data set. 
+        If set to the special number -1 (no default for testing),
+        a random batch will be chosen from the data set.
+  
+    Returns: 
+      :test_batch_data_traj:
+        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth)
+      :test_batch_labels_traj:
+        a batch of labels. 1D numpy array (batch_size, )
+      :test_batch_data_query_state:
+        a batch data. 4D numpy array (batch_size, height, width, depth)
+      :test_batch_labels_query_state:
+        a batch of labels. 1D numpy array (batch_size, )        
+    '''
+    test_batch_data_traj, test_batch_labels_traj, test_batch_data_query_state, test_batch_labels_query_state\
+    = self.generate_complete_batch(test_data_traj,\
+                                   test_labels_traj,\
+                                   test_data_query_state,\
+                                   test_labels_query_state,\
+                                   test_batch_size,\
+                                   file_index)  
+    return test_batch_data_traj, test_batch_labels_traj, test_batch_data_query_state, test_batch_labels_query_state
+  
+  def generate_complete_batch(self, data_traj, labels_traj, data_query_state, labels_query_state, batch_size, file_index):
+    '''
+    This function helps you generate a batch of data that include both the
+    trajectory data and query state data.
+    
+    Args:
+      :param data_traj: 
+        5D numpy array (num_files, trajectory_size, height, width, depth)
+      :param labels_traj: 
+        1D numpy array (num_files, ）
+      :param data_query_state: 
+        4D numpy array (num_files, height, width, depth)
+      :param labels_query_state: 
+        1D numpy array (num_files, ）      
       :param batch_size: int
       :param file_index: the starting index of the batch in the data set. 
         If set to the special number -1, a random batch will be chosen from the data set.
   
     Returns: 
-      :test_batch_data:
-        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth) and 
-      :test_batch_labels: a batch of labels. 1D numpy array (batch_size, )
-    '''
+      :batch_data_traj:
+        a batch data. 5D numpy array (batch_size, trajectory_size, height, width, depth)
+      :batch_labels_traj:
+        a batch of labels. 1D numpy array (batch_size, )
+      :batch_data_query_state:
+        a batch data. 4D numpy array (batch_size, height, width, depth)
+      :batch_labels_query_state:
+        a batch of labels. 1D numpy array (batch_size, )        
+    '''  
+    # geneate random batches for trajectories -> e_char
+    batch_data_traj, batch_labels_traj = self.generate_traj_batch(data_traj, labels_traj, batch_size, file_index)
 
-    test_batch_data, test_batch_labels = self.generate_traj_batch(test_data, test_labels, test_batch_size, file_index)
-    return test_batch_data, test_batch_labels
+    # geneate random batches for query_state -> final_target
+    batch_data_query_state, batch_labels_query_state = self.generate_query_state_batch(data_query_state, labels_query_state, batch_size, file_index)
+    
+    return batch_data_traj, batch_labels_traj, batch_data_query_state, batch_labels_query_state
+  
   
   def generate_query_state_batch(self, data, labels, batch_size, file_index):
     '''
