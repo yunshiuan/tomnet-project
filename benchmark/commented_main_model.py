@@ -24,6 +24,9 @@ import numpy as np
 import pdb
 
 class Model:
+  # --------------------------------------
+  # Constant block
+  # --------------------------------------
   MAX_TRAJECTORY_SIZE = dh.DataHandler.MAX_TRAJECTORY_SIZE
   HEIGHT = dh.DataHandler.MAZE_HEIGHT # height of the maze
   WIDTH = dh.DataHandler.MAZE_WIDTH # width of the maze
@@ -43,46 +46,14 @@ class Model:
   # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   NUM_RESIDUAL_BLOCKS = 5
   TRAIN_EMA_DECAY = 0.95
-  
 
-  
-  # --------------------------------------
-#  ## for testing on the local machine with 1000 files and few steps
-#  subset_size = 1000
-#
-#  EPOCH_SIZE = 8000
-#  TRAIN_STEPS = 30
-#  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
-#  # For testing on 1000 files
-#  txt_data_path = os.getcwd() + '/test_on_human_data/S030/'
-#  
-#  ckpt_fname = 'test_on_human_data/training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
-#  train_fname = 'test_on_human_data/training_result/caches/cache_S002a_v??_commit_???_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4'
-
-  # --------------------------------------
-  
-  # --------------------------------------
-  # for testing on a GPU machine with 10000 files
-  
-  # the data size of an epoch (should equal to the traning set size)
-  # e.g., given a full date set with 100,000 snapshots,
-  # with a train:dev:test = 8:2:2 split,
-  # EPOCH_SIZE should be 80,000 training steps if there are 10,000 files
-  # because each file contains 10 steps
-  
-  # Use subset_size to replace epoch_size for controling the data set size
-  # EPOCH_SIZE = 78600 #human (<8000 files)
-  # EPOCH_SIZE = 8000 #1000 files
-  
-  subset_size = 1000 # use all files
+  # for testing on a GPU machine with 10000 files  
+  SUBSET_SIZE = 1000 # use all files
 
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  
   TRAIN_STEPS = 1000
-
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
-  # For testing on 1000 files
   #txt_data_path = os.getcwd() + '/S002a/'
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   ckpt_fname = 'training_result/caches/cache_S030_v15_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
@@ -94,7 +65,7 @@ class Model:
   #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
   #ckpt_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
   #train_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
-  with_prednet = True # True for including both charnet and prednet
+  WITH_PREDNET = True # True for including both charnet and prednet
 
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
@@ -105,7 +76,7 @@ class Model:
   #DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
   #DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
   NUM_CLASS = 4 # number of unique classes in the training set
-  use_ckpt = False
+  USE_CKPT = False
   
   def __init__(self, args):
     '''
@@ -156,7 +127,7 @@ class Model:
     = data_handler.parse_whole_data_set(dir,\
                                         mode=args.mode,\
                                         shuf=args.shuffle,\
-                                        subset_size = self.subset_size,\
+                                        subset_size = self.SUBSET_SIZE,\
                                         parse_query_state = False)
     # --------------------------------------------------------------
     # Parse the query state data and labels
@@ -171,7 +142,7 @@ class Model:
     = data_handler.parse_whole_data_set(dir,\
                                         mode=args.mode,\
                                         shuf=args.shuffle,\
-                                        subset_size = self.subset_size,\
+                                        subset_size = self.SUBSET_SIZE,\
                                         parse_query_state = True)                                                                                                                                                                                                                                             
 
     #print('End of __init__-----------------')
@@ -293,7 +264,7 @@ class Model:
     # pdb.set_trace()
     
     #Build graphs
-    self._create_graphs(with_prednet = self.with_prednet)
+    self._create_graphs(with_prednet = self.WITH_PREDNET)
     
 
     # Initialize a saver to save checkpoints. Merge all summaries, so we can run all
@@ -313,7 +284,7 @@ class Model:
     sess = tf.Session()
 
     # If you want to load from a checkpoint
-    if self.use_ckpt:
+    if self.USE_CKPT:
       saver.restore(sess, self.ckpt_path)
       print('Restored from checkpoint...')
     else:
@@ -549,7 +520,7 @@ class Model:
                                                      labels_query_state = self.test_labels_query_state,\
                                                      batch_size = self.BATCH_SIZE_TEST,\
                                                      mode = 'test',
-                                                     with_prednet = self.with_prednet)
+                                                     with_prednet = self.WITH_PREDNET)
       
       return df_accuracy_all
     
@@ -570,7 +541,7 @@ class Model:
                                                      labels_query_state = self.vali_labels_query_state,\
                                                      batch_size = self.BATCH_SIZE_VAL,\
                                                      mode = 'vali',
-                                                     with_prednet = self.with_prednet)
+                                                     with_prednet = self.WITH_PREDNET)
       
       return df_accuracy_all
     
