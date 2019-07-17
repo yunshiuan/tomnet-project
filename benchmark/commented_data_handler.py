@@ -37,7 +37,17 @@ class DataHandler(object):
         :param parse_query_state: if 'True', parse only the query states
           and skip the actions; if 'False', parse the whole sequence 
           of trajectories             
-  
+          
+        Returns: 
+          :train_data:
+            a batch data. 
+            if `parse_query_state = False`, 
+            then return 5D numpy array (num_files, trajectory_size, height, width, depth);
+            if `parse_query_state = True`, 
+            then return 4D numpy array (num_files, height, width, depth);
+            
+          :train_labels:
+            a batch data. 2D numpy array (num_files, labels)
         ''' 
         # Parse all files (each file is a trajectory contains multiple steps)
         # The list is in arbitrary order.
@@ -50,11 +60,15 @@ class DataHandler(object):
         files = list(filter(r.match, files)) # Read Note    
         
         if subset_size != -1: 
-          files = files[0:subset_size]   
-
+          files = files[0:subset_size]  
+        if not parse_query_state:
+          parse_mode = 'trajectories---------------'
+        else:
+          parse_mode = 'query states---------------'
+        print('Parse ', parse_mode)
         print('Found', len(files), 'files in', directory)
          
- 
+        #pdb.set_trace()
          
         #Shuffle the filenames
         if shuf:
@@ -103,11 +117,14 @@ class DataHandler(object):
       
         Returns: 
           :all_data:
-            if `parse_query_state == False`, return the 3D tensor of the query state
-            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_QUERY_STATE_DEPTH); if `parse_query_state == True`,
+            if `parse_query_state == False`, 
+            return the 3D tensor of the query state
+            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_QUERY_STATE_DEPTH);
+            if `parse_query_state == True`,
             return the 4D tensor of the whole trajectory
             (len(files) x MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_QUERY_STATE_DEPTH).
-          :all_labels: the numeric index of the final target (len(files) x MAX_TRAJECTORY_SIZE, 1)
+          :all_labels: 
+            the numeric index of the final target (len(files) x MAX_TRAJECTORY_SIZE, 1)
         '''
         # --------------------------------------------------------------
         # Initialize empty arrays and constants
@@ -162,11 +179,10 @@ class DataHandler(object):
             all_data = np.delete(all_data,(0), axis=0)
           # Delete the leading 1 number(see "all_labels = np.empty([1])")
         all_labels = np.delete(all_labels,(0), axis=0)
-        print('Got ' + str(all_data.shape) + ' datapoints')
         #pdb.set_trace()      
         
         # --------------------------------------------------------------
-        # Reshaping the data tensor:
+        # Reshaping the data tensor and labels tensor:
         # data = (num_files x dim_1, dim_2, ...) ->
         # data = (num_files, dim_1, dim_2, ...)
         # --------------------------------------------------------------
@@ -174,10 +190,17 @@ class DataHandler(object):
           all_data = all_data.reshape(num_files, self.MAX_TRAJECTORY_SIZE,
                                       self.MAZE_WIDTH,self.MAZE_HEIGHT,
                                       self.MAZE_DEPTH)
+          # --------------------------------------------------------------
+          # Only retain unique labels
+          # test_labels = （total_steps, ） ->
+          # test_labels = (num_files, )
+          # --------------------------------------------------------------
+          all_labels = all_labels[0:-1:self.MAX_TRAJECTORY_SIZE]
         else:
            all_data = all_data.reshape(num_files,
                                       self.MAZE_WIDTH,self.MAZE_HEIGHT,
                                       self.MAZE_QUERY_STATE_DEPTH) 
+        print('Got ' + str(all_data.shape) + ' datapoints')
         #pdb.set_trace()
         return all_data, all_labels
 

@@ -31,10 +31,40 @@ Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_ste
 
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
+
+########################################
+
+Finished training session (v16, commit 926291)[At benchmark]
+Time: 2019/07/17
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v16_commit_926291_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
+
+(1) Make sure the model also works without prenet.
+
+Note:
+(1)
+accurary	mode
+89.58%	vali_proportion
+90.62%	test_proportion
+
+
+########################################
+Finished training session (v15, commit acc400)[At benchmark]
+Time: 2019/07/17
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v15_commit_acc400_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
+
+(1) Train with model with both char net and pred net.
+
+Note:
+(1)
+accurary	mode
+96.98%	vali_proportion
+97.48%	test_proportion
 #########################################
 
 Finished training session (v14, commit 95c693)[At benchmark]
-Time: 2019/06/03
+Time: 2019/07/17
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_95c693_epoch8000_tuning_batch16_train_step_1K_INIT_LR_10-5
 
@@ -46,11 +76,9 @@ Note:
 accurary	mode
 99.7%	vali_proportion
 99.7%	test_proportion
-
-
 #########################################
 Finished training session (v13, commit 9ebcd4)[At benchmark]
-Time: 2019/06/03
+Time: 2019/07/12
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 

@@ -1,0 +1,178 @@
+WARNING:tensorflow:From /home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/commented_nn_layers.py:346: UniformUnitScaling.__init__ (from tensorflow.python.ops.init_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.initializers.variance_scaling instead with distribution=uniform to get equivalent behavior.
+WARNING:tensorflow:From /home/vimchiz/.conda/envs/tf_gpu_1_8/lib/python3.6/site-packages/tensorflow/python/util/tf_should_use.py:118: initialize_all_variables (from tensorflow.python.ops.variables) is deprecated and will be removed after 2017-03-02.
+Instructions for updating:
+Use `tf.global_variables_initializer` instead.
+2019-07-17 17:35:19.690472: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
+2019-07-17 17:35:19.802010: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1356] Found device 0 with properties: 
+name: GeForce GTX TITAN X major: 5 minor: 2 memoryClockRate(GHz): 1.076
+pciBusID: 0000:01:00.0
+totalMemory: 11.93GiB freeMemory: 11.50GiB
+2019-07-17 17:35:19.802085: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1435] Adding visible gpu devices: 0
+2019-07-17 17:35:20.360299: I tensorflow/core/common_runtime/gpu/gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-07-17 17:35:20.360363: I tensorflow/core/common_runtime/gpu/gpu_device.cc:929]      0 
+2019-07-17 17:35:20.360385: I tensorflow/core/common_runtime/gpu/gpu_device.cc:942] 0:   N 
+2019-07-17 17:35:20.361242: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11134 MB memory) -> physical GPU (device: 0, name: GeForce GTX TITAN X, pci bus id: 0000:01:00.0, compute capability: 5.2)
+WARNING:tensorflow:From commented_main_model.py:614: all_variables (from tensorflow.python.ops.variables) is deprecated and will be removed after 2017-03-02.
+Instructions for updating:
+Please use tf.global_variables instead.
+2019-07-17 17:35:58.994613: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1435] Adding visible gpu devices: 0
+2019-07-17 17:35:58.994764: I tensorflow/core/common_runtime/gpu/gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-07-17 17:35:58.994830: I tensorflow/core/common_runtime/gpu/gpu_device.cc:929]      0 
+2019-07-17 17:35:58.994868: I tensorflow/core/common_runtime/gpu/gpu_device.cc:942] 0:   N 
+2019-07-17 17:35:58.995227: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11134 MB memory) -> physical GPU (device: 0, name: GeForce GTX TITAN X, pci bus id: 0000:01:00.0, compute capability: 5.2)
+2019-07-17 17:36:00.039276: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1435] Adding visible gpu devices: 0
+2019-07-17 17:36:00.039350: I tensorflow/core/common_runtime/gpu/gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-07-17 17:36:00.039369: I tensorflow/core/common_runtime/gpu/gpu_device.cc:929]      0 
+2019-07-17 17:36:00.039386: I tensorflow/core/common_runtime/gpu/gpu_device.cc:942] 0:   N 
+2019-07-17 17:36:00.039609: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11134 MB memory) -> physical GPU (device: 0, name: GeForce GTX TITAN X, pci bus id: 0000:01:00.0, compute capability: 5.2)
+Parse  trajectories---------------
+Found 1000 files in /home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/../S002a/
+Parsing training data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (800, 10, 12, 12, 11) datapoints
+Parsing validation data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (100, 10, 12, 12, 11) datapoints
+Parsing testing data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (100, 10, 12, 12, 11) datapoints
+Parse  query states---------------
+Found 1000 files in /home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/../S002a/
+Parsing training data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (800, 12, 12, 6) datapoints
+Parsing validation data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (100, 12, 12, 6) datapoints
+Parsing testing data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (100, 12, 12, 6) datapoints
+Start training-----------------
+Start training batch by batch...
+----------------------------
+2019-07-17 17:35:25.208620: step 0, loss = 1.4610 (11.9 examples/sec; 1.340 sec/batch)
+Train top1 error =  0.875
+Validation top1 error = 0.6875
+Validation loss =  1.4006642
+----------------------------
+2019-07-17 17:35:28.841905: step 100, loss = 1.2925 (557.5 examples/sec; 0.029 sec/batch)
+Train top1 error =  0.5625
+Validation top1 error = 0.6875
+Validation loss =  1.3829064
+----------------------------
+2019-07-17 17:35:32.080636: step 200, loss = 1.1417 (538.5 examples/sec; 0.030 sec/batch)
+Train top1 error =  0.4375
+Validation top1 error = 0.5000
+Validation loss =  1.100661
+----------------------------
+2019-07-17 17:35:35.382498: step 300, loss = 0.7963 (518.7 examples/sec; 0.031 sec/batch)
+Train top1 error =  0.5625
+Validation top1 error = 0.6875
+Validation loss =  1.4186348
+----------------------------
+2019-07-17 17:35:38.596169: step 400, loss = 0.5629 (606.7 examples/sec; 0.026 sec/batch)
+Train top1 error =  0.1875
+Validation top1 error = 0.3750
+Validation loss =  0.8372561
+----------------------------
+2019-07-17 17:35:41.794119: step 500, loss = 0.6022 (549.9 examples/sec; 0.029 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.2500
+Validation loss =  0.7740433
+----------------------------
+2019-07-17 17:35:44.981690: step 600, loss = 0.3556 (501.3 examples/sec; 0.032 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1250
+Validation loss =  0.42521897
+----------------------------
+2019-07-17 17:35:48.287905: step 700, loss = 0.1837 (565.1 examples/sec; 0.028 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3125
+Validation loss =  0.92098653
+----------------------------
+2019-07-17 17:35:51.485819: step 800, loss = 0.2069 (536.2 examples/sec; 0.030 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1250
+Validation loss =  0.4891333
+----------------------------
+2019-07-17 17:35:54.767112: step 900, loss = 0.0401 (517.9 examples/sec; 0.031 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1250
+Validation loss =  0.34647435
+----------------------------
+6 validation batches in total...
+Model restored from  /home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999
+0 batches finished!
+
+vali: proportion_accuracy()
+Matches: 86/96
+Accuracy: 89.58%
+6 validation batches in total...
+Model restored from  /home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/benchmark/training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999
+0 batches finished!
+
+test: proportion_accuracy()
+Matches: 87/96
+Accuracy: 90.62%
