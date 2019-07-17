@@ -56,8 +56,8 @@ class Model:
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v15_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v15_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
   txt_data_path ='../S002a/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
@@ -65,7 +65,7 @@ class Model:
   #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
   #ckpt_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
   #train_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
-  WITH_PREDNET = True # True for including both charnet and prednet
+  WITH_PREDNET = False # True for including both charnet and prednet
 
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
