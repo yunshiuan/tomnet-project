@@ -68,7 +68,7 @@ class DataHandler(object):
         print('Parse ', parse_mode)
         print('Found', len(files), 'files in', directory)
          
- 
+        #pdb.set_trace()
          
         #Shuffle the filenames
         if shuf:
@@ -179,7 +179,6 @@ class DataHandler(object):
             all_data = np.delete(all_data,(0), axis=0)
           # Delete the leading 1 number(see "all_labels = np.empty([1])")
         all_labels = np.delete(all_labels,(0), axis=0)
-        print('Got ' + str(all_data.shape) + ' datapoints')
         #pdb.set_trace()      
         
         # --------------------------------------------------------------
@@ -201,6 +200,7 @@ class DataHandler(object):
            all_data = all_data.reshape(num_files,
                                       self.MAZE_WIDTH,self.MAZE_HEIGHT,
                                       self.MAZE_QUERY_STATE_DEPTH) 
+        print('Got ' + str(all_data.shape) + ' datapoints')
         #pdb.set_trace()
         return all_data, all_labels
 

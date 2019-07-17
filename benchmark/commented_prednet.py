@@ -27,7 +27,7 @@ we make three predictions:
 
 
 import tensorflow as tf
-#import numpy as np
+import numpy as np
 #from tensorflow.contrib import rnn
 import commented_nn_layers as nnl
 # For debugging
@@ -44,7 +44,7 @@ class PredNet(nnl.NeuralNetLayers):
       self.WEIGHT_DECAY = 0.00002
       self.MAZE_DEPTH = 11
   
-  def build_prednet(self,e_char, query_state_tensor, n, num_classes, reuse):
+  def build_prednet(self, e_char, query_state_tensor, n, num_classes, reuse):
       '''
       Build the character net.
       
@@ -56,6 +56,10 @@ class PredNet(nnl.NeuralNetLayers):
       :return layers[-1]: "logits" is the output of the charnet (including ResNET and LSTM) and is the input for a softmax layer 
       '''
       # pdb.set_trace()
+      # --------------------------------------------------------------    
+      # Local constants
+      # --------------------------------------------------------------    
+      model_prefix = 'prednet_'
       layers = []
       
       # --------------------------------------------------------------    
@@ -98,14 +102,14 @@ class PredNet(nnl.NeuralNetLayers):
       # 12: width
       # 8: the length of the character embedding
       # -------------------------------------------------------------- 
-      e_char = tf.tile(e_char,[height, width,1])
-      
+#      pdb.set_trace()
+      e_char = tf.tile(e_char[:, None, None, :], [1, height, width, 1])
       # --------------------------------------------------------------    
       # Paper codes    
       # Concatenate the query_state_tensor and the e_char    
       # (16, 12, 12, 8) + (16, 12, 12, 11) -> (16, 12, 12, 19)
       # -------------------------------------------------------------- 
-      input_tensor = tf.stack(query_state_tensor, e_char)
+      input_tensor = tf.concat([query_state_tensor, e_char], -1)
       layers.append(input_tensor)
 
       # --------------------------------------------------------------      
@@ -114,7 +118,9 @@ class PredNet(nnl.NeuralNetLayers):
       # Use 3x3 conv layer to shape the depth to 32
       # to enable resnet to work (addition between main path and residual connection)
       # --------------------------------------------------------------
-      with tf.variable_scope('conv_before_resnet', reuse = reuse):
+      # pdb.set_trace()
+      
+      with tf.variable_scope(str(model_prefix + 'conv_before_resnet'), reuse = reuse):
           conv_before_resnet = self.conv_layer_before_resnet(layers[-1])
           layers.append(conv_before_resnet)
           _, _, _, resnet_input_channels  = layers[-1].get_shape().as_list()
@@ -122,7 +128,7 @@ class PredNet(nnl.NeuralNetLayers):
                         
       #Add n residual layers
       for i in range(n):
-          with tf.variable_scope('conv_%d' %i, reuse=reuse):
+          with tf.variable_scope(str(model_prefix + 'conv_%d' %i), reuse=reuse):
               # --------------------------------------------------------------
               # Paper codes
               # (16, 12, 12, 32) -> (16, 12, 12, 32)
@@ -142,7 +148,8 @@ class PredNet(nnl.NeuralNetLayers):
       # (16, 12, 12, 32) -> (16, 12, 12, 32)
       # A 3x3 conv layer after the resnet
       # --------------------------------------------------------------
-      with tf.variable_scope('conv_prediction_head_layer', reuse = reuse):
+      # pdb.set_trace()
+      with tf.variable_scope(str(model_prefix + 'conv_prediction_head_layer'), reuse = reuse):
           conv_prediction_head = self.conv_prediction_head_layer(layers[-1])
           layers.append(conv_prediction_head)
             #Add average pooling
@@ -152,7 +159,7 @@ class PredNet(nnl.NeuralNetLayers):
       # (16, 12, 12, 32) ->  (16, 32)
       # # collapse the spacial dimension
       # --------------------------------------------------------------
-      with tf.variable_scope('average_pooling', reuse=reuse):
+      with tf.variable_scope(str(model_prefix + 'average_pooling'), reuse=reuse):
           avg_pool = self.average_pooling_layer(layers[-1])
           layers.append(avg_pool)
           
@@ -168,7 +175,7 @@ class PredNet(nnl.NeuralNetLayers):
       #   :return: output layer Y = WX + B
       #   '''
       # --------------------------------------------------------------
-      with tf.variable_scope('fc', reuse=reuse):                  
+      with tf.variable_scope(str(model_prefix + 'fc'), reuse=reuse):                  
           # layers[-1] = (16, 64)
           output = self.output_layer(layers[-1], num_classes)
           # output = (16, 4)

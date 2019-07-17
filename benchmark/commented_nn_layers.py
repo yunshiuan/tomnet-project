@@ -77,12 +77,10 @@ class NeuralNetLayers:
      
       return output
     
-  def conv_prediction_head_layer(self, input_layer, filter_shape, stride):
+  def conv_prediction_head_layer(self, input_layer):
       '''
       This conv layer is for the prediction head of the prednet, 
       including only conv and ReLU.
-      
-      :param filter_shape: filter height, filter width, input_channel, output_channels
       '''
       stride = 1
       output_channels = 32
