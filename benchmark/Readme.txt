@@ -34,10 +34,10 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 
 ########################################
 
-Finished training session (v16, commit ???)[At benchmark]
+Finished training session (v16, commit 926291)[At benchmark]
 Time: 2019/07/17
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v16_commit_??_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
+Output file name: /cache_S002a_v16_commit_926291_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
 
 (1) Make sure the model also works without prenet.
 
