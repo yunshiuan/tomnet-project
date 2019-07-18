@@ -65,7 +65,7 @@ class Model:
   #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
   #ckpt_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
   #train_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
-  WITH_PREDNET = False # True for including both charnet and prednet
+  WITH_PREDNET = True # True for including both charnet and prednet
 
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
