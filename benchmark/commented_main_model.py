@@ -310,7 +310,7 @@ class Model:
       # --------------------------------------------------------------
       # Generate batches for training data
       # --------------------------------------------------------------
-
+      #pdb.set_trace()
       train_batch_data_traj, train_batch_labels_traj,\
       train_batch_data_query_state, train_batch_labels_query_state\
       = self.generate_train_batch(self.train_data_traj,\
@@ -576,7 +576,8 @@ class Model:
           If `with_prednet = False`, then construct the partial model including
           only the charnet.        
       Returns:
-        :df_accuracy_all: a dataframe with model accuracy.
+        :df_accuracy_all:
+          a dataframe with model accuracy.
       '''
       # pdb.set_trace()
      

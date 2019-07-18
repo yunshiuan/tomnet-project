@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+class DataHandler:
+
+The class for parsing txt data.
+@author: Chuang, Yun-Shiuan; Edwinn
+"""
+
 import os
 import sys
 import numpy as np

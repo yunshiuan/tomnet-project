@@ -3,7 +3,7 @@
 """
 class NeuralNetLayers:
 
-The parent class for both the character net and the predictio net.
+The parent class for both the character net and the prediction net.
 @author: Chuang, Yun-Shiuan
 """
 

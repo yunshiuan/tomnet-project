@@ -11,7 +11,7 @@ ToMnet forms the character embedding echar,i as follows. We
  and batch-norm, followed by average pooling. 
  (3) We pass the results through an LSTM with 64 channels, 
  with a linear output to either a 2-dim or 8-dim echar,i (no substantial difference in results).
-@author: Chuang, Yun-Shiuan
+@author: Chuang, Yun-Shiuan; Edwinn
 """
 
 import tensorflow as tf
