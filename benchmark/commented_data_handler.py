@@ -5,14 +5,21 @@ from random import shuffle
 from commented_utils import plot_trajectory
 import re
 import pdb
+import commented_model_parameters as mp
 
 
-class DataHandler(object):
-
-    MAZE_WIDTH = 12
-    MAZE_HEIGHT = 12
-    MAZE_DEPTH = 11
-    MAZE_QUERY_STATE_DEPTH = 6
+class DataHandler:
+    # --------------------------------------
+    # Constant block
+    # --------------------------------------
+    # --------------------------------------
+    # Constant: Model parameters
+    # --------------------------------------
+    model_parameter = mp.ModelParameter()
+    MAZE_WIDTH = model_parameter.MAZE_WIDTH
+    MAZE_HEIGHT = model_parameter.MAZE_HEIGHT
+    MAZE_DEPTH_TRAJECTORY = model_parameter.MAZE_DEPTH_TRAJECTORY
+    MAZE_QUERY_STATE_DEPTH = model_parameter.MAZE_QUERY_STATE_DEPTH
     # DEPTH != MAX_TRAJECTORY_SIZE (see commented_data_handler.py)
     # - MAX_TRAJECTORY_SIZE = 10, number of steps of each trajectory 
     # (will be padded up/truncated to it if less/more than the constant)
@@ -131,7 +138,7 @@ class DataHandler(object):
         # --------------------------------------------------------------
         #pdb.set_trace()
         if not parse_query_state:
-          all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH])
+          all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH_TRAJECTORY])
         else:
           all_data = np.empty([self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_QUERY_STATE_DEPTH])
           
@@ -189,7 +196,7 @@ class DataHandler(object):
         if not parse_query_state:
           all_data = all_data.reshape(num_files, self.MAX_TRAJECTORY_SIZE,
                                       self.MAZE_WIDTH,self.MAZE_HEIGHT,
-                                      self.MAZE_DEPTH)
+                                      self.MAZE_DEPTH_TRAJECTORY)
           # --------------------------------------------------------------
           # Only retain unique labels
           # test_labels = （total_steps, ） ->
@@ -214,7 +221,7 @@ class DataHandler(object):
         
         steps = []
         #output.shape(12, 12, 11, 10)
-        output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH, self.MAX_TRAJECTORY_SIZE))
+        output = np.zeros((self.MAZE_WIDTH, self.MAZE_HEIGHT, self.MAZE_DEPTH_TRAJECTORY, self.MAX_TRAJECTORY_SIZE))
         label = ''
         with open(filename) as fp:
             lines = list(fp)
@@ -318,7 +325,7 @@ class DataHandler(object):
             
             #Zeroes pre-padding to max length
             if pad_size > 0:
-                np_pad = np.zeros((self.MAZE_HEIGHT,self.MAZE_WIDTH,self.MAZE_DEPTH), dtype=np.int8)
+                np_pad = np.zeros((self.MAZE_HEIGHT,self.MAZE_WIDTH,self.MAZE_DEPTH_TRAJECTORY), dtype=np.int8)
                 for i in range(pad_size):
                     # insert the zero layer to the head
                     output = np.insert(output, 0, np_pad, axis=0)

@@ -9,74 +9,71 @@ import os
 import sys
 import time
 import datetime
-import numpy as npc
 import pandas as pd
 import tensorflow as tf
-import commented_charnet as cn
-import commented_prednet as pn
 import sys
 #sys.path.insert(0, '/temporary_testing_version')
 #import data_handler as dh
-import commented_data_handler as dh
 import argparse
 import numpy as np
 # For debugging
 import pdb
+import commented_charnet as cn
+import commented_prednet as pn
+import commented_data_handler as dh
+import commented_model_parameters as mp
 
 class Model:
   # --------------------------------------
   # Constant block
   # --------------------------------------
-  MAX_TRAJECTORY_SIZE = dh.DataHandler.MAX_TRAJECTORY_SIZE
-  HEIGHT = dh.DataHandler.MAZE_HEIGHT # height of the maze
-  WIDTH = dh.DataHandler.MAZE_WIDTH # width of the maze
-  # DEPTH_TRAJECTORY != MAX_TRAJECTORY_SIZE (see commented_data_handler.py)
-  # - MAX_TRAJECTORY_SIZE = 10, number of steps of each trajectory 
-  # (will be padded up/truncated to it if less/more than the constant)
-    # - DEPTH_TRAJECTORY = number of channels of each maze, 11 = 1 (obstacle) + 4 (targets) + 1 (agent initial position) + 5 (actions)
-  DEPTH_TRAJECTORY = dh.DataHandler.MAZE_DEPTH
-  DEPTH_QUERY_STATE = dh.DataHandler.MAZE_QUERY_STATE_DEPTH
-  
+  # --------------------------------------
+  # Constant: Model parameters
+  # --------------------------------------
+  model_parameter = mp.ModelParameter()
+  MAX_TRAJECTORY_SIZE = model_parameter.MAX_TRAJECTORY_SIZE
+  HEIGHT = model_parameter.MAZE_HEIGHT
+  WIDTH = model_parameter.MAZE_WIDTH
+  DEPTH_TRAJECTORY = model_parameter.MAZE_DEPTH_TRAJECTORY
+  DEPTH_QUERY_STATE = model_parameter.MAZE_QUERY_STATE_DEPTH
+  WITH_PREDNET = model_parameter.WITH_PREDNET
+  NUM_RESIDUAL_BLOCKS = model_parameter.NUM_RESIDUAL_BLOCKS
+  TRAIN_EMA_DECAY = model_parameter.TRAIN_EMA_DECAY
+  INIT_LR = model_parameter.INIT_LR  
+  NUM_CLASS = model_parameter.NUM_CLASS
+
+  # --------------------------------------
+  # Constant: Training parameters
+  # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
-  BATCH_SIZE_VAL = 16 # size of the batch for validation
-  BATCH_SIZE_TEST = 16 # size of batch for testing
+  BATCH_SIZE_TRAIN = 5 # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE_VAL = 5 # size of the batch for validation
+  BATCH_SIZE_TEST = 5 # size of batch for testing
   
-  # number of layers in the resnet 
-  # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  NUM_RESIDUAL_BLOCKS = 5
-  TRAIN_EMA_DECAY = 0.95
-
   # for testing on a GPU machine with 10000 files  
-  SUBSET_SIZE = 1000 # use all files
-
+  SUBSET_SIZE = 100 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 1000
-  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
+  TRAIN_STEPS = 50
+  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
-  path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
-  txt_data_path ='../S002a/'
-  ckpt_fname = os.path.join(path_mode,ckpt_fname)
-  train_fname = os.path.join(path_mode,train_fname)
-  txt_data_path = os.path.join(path_mode,txt_data_path)
-  #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
-  #ckpt_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
-  #train_fname = 'training_result/caches/cache_S030_v8_commit_??_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4'
-  WITH_PREDNET = True # True for including both charnet and prednet
-
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
   # FALSE: data split using train:vali:test = 8:1:1
   FULL_VALIDATION = False 
-  # Initial learning rate (LR) # paper: 10−4
-  INIT_LR = 0.0001  # 10-4
-  #DECAY_STEP_0 = 10000 # LR decays for the first time (*0.9) at 10000th steps
-  #DECAY_STEP_1 = 15000 # LR decays for the second time (*0.9) at 15000th steps
-  NUM_CLASS = 4 # number of unique classes in the training set
   USE_CKPT = False
+  
+  # --------------------------------------
+  # Variable: Training parameters
+  # --------------------------------------  
+  path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
+  ckpt_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  txt_data_path ='../S002a/'
+  #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
+  ckpt_fname = os.path.join(path_mode,ckpt_fname)
+  train_fname = os.path.join(path_mode,train_fname)
+  txt_data_path = os.path.join(path_mode,txt_data_path)
   
   def __init__(self, args):
     '''
