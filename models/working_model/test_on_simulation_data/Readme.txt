@@ -6,9 +6,9 @@ Data path:
 
 Note 
 (1) bracket along the version indicates where the scripts are for the version.
-E.g., the version with the bracket '[At benchmark/temporary]'
+E.g., the version with the bracket '[At sandbox/temporary]'
 is run by the temporary scripts.
-(2) '[At benchmark/temporary]' and '[At benchmark]' share the same version naming
+(2) '[At sandbox/temporary]' and '[At working_model]' share the same version naming
 sequence.
 ---------------------
 
@@ -25,7 +25,7 @@ See README in it for detail.
 #########################################
 Future training session
 Time: 2019/06/03
-Future training session (v13, commit ???)[At benchmark]
+Future training session (v13, commit ???)[At working_model]
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
@@ -34,7 +34,7 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 
 ########################################
 
-Finished training session (v16, commit 926291)[At benchmark]
+Finished training session (v16, commit 926291)[At working_model]
 Time: 2019/07/17
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v16_commit_926291_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
@@ -49,7 +49,7 @@ accurary	mode
 
 
 ########################################
-Finished training session (v15, commit acc400)[At benchmark]
+Finished training session (v15, commit acc400)[At working_model]
 Time: 2019/07/17
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v15_commit_acc400_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
@@ -63,7 +63,7 @@ accurary	mode
 97.48%	test_proportion
 #########################################
 
-Finished training session (v14, commit 95c693)[At benchmark]
+Finished training session (v14, commit 95c693)[At working_model]
 Time: 2019/07/17
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_95c693_epoch8000_tuning_batch16_train_step_1K_INIT_LR_10-5
@@ -77,7 +77,7 @@ accurary	mode
 99.7%	vali_proportion
 99.7%	test_proportion
 #########################################
-Finished training session (v13, commit 9ebcd4)[At benchmark]
+Finished training session (v13, commit 9ebcd4)[At working_model]
 Time: 2019/07/12
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v13_commit_9ebcd4_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
@@ -91,7 +91,7 @@ accurary	mode
 100.0%	test_proportion
 
 #########################################
-Finished training session (v12, commit 29151f)[At benchmark]
+Finished training session (v12, commit 29151f)[At working_model]
 Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v12_commit_29151f_epoch80000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
@@ -107,7 +107,7 @@ accurary	mode
 99.9%	test_proportion
 
 #########################################
-Finished training session (v11, commit ce0992)[At benchmark]
+Finished training session (v11, commit ce0992)[At working_model]
 Time: 2019/05/28
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v11_commit_ce0992_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
@@ -123,7 +123,7 @@ accurary	mode
 54.17%	test_proportion
 
 #########################################
-Finshed training session (v10, commit 5951c9)[At benchmark]
+Finshed training session (v10, commit 5951c9)[At working_model]
 Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v10_commit_5951c9_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5
@@ -142,7 +142,7 @@ Matches: 315/992
 Accuracy: 31.75%
 
 #########################################
-Finished training session (v9, commit 2a3d5e)[At benchmark]
+Finished training session (v9, commit 2a3d5e)[At working_model]
 Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v9_commit_2a3d5e_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-4
@@ -162,7 +162,7 @@ test: proportion_accuracy()
 Matches: 315/992
 Accuracy: 31.75%
 #########################################
-Finished training session (v8, commit 478c9f)[At benchmark]
+Finished training session (v8, commit 478c9f)[At working_model]
 Time: 2019/05/16
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v8_commit_478c9f_epoch80000_tuning_batch16_train_step_2M_INIT_LR_10-5

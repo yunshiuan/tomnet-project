@@ -1,12 +1,12 @@
 ##################################################################
 This folder contains temporary testing files.
-The codes root from Edwinn's codes with step-by-step modification.
+The codes root from Edwinn's codes ('raw_model') with step-by-step modification.
 Data path:
-'/../S002a'
+'S002a'
 
 ##################################################################
 
-Current training session (v17, commit 99cc5f)[At benchmark/temporary]
+Current training session (v17, commit 99cc5f)[At sandbox/temporary]
 Time: 2019/05/28
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v17_commit_99cc5f_epoch78600_tuning_batch96_train_step_0.5M_INIT_LR_10-5
@@ -36,7 +36,7 @@ accurary	mode
 
 ##################################################################
 
-Current training session (v16, commit a01ef9)[At benchmark/temporary]
+Current training session (v16, commit a01ef9)[At sandbox/temporary]
 Time: 2019/05/28
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v16_commit_a01ef9_epoch78600_tuning_batch96_train_step_0.5M_INIT_LR_10-5
@@ -55,7 +55,7 @@ accurary	mode
 
 ##################################################################
 
-Finished training session (v15, commit 324934)[At benchmark/temporary]
+Finished training session (v15, commit 324934)[At sandbox/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v15_commit_324934_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -75,7 +75,7 @@ accurary	mode
 
 ##################################################################
 
-Finished training session (v14, commit 1f58ab)[At benchmark/temporary]
+Finished training session (v14, commit 1f58ab)[At sandbox/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v14_commit_1f58ab_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -97,7 +97,7 @@ Note:
 
 #########################################
 
-Finished training session (v13, commit 62cae2)[At benchmark/temporary]
+Finished training session (v13, commit 62cae2)[At sandbox/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v13_commit_62cae2_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -116,7 +116,7 @@ There should be something else.
 
 #########################################
 
-Finished training session (v12, commit 62c0e8[At benchmark/temporary]
+Finished training session (v12, commit 62c0e8[At sandbox/temporary]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v12_commit_62c0e8_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -150,7 +150,7 @@ BUG	test_proportion
 28.81%	test_match_estimation
 
 #########################################
-Finished training session (v11, commit d2650a[At benchmark/temporary]
+Finished training session (v11, commit d2650a[At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v10_commit_0b68f9_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -191,7 +191,7 @@ accurary	mode
 31.89%	test_match_estimation
 
 #########################################
-Finished training session (v10, commit 0b68f9[At benchmark/temporary]
+Finished training session (v10, commit 0b68f9[At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v10_commit_0b68f9_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -211,7 +211,7 @@ accurary	mode
 31.89%	test_match_estimation
 
 #########################################
-Finished training session (v9, commit f1e33a)[At benchmark/temporary]
+Finished training session (v9, commit f1e33a)[At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v9_commit_f1e33a_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -232,7 +232,7 @@ accurary	mode
 
 
 #########################################
-Finished training session (v8, commit 7d8cff)[At benchmark/temporary]
+Finished training session (v8, commit 7d8cff)[At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v8_commit_7d8cff_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -251,7 +251,7 @@ accurary	mode
 
 
 #########################################
-Finished training session (v7, commit 6f14c6)[At benchmark/temporary]
+Finished training session (v7, commit 6f14c6)[At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v7_commit_6f14c6_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -273,7 +273,7 @@ test: proportion_accuracy()
 Accuracy: 45.22%
 
 #########################################
-Current training session (v6, commit 495618) [At benchmark/temporary]
+Current training session (v6, commit 495618) [At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v6_commit_495618_epoch80000_tuning_batch96_train_step_40M_INIT_LR_10-5
@@ -287,7 +287,7 @@ Note:
 
 #########################################
 
-Finished training session (v5, commit c8e358) [At benchmark/temporary]
+Finished training session (v5, commit c8e358) [At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v5_commit_c8e358_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -300,7 +300,7 @@ Note:
 (1) Not sure how well the performance is. Should try more steps.
 -> According to v6 results, it performes well.
 #########################################
-Finished training session (v4, commit 71297d) [At benchmark/temporary]
+Finished training session (v4, commit 71297d) [At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v4_commit_71297d_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
@@ -318,7 +318,7 @@ accurary	mode
 31.89%	test_match_estimation
 
 #########################################
-Finished training session (v3, commit 0f83ad) [At benchmark/temporary]
+Finished training session (v3, commit 0f83ad) [At sandbox/temporary]
 Time: 2019/05/10
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v3_commit_0f83ad_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
@@ -329,7 +329,7 @@ Modify:
 Note:
 (1) Bad result, but validation error is not going down.
 #########################################
-Finished training session (v2, commit d42c3b) [At benchmark/temporary]
+Finished training session (v2, commit d42c3b) [At sandbox/temporary]
 Time: 2019/05/09
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v2_commit_d42c3b_epoch80000_tuning_batch96_train_step_10M_INIT_LR_10-5
@@ -342,7 +342,7 @@ Note:
 (1) Learning great.
 
 #########################################
-Finished training session (v1, commit 31cb84) [At benchmark/temporary]
+Finished training session (v1, commit 31cb84) [At sandbox/temporary]
 Time: 2019/05/08
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v1_commit_31cb84_epoch80000_tuning_batch96_train_step_4000000_INIT_LR_0.000011

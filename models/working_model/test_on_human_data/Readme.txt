@@ -1,7 +1,7 @@
 #########################################
 Folder description:
 (1) This folder contains analysis on human data.
-(2) All python scripts are located in benchmark/temporary_testing_version or benchmark.
+(2) All python scripts are located in sandbox/temporary_testing_version or working_model.
 (3) This folder only contains training results as well as a Rscript to convert the
 format of human data.
 Data source:
@@ -29,7 +29,7 @@ data path:
 
 #########################################
 
-Future training session (v?, commit ???) [At benchmark/human_data]
+Future training session (v?, commit ???) [At working_model/human_data]
 Time: 2019/0?/?
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v?_commit_???_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
@@ -37,12 +37,12 @@ Output file name: /cache_S002a_v?_commit_???_epoch78600_tuning_batch16_train_ste
 (1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
 
 -----------------------------------------
-Current training session (v8, commit 0c7df5) [At benchmark/human_data]
+Current training session (v8, commit 0c7df5) [At working_model/human_data]
 Time: 2019/0?/?
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v8_commit_0c7df5_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
-(1) Use the scripts in 'benchmark' (v12).
+(1) Use the scripts in 'working_model' (v12).
 
 Note
 (1)
@@ -52,13 +52,13 @@ accurary	mode
 
 -----------------------------------------
 
-Finished training session (v7, commit 0050d9) [At benchmark/human_data]
+Finished training session (v7, commit 0050d9) [At working_model/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v7_commit_0050d9_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Remove the scripts in this folder.
-(2) Use the scripts in 'benchmark/temporary' and set the output to here. 
+(2) Use the scripts in 'sandbox/temporary' and set the output to here. 
 This is because the human data format is identical to 
 the simulated data (thanks to the R script), 
 so there is no need to separate two set of scripts.
@@ -72,7 +72,7 @@ Note
 
 -----------------------------------------
 
-Finished training session (v6, commit f912f8) [At benchmark/human_data]
+Finished training session (v6, commit f912f8) [At working_model/human_data]
 Time: 2019/05/27
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v6_commit_f912f8_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -90,7 +90,7 @@ There should be something else.
 38.01%	test_match_estimation
 
 -----------------------------------------
-Finished training session (v5, commit a207fa) [At benchmark/human_data]
+Finished training session (v5, commit a207fa) [At working_model/human_data]
 Time: 2019/05/23
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v5_commit_a207fa_epoch78600_tuning_batch96_train_step_40M_INIT_LR_10-5
@@ -106,7 +106,7 @@ accurary	mode
 38.01%	test_match_estimation
 
 -----------------------------------------
-Current training session (v4, commit cecb7a) [At benchmark/human_data]
+Current training session (v4, commit cecb7a) [At working_model/human_data]
 Time: 2019/05/23
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v4_commit_cecb7a_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -114,12 +114,12 @@ Output file name: /cache_S002a_v4_commit_cecb7a_epoch78600_tuning_batch96_train_
 (1) Use the same set up as v3 but use the data S002a (with epoch = 78600)
 
 -----------------------------------------
-Finished training session (v3, commit dd21c9) [At benchmark/human_data]
+Finished training session (v3, commit dd21c9) [At working_model/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v3_commit_dd21c9_epoch78600_tuning_batch96_train_step_2M_INIT_LR_10-5
 
-(1) Copy codes again directly from benchmark/temporary (v7, commit c8e358).
+(1) Copy codes again directly from sandbox/temporary (v7, commit c8e358).
 (2) Preprocess the txt files by R and convert them to the format of simulated data,
  so no need to adjust the codes at all for human data.
 
@@ -136,7 +136,7 @@ Accuracy: 38.01%
 test: proportion_accuracy()
 Accuracy: 38.01%
 -----------------------------------------
-Finished training session (v2, commit 4a00dc) [At benchmark/human_data]
+Finished training session (v2, commit 4a00dc) [At working_model/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v2_commit_4a00dc_epoch80000_tuning_batch96_train_step_2M_INIT_LR_10-5
@@ -146,14 +146,14 @@ Note:
 (1) Not learning at all. Terminated manully.
 -----------------------------------------
 
-Finished training session (v1, commit 95ab2d) [At benchmark/human_data]
+Finished training session (v1, commit 95ab2d) [At working_model/human_data]
 Time: 2019/05/21
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v1_commit_95ab2d_epoch8000_tuning_batch96_train_step_40M_INIT_LR_10-5
 
 Description:
-(1) Use the model architecture (v7, commit c8e358) [At benchmark/temporary]
-(2) Use the commented_data_handler.py (v10, commit 5951c9) [At benchmark]. I modify the function parse_trajectory() to handle human data, which slightly differs from the simulated data in term of format (see above at 'Folder description').
+(1) Use the model architecture (v7, commit c8e358) [At sandbox/temporary]
+(2) Use the commented_data_handler.py (v10, commit 5951c9) [At working_model]. I modify the function parse_trajectory() to handle human data, which slightly differs from the simulated data in term of format (see above at 'Folder description').
 
 Note:
 (1) Not learning at all. Terminated manully.

@@ -10,12 +10,6 @@ Note:
   
 @author: Chuang, Yun-Shiuan; Edwinn
 """
-#-Path
-# Change working directory to where the script locates
-import os
-#os.getcwd()
-#PATH_ROOT = '/Users/vimchiz/bitbucket_local/observer_model_group/benchmark'
-#os.chdir(PATH_ROOT)
 import os
 import sys
 import time
@@ -585,10 +579,12 @@ class Model(mp.ModelParameter):
      
       num_vali_files = len(files_traj)
       num_batches = num_vali_files // batch_size
-      # remain_trajs = num_vali_steps % self.BATCH_SIZE_TEST
-      print('%i validation batches in total...' %num_batches)
-      
+
+      print('%i' %num_batches, mode, 'batches in total...')
+
+      # --------------------------------------------------------------      
       # Model with only charnet
+      # --------------------------------------------------------------            
       if not with_prednet:
         # Create the image and labels_traj placeholders
         data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
@@ -610,7 +606,9 @@ class Model(mp.ModelParameter):
         predictions = tf.nn.softmax(logits)
         # predictions = (batch_size, num_classes)
     
+        # --------------------------------------------------------------
         # Initialize a new session and restore a checkpoint
+        # --------------------------------------------------------------
         saver = tf.train.Saver(tf.all_variables())
         sess = tf.Session()
     
@@ -651,7 +649,9 @@ class Model(mp.ModelParameter):
           # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
           data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_traj))
           
+      # --------------------------------------------------------------      
       # Model with both charnet and prednet
+      # --------------------------------------------------------------       
       else:
         #pdb.set_trace()
         # Create the image and labels_traj placeholders          
@@ -685,8 +685,10 @@ class Model(mp.ModelParameter):
         # logits = (batch_size, num_classes)
         predictions = tf.nn.softmax(logits)
         # predictions = (batch_size, num_classes)
-    
+
+        # --------------------------------------------------------------    
         # Initialize a new session and restore a checkpoint
+        # --------------------------------------------------------------
         saver = tf.train.Saver(tf.all_variables())
         sess = tf.Session()
     
