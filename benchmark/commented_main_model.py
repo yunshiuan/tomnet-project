@@ -194,7 +194,8 @@ class Model(mp.ModelParameter):
     else:
       charnet = cn.CharNet()
       prednet = pn.PredNet()
-      length_e_char = 8
+      length_e_char = length_e_char = self.LENGTH_E_CHAR
+
       
       # model for training
       # pdb.set_trace()

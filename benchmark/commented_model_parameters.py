@@ -35,6 +35,8 @@ class ModelParameter:
     INIT_LR = 0.0001  
     # number of unique classes in the training set
     NUM_CLASS = 4 
+    # the length for thr character embedding
+    LENGTH_E_CHAR = 8
 
 
 
