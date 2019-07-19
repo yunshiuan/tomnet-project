@@ -1,10 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+class Model(mp.ModelParameter):
+
+The class for training the ToMNET model.
+
+Note:
+  Inherit mp.ModelParameter to share model constants.
+  
+@author: Chuang, Yun-Shiuan; Edwinn
+"""
 #-Path
 # Change working directory to where the script locates
 import os
 #os.getcwd()
 #PATH_ROOT = '/Users/vimchiz/bitbucket_local/observer_model_group/benchmark'
 #os.chdir(PATH_ROOT)
-
 import os
 import sys
 import time
@@ -23,25 +34,15 @@ import commented_prednet as pn
 import commented_data_handler as dh
 import commented_model_parameters as mp
 
-class Model:
+class Model(mp.ModelParameter):
   # --------------------------------------
   # Constant block
   # --------------------------------------
   # --------------------------------------
   # Constant: Model parameters
   # --------------------------------------
-  model_parameter = mp.ModelParameter()
-  MAX_TRAJECTORY_SIZE = model_parameter.MAX_TRAJECTORY_SIZE
-  HEIGHT = model_parameter.MAZE_HEIGHT
-  WIDTH = model_parameter.MAZE_WIDTH
-  DEPTH_TRAJECTORY = model_parameter.MAZE_DEPTH_TRAJECTORY
-  DEPTH_QUERY_STATE = model_parameter.MAZE_QUERY_STATE_DEPTH
-  WITH_PREDNET = model_parameter.WITH_PREDNET
-  NUM_RESIDUAL_BLOCKS = model_parameter.NUM_RESIDUAL_BLOCKS
-  TRAIN_EMA_DECAY = model_parameter.TRAIN_EMA_DECAY
-  INIT_LR = model_parameter.INIT_LR  
-  NUM_CLASS = model_parameter.NUM_CLASS
-
+  # Use inheretance to share the model constants across classes
+  
   # --------------------------------------
   # Constant: Training parameters
   # --------------------------------------
@@ -94,15 +95,15 @@ class Model:
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
 
     # For trajectory data and the corresponding labels 
-    self.train_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH_TRAJECTORY])
+    self.train_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_TRAJECTORY])
     self.train_labels_traj_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
-    self.vali_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.HEIGHT, self.WIDTH, self.DEPTH_TRAJECTORY])
+    self.vali_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_TRAJECTORY])
     self.vali_labels_traj_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
         
     # For query state data and the cooresponding labels
-    self.train_data_query_state_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.HEIGHT, self.WIDTH, self.DEPTH_QUERY_STATE])
+    self.train_data_query_state_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_QUERY_STATE])
     self.train_labels_query_state_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
-    self.vali_data_query_state_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.HEIGHT, self.WIDTH, self.DEPTH_QUERY_STATE])
+    self.vali_data_query_state_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_QUERY_STATE])
     self.vali_labels_query_state_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
 
     # --------------------------------------------------------------
@@ -128,7 +129,7 @@ class Model:
                                         parse_query_state = False)
     # --------------------------------------------------------------
     # Parse the query state data and labels
-    # train_data_traj = (num_train_files, height, width, MAZE_QUERY_STATE_DEPTH)
+    # train_data_traj = (num_train_files, height, width, MAZE_DEPTH_QUERY_STATE)
     # train_labels_traj = (num_train_files, )
     # --------------------------------------------------------------
 
@@ -592,9 +593,9 @@ class Model:
         data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
                                           shape=[batch_size,\
                                                  self.MAX_TRAJECTORY_SIZE,\
-                                                 self.HEIGHT,\
-                                                 self.WIDTH,\
-                                                 self.DEPTH_TRAJECTORY])    
+                                                 self.MAZE_HEIGHT,\
+                                                 self.MAZE_WIDTH,\
+                                                 self.MAZE_DEPTH_TRAJECTORY])    
         # --------------------------------------------------------------
         # Build the graph
         # --------------------------------------------------------------
@@ -656,14 +657,14 @@ class Model:
         data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
                                           shape=[batch_size,\
                                                  self.MAX_TRAJECTORY_SIZE,\
-                                                 self.HEIGHT,\
-                                                 self.WIDTH,\
-                                                 self.DEPTH_TRAJECTORY])
+                                                 self.MAZE_HEIGHT,\
+                                                 self.MAZE_WIDTH,\
+                                                 self.MAZE_DEPTH_TRAJECTORY])
         data_query_state_placeholder = tf.placeholder(dtype=tf.float32,\
                                                       shape=[batch_size,\
-                                                             self.HEIGHT,\
-                                                             self.WIDTH,\
-                                                             self.DEPTH_QUERY_STATE])    
+                                                             self.MAZE_HEIGHT,\
+                                                             self.MAZE_WIDTH,\
+                                                             self.MAZE_DEPTH_QUERY_STATE])    
         # --------------------------------------------------------------
         # Build the graph
         # --------------------------------------------------------------

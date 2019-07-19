@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-class DataHandler:
+class DataHandler(mp.ModelParameter):
 
 The class for parsing txt data.
+
+Note:
+  Inherit mp.ModelParameter to share model constants.
+  
 @author: Chuang, Yun-Shiuan; Edwinn
 """
 
@@ -17,25 +21,13 @@ import pdb
 import commented_model_parameters as mp
 
 
-class DataHandler:
+class DataHandler(mp.ModelParameter):
     # --------------------------------------
     # Constant block
     # --------------------------------------
     # --------------------------------------
     # Constant: Model parameters
-    # --------------------------------------
-    model_parameter = mp.ModelParameter()
-    MAZE_WIDTH = model_parameter.MAZE_WIDTH
-    MAZE_HEIGHT = model_parameter.MAZE_HEIGHT
-    MAZE_DEPTH_TRAJECTORY = model_parameter.MAZE_DEPTH_TRAJECTORY
-    MAZE_QUERY_STATE_DEPTH = model_parameter.MAZE_QUERY_STATE_DEPTH
-    # DEPTH != MAX_TRAJECTORY_SIZE (see commented_data_handler.py)
-    # - MAX_TRAJECTORY_SIZE = 10, number of steps of each trajectory 
-    # (will be padded up/truncated to it if less/more than the constant)
-    # - DEPTH = number of channels of each maze, 11 = 1 (obstacle) + 1 (agent initial position) + 4 (targets) + 5 (actions)
-    # in our model, 5 actions: up/down/left/right/goal
-    # in the paper, also 5 actions: up/down/left/right/stay
-    MAX_TRAJECTORY_SIZE = 10
+    # Use inheretance to share the model constants across classes
 
     def __init__(self, dir):
         #self.find_max_path(dir)
@@ -135,10 +127,10 @@ class DataHandler:
           :all_data:
             if `parse_query_state == False`, 
             return the 3D tensor of the query state
-            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_QUERY_STATE_DEPTH);
+            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE);
             if `parse_query_state == True`,
             return the 4D tensor of the whole trajectory
-            (len(files) x MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_QUERY_STATE_DEPTH).
+            (len(files) x MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE).
           :all_labels: 
             the numeric index of the final target (len(files) x MAX_TRAJECTORY_SIZE, 1)
         '''
@@ -149,7 +141,7 @@ class DataHandler:
         if not parse_query_state:
           all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH_TRAJECTORY])
         else:
-          all_data = np.empty([self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_QUERY_STATE_DEPTH])
+          all_data = np.empty([self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH_QUERY_STATE])
           
         all_labels = np.empty([1])       
         
@@ -215,7 +207,7 @@ class DataHandler:
         else:
            all_data = all_data.reshape(num_files,
                                       self.MAZE_WIDTH,self.MAZE_HEIGHT,
-                                      self.MAZE_QUERY_STATE_DEPTH) 
+                                      self.MAZE_DEPTH_QUERY_STATE) 
         print('Got ' + str(all_data.shape) + ' datapoints')
         #pdb.set_trace()
         return all_data, all_labels
@@ -224,7 +216,7 @@ class DataHandler:
     def parse_trajectory(self, filename):
         '''
         This function wil return a 4-dim tensor with all the steps in a trajectory defined in the map of the given txt file.
-        The tensor will be of shape (MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_QUERY_STATE_DEPTH).
+        The tensor will be of shape (MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE).
         '''
         #self.parse_query_state(filename)
         
@@ -363,7 +355,7 @@ class DataHandler:
         Returns: 
           :np_query_state_tensor:
             a batch data. 3D numpy array of the query state
-            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_QUERY_STATE_DEPTH)
+            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE)
           :label: the numeric index of the final target.
         '''
         # --------------------------------------------------------------
