@@ -124,9 +124,9 @@ class Model(mp.ModelParameter):
     # --------------------------------------------------------------
     # Parse the query state data and labels
     # train_data_traj = (num_train_files, height, width, MAZE_DEPTH_QUERY_STATE)
-    # train_labels_traj = (num_train_files, )
+    # train_labels_traj = (num_train_files, 1)
     # --------------------------------------------------------------
-
+    # pdb.set_trace()
     self.train_data_query_state, self.vali_data_query_state,\
     self.test_data_query_state, self.train_labels_query_state,\
     self.vali_labels_query_state, self.test_labels_query_state,\

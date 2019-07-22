@@ -49,14 +49,14 @@ class DataHandler(mp.ModelParameter):
           
         Returns: 
           :train_data:
-            a batch data. 
+            the training data.
             if `parse_query_state = False`, 
-            then return 5D numpy array (num_files, trajectory_size, height, width, depth);
+            then return 5D numpy array (num_files, trajectory_size, height, width, depth_trajectory);
             if `parse_query_state = True`, 
-            then return 4D numpy array (num_files, height, width, depth);
+            then return 4D numpy array (num_files, height, width, depth_query_state);
             
           :train_labels:
-            a batch data. 2D numpy array (num_files, labels)
+            a batch data. 2D numpy array (num_files, 1)
         '''         
         # --------------------------------------
         # List all txt files to be parsed
@@ -137,22 +137,25 @@ class DataHandler(mp.ModelParameter):
         This function wil parse all the files in the directoy and return 
         the corresponding tensors and labels.
         Args:
-          :param directory: the directory of the files to be parse
-          :param files: the txt files to be parsed
-          :param parse_query_state: if 'True', parse only the query states
+          :param directory: 
+            the directory of the files to be parse
+          :param files:
+            the txt files to be parsed
+          :param parse_query_state: 
+            if 'True', parse only the query states
             and skip the actions; if 'False', parse the whole sequence 
             of trajectories         
       
         Returns: 
           :all_data:
-            if `parse_query_state == False`, 
-            return the 3D tensor of the query state
-            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE);
-            if `parse_query_state == True`,
-            return the 4D tensor of the whole trajectory
-            (len(files) x MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE).
+            if `parse_query_state == True`, 
+            return the 4D tensor of the query state
+            (num_files, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE);
+            if `parse_query_state == False`,
+            return the 5D tensor of the whole trajectory
+            (num_files, trajectory_size, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_TRAJECTORY).
           :all_labels: 
-            the numeric index of the final target (len(files) x MAX_TRAJECTORY_SIZE, 1)
+            the numeric index of the final target (len(files), 1)
         '''
         # --------------------------------------------------------------
         # Initialize empty arrays and constants
@@ -180,7 +183,7 @@ class DataHandler(mp.ModelParameter):
                 if i > j*len(files)/100:
                     print('Parsed ' + str(j) + '%')
                     j+=10
-                traj, goal = self.parse_trajectory(directory + file)
+                traj, goal = self.parse_trajectory(os.path.join(directory, file))
                 all_data = np.vstack((all_data,traj))
                 for step in traj:
                     all_labels = np.hstack((all_labels,np.array(goal)))
@@ -191,7 +194,7 @@ class DataHandler(mp.ModelParameter):
                 if i > j*len(files)/100:
                     print('Parsed ' + str(j) + '%')
                     j+=10
-                query_state, goal = self.parse_query_state(directory + file)
+                query_state, goal = self.parse_query_state(os.path.join(directory, file))
                 #pdb.set_trace()
                 all_data = np.vstack((all_data,query_state))
                 all_labels = np.hstack((all_labels,np.array(goal))) 
@@ -229,7 +232,7 @@ class DataHandler(mp.ModelParameter):
                                       self.MAZE_WIDTH,self.MAZE_HEIGHT,
                                       self.MAZE_DEPTH_QUERY_STATE) 
         print('Got ' + str(all_data.shape) + ' datapoints')
-        #pdb.set_trace()
+        # pdb.set_trace()
         return all_data, all_labels
 
 
