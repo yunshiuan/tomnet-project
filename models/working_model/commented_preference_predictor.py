@@ -10,14 +10,17 @@ model.
 import os
 import argparse
 import tensorflow as tf
+import numpy as np
 #import numpy as np
 #from tensorflow.contrib import rnn
 import commented_main_model as mm
 import commented_model_parameters as mp
+import commented_data_handler as dh
 import commented_charnet as cn
 import commented_prednet as pn
 # For debugging
 import pdb
+
 class PreferencePredictor(mp.ModelParameter): 
   
   # --------------------------------------
@@ -28,14 +31,123 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   # Constant: For making predictions
   # --------------------------------------
+  BATCH_SIZE_PREDICT = 5
+  SUBSET_SIZE = 100
   DIR_PREDICTION_ROOT = os.getcwd()
-  DIR_PREDICTION_DATA = ''
-  DIR_PREDICTION_RESULT = ''
+  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+                                                 'data','S002a_1000files')
+  DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
+#  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+#                                                  'data','data_for_making_preference_predictions',\
+#                                                  'query_state')
+  DIR_PREDICTION_RESULT = os.path.join(DIR_PREDICTION_ROOT,'test_on_human_data')
 
   def __init__(self):
     pass  
-  def read_trained_model(self):
-    pass
+  
+  def parse_prediction_data_trajectory(self, directory, subset_size = -1):
+    '''
+    This function wil parse all the prediction files in the directoy and return 
+    the corresponding trajectories.
+    
+    Args:
+      :param directory: 
+        the directory of the files to be parse.
+      :param subset_size: The size of the subset (number of files) to be parsed.  
+        Default to the special number -1, which means using all the files in  
+        the directory. When testing the code, this could help reducing the parsing time.   
+    
+    Returns: 
+      :prediction_data_trajectory:  
+            return the 5D tensor of the whole trajectory
+            (num_files, trajectory_size, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_TRAJECTORY).
+      :files_prediction_trajectory:
+        the names of the trajectory files being parsed.
+    '''
+    prediction_data_trajectory, files_prediction_trajectory = \
+    self.parse_prediction_data(directory,\
+                               parse_query_state = False,\
+                               subset_size = subset_size)
+    
+    return prediction_data_trajectory, files_prediction_trajectory
+  
+  def parse_prediction_data_query_state(self, directory, subset_size = -1):
+    '''
+    This function wil parse all the prediction files in the directoy and return 
+    the corresponding query states.
+    
+    Args:
+      :param directory: 
+        the directory of the files to be parse.
+      :param subset_size: The size of the subset (number of files) to be parsed.  
+        Default to the special number -1, which means using all the files in  
+        the directory. When testing the code, this could help reducing the parsing time.   
+    
+    Returns: 
+      :prediction_data_query_state:  
+            return the 4D tensor of the whole trajectory
+            (num_files, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE).
+      :files_prediction_query_state:
+        the names of the trajectory files being parsed.
+    '''
+    prediction_data_query_state, files_prediction_query_state = \
+    self.parse_prediction_data(directory,\
+                               parse_query_state = True,\
+                               subset_size = subset_size)
+    
+    return prediction_data_query_state, files_prediction_query_state
+  
+  def parse_prediction_data(self, directory, parse_query_state, subset_size):
+    '''
+    This function wil parse all the prediction files in the directoy and return 
+    the corresponding tensors (no need to return labels).
+    
+    Args:
+      :param directory: 
+        the directory of the files to be parse
+      :param parse_query_state: 
+        if 'True', parse only the query states
+        and skip the actions; if 'False', parse the whole sequence 
+        of trajectories    
+     :param subset_size: The size of the subset (number of files) to be parsed.  
+       The special number -1 means using all the files in  
+       the directory. When testing the code, this could help reducing the parsing time. 
+  
+    Returns: 
+      :prediction_data:
+           if `parse_query_state == True`, 
+            return the 4D tensor of the query state
+            (num_files, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE);
+            if `parse_query_state == False`,
+            return the 5D tensor of the whole trajectory
+            (num_files, trajectory_size, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_TRAJECTORY).
+      :files_prediction:
+        the names of the files being parsed.
+    '''
+    # --------------------------------------
+    # List all txt files to be parsed
+    # --------------------------------------
+    data_handler = dh.DataHandler()
+    files_prediction = data_handler.list_txt_files(directory) 
+    if subset_size != -1: 
+          files_prediction = files_prediction[0:subset_size]  
+    # --------------------------------------
+    # Print out parsing message
+    # --------------------------------------
+    if not parse_query_state:
+      parse_mode = 'trajectories---------------'
+    else:
+      parse_mode = 'query states---------------'
+    print('Parse ', parse_mode)
+    print('Found', len(files_prediction), 'files in', directory)
+    
+    # --------------------------------------
+    # Parse the txt files
+    # --------------------------------------     
+    prediction_data, _ = data_handler.parse_subset(directory,\
+                                                   files_prediction,\
+                                                   parse_query_state = parse_query_state)
+    return prediction_data, files_prediction
   
   def predict_whole_data_set_final_targets(self, files_prediction, data_traj, data_query_state, batch_size, with_prednet):
     '''
@@ -97,7 +209,6 @@ class PreferencePredictor(mp.ModelParameter):
                                                self.MAZE_HEIGHT,\
                                                self.MAZE_WIDTH,\
                                                self.MAZE_DEPTH_TRAJECTORY])    
-  
       charnet = cn.CharNet()
       logits = charnet.build_charnet(data_traj_placeholder,\
                                      n=self.NUM_RESIDUAL_BLOCKS,\
@@ -109,11 +220,19 @@ class PreferencePredictor(mp.ModelParameter):
       # predictions = (batch_size, num_classes)
     else:
       # --------------------------------------------------------------
-      # Model with both prednet and  charnet
+      # Model with both prednet and charnet
       # --------------------------------------------------------------
+      pdb.set_trace()
       charnet = cn.CharNet()
       prednet = pn.PredNet()
       length_e_char = mp.ModelParameter.LENGTH_E_CHAR
+      # TODO: *** ValueError: No variables to save
+      # http://jermmy.xyz/2017/04/23/2017-4-23-learn-tensorflow-save-restore-model/
+      sess = tf.Session()
+      saver = tf.train.Saver() 
+      saver.restore(sess, self.ckpt_path)
+
+
       e_char = charnet.build_charnet(input_tensor = data_traj_placeholder,\
                                      n = self.NUM_RESIDUAL_BLOCKS,\
                                      num_classes = length_e_char,\
@@ -188,16 +307,40 @@ if __name__ == "__main__":
     tf.reset_default_graph()
     
     preference_predictor = PreferencePredictor()
+    #pdb.set_trace()
     
+    # --------------------------------------------------------------      
     # parse in data for making predictions
-    data_traj, data_query_state, files_prediction = \
-    preference_predictor.parse_prediction_data(dir_prediction = DIR_PREDICTION)
+    # --------------------------------------------------------------  
+    # parse trajectory data
+    prediction_data_trajectory, files_prediction_trajectory = \
+    preference_predictor.parse_prediction_data_trajectory(directory = preference_predictor.DIR_PREDICTION_DATA_TRAJECTORY,\
+                                                          subset_size = preference_predictor.SUBSET_SIZE)
 
+    if preference_predictor.WITH_PREDNET:      
+      # --------------------------------------------------------------      
+      # model with both charnet and prednet
+      # --------------------------------------------------------------  
+      # parse query state data      
+      prediction_data_query_state, files_prediction_query_state = \
+      preference_predictor.parse_prediction_data_query_state(directory = preference_predictor.DIR_PREDICTION_DATA_QUERY_STATE,\
+                                                             subset_size = preference_predictor.SUBSET_SIZE)
+    else:
+      # --------------------------------------------------------------      
+      # model with only charnet
+      # -------------------------------------------------------------- 
+      prediction_data_query_state = np.full((len(files_prediction_trajectory),),\
+                                             np.nan)  
+    # --------------------------------------------------------------      
     # make predictions
-    preference_predictor.predict_whole_data_set_final_targets(files_prediction,\
-                                                              data_traj,\
-                                                              data_query_state,\
-                                                              batch_size,\
+    # output = (num_files, 1)
+    # --------------------------------------------------------------      
+    # pdb.set_trace()
+    data_set_predicted_labels = \
+    preference_predictor.predict_whole_data_set_final_targets(files_prediction_trajectory,\
+                                                              prediction_data_trajectory,\
+                                                              prediction_data_query_state,\
+                                                              batch_size = preference_predictor.BATCH_SIZE_PREDICT,\
                                                               with_prednet = preference_predictor.WITH_PREDNET)
    
 
