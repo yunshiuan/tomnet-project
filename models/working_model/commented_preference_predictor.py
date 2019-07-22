@@ -58,8 +58,8 @@ class PreferencePredictor(mp.ModelParameter):
         If `with_prednet = False`, then construct the partial model including
         only the charnet.        
     Returns:
-      :predictions:
-        an array of predictions for the input data (num_files, ).
+      :data_set_predicted_labels:
+        an array of predictions for the input data (num_files, 1).
     '''
     
     # Number of files for making predictions
@@ -67,20 +67,37 @@ class PreferencePredictor(mp.ModelParameter):
     num_batches = num_files_prediction // batch_size
     print('%i' %num_batches, 'batches in total for making predictions ...')
 
-    # --------------------------------------------------------------      
-    # Model with only charnet
-    # --------------------------------------------------------------            
+    # --------------------------------------------------------------
+    # Set up placeholders
+    # --------------------------------------------------------------
+    # Create the  placeholders          
+    data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
+                                      shape=[batch_size,\
+                                             self.MAX_TRAJECTORY_SIZE,\
+                                             self.MAZE_HEIGHT,\
+                                             self.MAZE_WIDTH,\
+                                             self.MAZE_DEPTH_TRAJECTORY])
+    # Note that this placeholder will be used only when with_prednet ==True
+    data_query_state_placeholder = tf.placeholder(dtype=tf.float32,\
+                                                  shape=[batch_size,\
+                                                         self.MAZE_HEIGHT,\
+                                                         self.MAZE_WIDTH,\
+                                                         self.MAZE_DEPTH_QUERY_STATE])    
+    # --------------------------------------------------------------
+    # Build the graph
+    # --------------------------------------------------------------
+           
     if not with_prednet:
-      # Create the image and labels_traj placeholders
+      # --------------------------------------------------------------      
+      # Model with only charnet
+      # -------------------------------------------------------------- 
       data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
                                         shape=[batch_size,\
                                                self.MAX_TRAJECTORY_SIZE,\
                                                self.MAZE_HEIGHT,\
                                                self.MAZE_WIDTH,\
                                                self.MAZE_DEPTH_TRAJECTORY])    
-      # --------------------------------------------------------------
-      # Build the graph
-      # --------------------------------------------------------------
+  
       charnet = cn.CharNet()
       logits = charnet.build_charnet(data_traj_placeholder,\
                                      n=self.NUM_RESIDUAL_BLOCKS,\
@@ -90,69 +107,9 @@ class PreferencePredictor(mp.ModelParameter):
       # logits = (batch_size, num_classes)
       predictions = tf.nn.softmax(logits)
       # predictions = (batch_size, num_classes)
-  
-      # --------------------------------------------------------------
-      # Initialize a new session and restore a checkpoint
-      # --------------------------------------------------------------
-      saver = tf.train.Saver(tf.all_variables())
-      sess = tf.Session()
-  
-      saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-      print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-  
-      # collecting prediction_array for each batch
-      # will be size of (batch_size * num_batches, num_classes)
-      data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
-      
-      # collecting ground truth labels for each batch
-      # will be size of (batch_size * num_batches, 1)
-      data_set_ground_truth_labels = np.array([]).reshape(-1, )
-      
-      # Test by batches
-      
-      #pdb.set_trace()
-      for step in range(num_batches):
-        if step % 10 == 0:
-            print('%i batches finished!' %step)
-        # pdb.set_trace() 
-        file_index = step * batch_size
-        
-        batch_data_traj, batch_labels_traj,\
-        batch_data_query_state, batch_labels_query_state\
-        = self.generate_vali_batch(data_traj,\
-                                   labels_traj,\
-                                   data_query_state,\
-                                   labels_query_state,\
-                                   batch_size,\
-                                   file_index = file_index)
-#        batch_data, batch_labels = self.generate_vali_batch(data, labels, batch_size, file_index)
-        # pdb.set_trace()
-        batch_prediction_array = sess.run(predictions,\
-                                          feed_dict={data_traj_placeholder: batch_data_traj})
-        # batch_prediction_array = (batch_size, num_classes)
-        data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
-        # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
-        data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_traj))
-        
-    # --------------------------------------------------------------      
-    # Model with both charnet and prednet
-    # --------------------------------------------------------------       
     else:
-      #pdb.set_trace()
-      # Create the image and labels_traj placeholders          
-      data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
-                                        shape=[batch_size,\
-                                               self.MAX_TRAJECTORY_SIZE,\
-                                               self.MAZE_HEIGHT,\
-                                               self.MAZE_WIDTH,\
-                                               self.MAZE_DEPTH_TRAJECTORY])
-      data_query_state_placeholder = tf.placeholder(dtype=tf.float32,\
-                                                    shape=[batch_size,\
-                                                           self.MAZE_HEIGHT,\
-                                                           self.MAZE_WIDTH,\
-                                                           self.MAZE_DEPTH_QUERY_STATE])    
       # --------------------------------------------------------------
-      # Build the graph
+      # Model with both prednet and  charnet
       # --------------------------------------------------------------
       charnet = cn.CharNet()
       prednet = pn.PredNet()
@@ -170,51 +127,60 @@ class PreferencePredictor(mp.ModelParameter):
       # logits = (batch_size, num_classes)
       predictions = tf.nn.softmax(logits)
       # predictions = (batch_size, num_classes)
-
-      # --------------------------------------------------------------  
-      # Initialize a new session and restore a checkpoint
-      # --------------------------------------------------------------
-
-      saver = tf.train.Saver(tf.all_variables())
-      sess = tf.Session()
   
-      saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-      print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-  
-      # collecting prediction_array for each batch
-      # will be size of (batch_size * num_batches, num_classes)
-      data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
+    # --------------------------------------------------------------
+    # Initialize a new session and restore a checkpoint
+    # --------------------------------------------------------------
+    saver = tf.train.Saver(tf.all_variables())
+    sess = tf.Session()
+
+    saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+    print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+
+    # --------------------------------------------------------------      
+    # Make softmax predictions batch by batch
+    # output: (num_files, num_classes)
+    # --------------------------------------------------------------
+
+    # collecting prediction_array for each batch
+    # will be size of (batch_size * num_batches, num_classes)
+    data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
+    
+    # Initialize unused constants
+    labels_traj = np.full((batch_size,), np.nan)
+    labels_query_state = np.full((batch_size,), np.nan)
+
+    
+    #pdb.set_trace()
+    for step in range(num_batches):
+      if step % 10 == 0:
+          print('%i batches finished!' %step)
+      # pdb.set_trace() 
+      file_index = step * batch_size
       
-      # collecting ground truth labels for each batch
-      # will be size of (batch_size * num_batches, 1)
-      data_set_ground_truth_labels = np.array([]).reshape(-1, )
+      batch_data_traj, _,\
+      batch_data_query_state, _\
+      = mm.generate_vali_batch(data_traj,\
+                               labels_traj,\
+                               data_query_state,\
+                               labels_query_state,\
+                               batch_size,\
+                               file_index = file_index)
+      # pdb.set_trace()
+      batch_prediction_array = sess.run(predictions,\
+                                        feed_dict={data_traj_placeholder: batch_data_traj})
+      # batch_prediction_array = (batch_size, num_classes)
+      data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
+      # data_set_prediction_array will be size of (batch_size * num_batches, num_classes),
+      # or (num_files, num_classes), because num_files = sbatch_size * num_batches
       
-      # Test by batches
-      #pdb.set_trace()
-      for step in range(num_batches):
-        if step % 10 == 0:
-            print('%i batches finished!' %step)
-        # pdb.set_trace() 
-        file_index = step * batch_size
-        
-        batch_data_traj, batch_labels_traj,\
-        batch_data_query_state, batch_labels_query_state\
-        = self.generate_vali_batch(data_traj,\
-                                   labels_traj,\
-                                   data_query_state,\
-                                   labels_query_state,\
-                                   batch_size,\
-                                   file_index = file_index)
-#        batch_data, batch_labels = self.generate_vali_batch(data, labels, batch_size, file_index)
-        # pdb.set_trace()
-        batch_prediction_array = sess.run(predictions,\
-                                          feed_dict={data_traj_placeholder: batch_data_traj,\
-                                                     data_query_state_placeholder: batch_data_query_state})
-        # batch_prediction_array = (batch_size, num_classes)
-        data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
-        # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
-        data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_traj))
-      # Model with both charnet and prednet 
+    # --------------------------------------------------------------      
+    # Make predictions based on the softmax output:
+    # (num_files, num_classes) -> (num_files, 1)
+    # --------------------------------------------------------------      
+    data_set_predicted_labels = np.argmax(data_set_prediction_array,1)
+    return data_set_predicted_labels
+    
       
 if __name__ == "__main__":
     # reseting the graph is necessary for running the script via spyder or other
