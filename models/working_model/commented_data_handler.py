@@ -36,7 +36,7 @@ class DataHandler(mp.ModelParameter):
 
     def parse_whole_data_set(self, directory, mode, shuf, subset_size = -1, parse_query_state = False):
         ''' 
-        Parse trajectory (if `parse_query_state = False`) or query state 
+        Parse the trajectory (if `parse_query_state = False`) or the query state 
         (if `parse_query_state = True`) of a txt file.
         
         Args: 
@@ -57,14 +57,18 @@ class DataHandler(mp.ModelParameter):
             
           :train_labels:
             a batch data. 2D numpy array (num_files, labels)
-        ''' 
-        # Parse all files (each file is a trajectory contains multiple steps)
-
+        '''         
+        # --------------------------------------
+        # List all txt files to be parsed
+        # --------------------------------------
         files = self.list_txt_files(directory)  
         
         if subset_size != -1: 
           files = files[0:subset_size]  
           
+        # --------------------------------------
+        # Print out parsing message
+        # --------------------------------------
         if not parse_query_state:
           parse_mode = 'trajectories---------------'
         else:
