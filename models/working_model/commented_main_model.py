@@ -108,7 +108,7 @@ class Model(mp.ModelParameter):
     # Load data
     dir = self.txt_data_path
     # pdb.set_trace()
-    data_handler = dh.DataHandler(dir)
+    data_handler = dh.DataHandler()
     # Note that all training examples are NOT shuffled randomly (by defualt)
     # during data_handler.parse_trajectories()
     # pdb.set_trace()

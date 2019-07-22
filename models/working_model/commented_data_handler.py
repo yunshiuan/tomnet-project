@@ -30,7 +30,7 @@ class DataHandler(mp.ModelParameter):
     # --------------------------------------
     # Use inheretance to share the model constants across classes
 
-    def __init__(self, dir):
+    def __init__(self):
         #self.find_max_path(dir)
         pass
 
