@@ -59,17 +59,12 @@ class DataHandler(mp.ModelParameter):
             a batch data. 2D numpy array (num_files, labels)
         ''' 
         # Parse all files (each file is a trajectory contains multiple steps)
-        # The list is in arbitrary order.
-        # (the order has to do with the way the files are indexed on your FileSystem)
-        # The order is fixed if runnning from the same machine
-        files = os.listdir(directory)
-        # pdb.set_trace()
-        # Filter out the csv file (only read the txt files) 
-        r = re.compile(".*.txt") 
-        files = list(filter(r.match, files)) # Read Note    
+
+        files = self.list_txt_files(directory)  
         
         if subset_size != -1: 
           files = files[0:subset_size]  
+          
         if not parse_query_state:
           parse_mode = 'trajectories---------------'
         else:
@@ -112,7 +107,27 @@ class DataHandler(mp.ModelParameter):
             test_data, test_labels = self.parse_subset(directory, test_files, parse_query_state)
         
         return train_data, vali_data, test_data, train_labels, vali_labels, test_labels, files, train_files, vali_files, test_files 
-
+      
+    def list_txt_files(self,directory):
+      '''
+        This function wil return all the txt files in a given directory.
+        Args:
+          :param directory: the directory of the files to be listed.    
+      
+        Returns: 
+          :files:
+            all the txt files in the directory.
+      '''        
+      # The list is in arbitrary order.
+      # (the order has to do with the way the files are indexed on your FileSystem)
+      # The order is fixed if runnning from the same machine
+      files = os.listdir(directory)
+      # pdb.set_trace()
+      # Filter out the csv file (only read the txt files) 
+      r = re.compile(".*.txt") 
+      files = list(filter(r.match, files))    
+      return files 
+      
     def parse_subset(self, directory, files, parse_query_state):
         '''
         This function wil parse all the files in the directoy and return 
