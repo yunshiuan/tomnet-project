@@ -30,13 +30,13 @@ class DataHandler(mp.ModelParameter):
     # --------------------------------------
     # Use inheretance to share the model constants across classes
 
-    def __init__(self, dir):
+    def __init__(self):
         #self.find_max_path(dir)
         pass
 
     def parse_whole_data_set(self, directory, mode, shuf, subset_size = -1, parse_query_state = False):
         ''' 
-        Parse trajectory (if `parse_query_state = False`) or query state 
+        Parse the trajectory (if `parse_query_state = False`) or the query state 
         (if `parse_query_state = True`) of a txt file.
         
         Args: 
@@ -49,27 +49,26 @@ class DataHandler(mp.ModelParameter):
           
         Returns: 
           :train_data:
-            a batch data. 
+            the training data.
             if `parse_query_state = False`, 
-            then return 5D numpy array (num_files, trajectory_size, height, width, depth);
+            then return 5D numpy array (num_files, trajectory_size, height, width, depth_trajectory);
             if `parse_query_state = True`, 
-            then return 4D numpy array (num_files, height, width, depth);
+            then return 4D numpy array (num_files, height, width, depth_query_state);
             
           :train_labels:
-            a batch data. 2D numpy array (num_files, labels)
-        ''' 
-        # Parse all files (each file is a trajectory contains multiple steps)
-        # The list is in arbitrary order.
-        # (the order has to do with the way the files are indexed on your FileSystem)
-        # The order is fixed if runnning from the same machine
-        files = os.listdir(directory)
-        # pdb.set_trace()
-        # Filter out the csv file (only read the txt files) 
-        r = re.compile(".*.txt") 
-        files = list(filter(r.match, files)) # Read Note    
+            a batch data. 2D numpy array (num_files, 1)
+        '''         
+        # --------------------------------------
+        # List all txt files to be parsed
+        # --------------------------------------
+        files = self.list_txt_files(directory)  
         
         if subset_size != -1: 
           files = files[0:subset_size]  
+          
+        # --------------------------------------
+        # Print out parsing message
+        # --------------------------------------
         if not parse_query_state:
           parse_mode = 'trajectories---------------'
         else:
@@ -112,28 +111,51 @@ class DataHandler(mp.ModelParameter):
             test_data, test_labels = self.parse_subset(directory, test_files, parse_query_state)
         
         return train_data, vali_data, test_data, train_labels, vali_labels, test_labels, files, train_files, vali_files, test_files 
-
+      
+    def list_txt_files(self,directory):
+      '''
+        This function wil return all the txt files in a given directory.
+        Args:
+          :param directory: the directory of the files to be listed.    
+      
+        Returns: 
+          :files:
+            all the txt files in the directory.
+      '''        
+      # The list is in arbitrary order.
+      # (the order has to do with the way the files are indexed on your FileSystem)
+      # The order is fixed if runnning from the same machine
+      files = os.listdir(directory)
+      # pdb.set_trace()
+      # Filter out the csv file (only read the txt files) 
+      r = re.compile(".*.txt") 
+      files = list(filter(r.match, files))    
+      return files 
+      
     def parse_subset(self, directory, files, parse_query_state):
         '''
         This function wil parse all the files in the directoy and return 
         the corresponding tensors and labels.
         Args:
-          :param directory: the directory of the files to be parse
-          :param files: the txt files to be parsed
-          :param parse_query_state: if 'True', parse only the query states
+          :param directory: 
+            the directory of the files to be parse
+          :param files:
+            the txt files to be parsed
+          :param parse_query_state: 
+            if 'True', parse only the query states
             and skip the actions; if 'False', parse the whole sequence 
             of trajectories         
       
         Returns: 
           :all_data:
-            if `parse_query_state == False`, 
-            return the 3D tensor of the query state
-            (MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE);
-            if `parse_query_state == True`,
-            return the 4D tensor of the whole trajectory
-            (len(files) x MAX_TRAJECTORY_SIZE, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE).
+            if `parse_query_state == True`, 
+            return the 4D tensor of the query state
+            (num_files, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE);
+            if `parse_query_state == False`,
+            return the 5D tensor of the whole trajectory
+            (num_files, trajectory_size, MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_TRAJECTORY).
           :all_labels: 
-            the numeric index of the final target (len(files) x MAX_TRAJECTORY_SIZE, 1)
+            the numeric index of the final target (len(files), 1)
         '''
         # --------------------------------------------------------------
         # Initialize empty arrays and constants
@@ -161,7 +183,7 @@ class DataHandler(mp.ModelParameter):
                 if i > j*len(files)/100:
                     print('Parsed ' + str(j) + '%')
                     j+=10
-                traj, goal = self.parse_trajectory(directory + file)
+                traj, goal = self.parse_trajectory(os.path.join(directory, file))
                 all_data = np.vstack((all_data,traj))
                 for step in traj:
                     all_labels = np.hstack((all_labels,np.array(goal)))
@@ -172,7 +194,7 @@ class DataHandler(mp.ModelParameter):
                 if i > j*len(files)/100:
                     print('Parsed ' + str(j) + '%')
                     j+=10
-                query_state, goal = self.parse_query_state(directory + file)
+                query_state, goal = self.parse_query_state(os.path.join(directory, file))
                 #pdb.set_trace()
                 all_data = np.vstack((all_data,query_state))
                 all_labels = np.hstack((all_labels,np.array(goal))) 
@@ -210,7 +232,7 @@ class DataHandler(mp.ModelParameter):
                                       self.MAZE_WIDTH,self.MAZE_HEIGHT,
                                       self.MAZE_DEPTH_QUERY_STATE) 
         print('Got ' + str(all_data.shape) + ' datapoints')
-        #pdb.set_trace()
+        # pdb.set_trace()
         return all_data, all_labels
 
 
