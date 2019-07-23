@@ -42,16 +42,16 @@ class Model(mp.ModelParameter):
   # Constant: Training parameters
   # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE_TRAIN = 5 # size of the batch for traning (number of the steps within each batch)  
-  BATCH_SIZE_VAL = 5 # size of the batch for validation
-  BATCH_SIZE_TEST = 5 # size of batch for testing
+  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE_VAL = 16 # size of the batch for validation
+  BATCH_SIZE_TEST = 16 # size of batch for testing
   
   # for testing on a GPU machine with 10000 files  
-  SUBSET_SIZE = 100 # use all files
+  SUBSET_SIZE = -1 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 50
-  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
+  TRAIN_STEPS = 10000
+  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
@@ -63,8 +63,8 @@ class Model(mp.ModelParameter):
   # Variable: Training parameters
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S030_v17_commit_???_epoch80000_tuning_batch96_train_step_10K_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v17_commit_???_epoch80000_tuning_batch96_train_step_10K_INIT_LR_10-4'
   txt_data_path ='../../data/S002a/'
   #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
@@ -612,7 +612,7 @@ class Model(mp.ModelParameter):
         # for the model with both charnet and prednet.
         # Otherwise, the performance would be overestimated
         # -------------------------------------------------------------- 
-        pdb.set_trace()
+        # pdb.set_trace()
         data_query_state = np.flip(data_query_state, 0)
         labels_query_state = np.flip(labels_query_state, 0)
 
@@ -753,7 +753,7 @@ class Model(mp.ModelParameter):
                                                      batch_size,\
                                                      file_index = file_index)
   #        batch_data, batch_labels = self.batch_generator.generate_vali_batch(data, labels, batch_size, file_index)
-          pdb.set_trace()
+          # pdb.set_trace()
           batch_prediction_array = sess.run(predictions,\
                                             feed_dict={data_traj_placeholder: batch_data_traj,\
                                                        data_query_state_placeholder: batch_data_query_state})

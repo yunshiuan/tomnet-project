@@ -31,6 +31,19 @@ Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_ste
 
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
+########################################
+
+Current training session (v17, commit ???)[At working_model]
+Time: 2019/07/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v17_commit_???_file10000_tuning_batch16_train_step_10K_INIT_LR_10-5
+
+(1) Following v16 but with the bug fixed.
+Note:
+(1)
+accurary	mode
+	vali_proportion
+	test_proportion
 
 ########################################
 
@@ -40,9 +53,9 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v16_commit_926291_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
 
 (1) Make sure the model also works without prenet.
-
+(2) [WARNING!] The final assessment of the model is buggy. The bus was fixed in the commit 512909.
 Note:
-(1)
+(1) [Buggy!]
 accurary	mode
 89.58%	vali_proportion
 90.62%	test_proportion
