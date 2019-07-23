@@ -330,7 +330,7 @@ class Model(mp.ModelParameter):
       # --------------------------------------------------------------
       # Generate batches for training data
       # --------------------------------------------------------------
-      #pdb.set_trace()
+      # pdb.set_trace()
       train_batch_data_traj, train_batch_labels_traj,\
       train_batch_data_query_state, train_batch_labels_query_state\
       = self.batch_generator.generate_train_batch(self.train_data_traj,\
@@ -606,6 +606,16 @@ class Model(mp.ModelParameter):
 
       print('%i' %num_batches, mode, 'batches in total...')
 
+      if with_prednet:
+        # --------------------------------------------------------------      
+        # Break the correspondence bewteem files_query_state and files_trajectory
+        # for the model with both charnet and prednet.
+        # Otherwise, the performance would be overestimated
+        # -------------------------------------------------------------- 
+        pdb.set_trace()
+        data_query_state = np.flip(data_query_state, 0)
+        labels_query_state = np.flip(labels_query_state, 0)
+
       # --------------------------------------------------------------      
       # Model with only charnet
       # --------------------------------------------------------------            
@@ -737,20 +747,20 @@ class Model(mp.ModelParameter):
           batch_data_traj, batch_labels_traj,\
           batch_data_query_state, batch_labels_query_state\
           = self.batch_generator.generate_vali_batch(data_traj,\
-                                     labels_traj,\
-                                     data_query_state,\
-                                     labels_query_state,\
-                                     batch_size,\
-                                     file_index = file_index)
+                                                     labels_traj,\
+                                                     data_query_state,\
+                                                     labels_query_state,\
+                                                     batch_size,\
+                                                     file_index = file_index)
   #        batch_data, batch_labels = self.batch_generator.generate_vali_batch(data, labels, batch_size, file_index)
-          # pdb.set_trace()
+          pdb.set_trace()
           batch_prediction_array = sess.run(predictions,\
                                             feed_dict={data_traj_placeholder: batch_data_traj,\
                                                        data_query_state_placeholder: batch_data_query_state})
           # batch_prediction_array = (batch_size, num_classes)
           data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
           # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
-          data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_traj))
+          data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_query_state))
         # Model with both charnet and prednet
         
       # --------------------------------------------------------------
