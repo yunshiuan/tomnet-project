@@ -184,6 +184,8 @@ class Model(mp.ModelParameter):
       charnet = cn.CharNet()
 
       logits = charnet.build_charnet(self.train_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=False, train=True)
+      # - Use train=True for batch-wise validation along training to make the error metric
+      # - comparable to training error
       vali_logits = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
     else:
       charnet = cn.CharNet()
@@ -197,6 +199,8 @@ class Model(mp.ModelParameter):
       logits = prednet.build_prednet(train_e_char, self.train_data_query_state_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes = self.NUM_CLASS, reuse=False )
       
       # model for batch-validation along training
+      # - Use train=True for batch-wise validation along training to make the error metric
+      # - comparable to training error
       vali_e_char = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=True, train=True)      
       vali_logits = prednet.build_prednet(vali_e_char, self.vali_data_query_state_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes = self.NUM_CLASS, reuse=True )
       
@@ -232,8 +236,8 @@ class Model(mp.ModelParameter):
     # --------------------------------------------------------------
     # Make prediction based on the output of the model
     # --------------------------------------------------------------  
-    predictions = tf.nn.softmax(logits)
-    vali_predictions = tf.nn.softmax(vali_logits)
+    predictions = tf.nn.softmax(logits, name = 'train_prediction')
+    vali_predictions = tf.nn.softmax(vali_logits, name = 'vali_prediction')
 
     # --------------------------------------------------------------
     # Define performace metric: prediction error
@@ -611,7 +615,6 @@ class Model(mp.ModelParameter):
         # --------------------------------------------------------------
         saver = tf.train.Saver(tf.all_variables())
         sess = tf.Session()
-    
         saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
         print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
     
@@ -671,7 +674,7 @@ class Model(mp.ModelParameter):
         # --------------------------------------------------------------
         charnet = cn.CharNet()
         prednet = pn.PredNet()
-        length_e_char = 8
+        length_e_char = mp.ModelParameter.LENGTH_E_CHAR
         e_char = charnet.build_charnet(input_tensor = data_traj_placeholder,\
                                        n = self.NUM_RESIDUAL_BLOCKS,\
                                        num_classes = length_e_char,\
