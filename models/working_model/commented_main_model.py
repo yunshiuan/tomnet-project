@@ -256,8 +256,8 @@ class Model(mp.ModelParameter):
     # --------------------------------------------------------------
     # Make prediction based on the output of the model
     # --------------------------------------------------------------  
-    predictions = tf.nn.softmax(logits, name = 'train_prediction')
-    vali_predictions = tf.nn.softmax(vali_logits, name = 'vali_prediction')
+    predictions = tf.nn.softmax(logits, name = 'train_predictions_array')
+    vali_predictions = tf.nn.softmax(vali_logits, name = 'vali_predictions_array')
 
     # --------------------------------------------------------------
     # Define performace metric: prediction error
@@ -436,7 +436,7 @@ class Model(mp.ModelParameter):
       # - feed in the labels of the validation batch
       # self.lr_placeholder: self.INIT_LR
       # - feed in the initial learning rate
-      
+      # pdb.set_trace()
       _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error],\
                                                            {self.train_data_traj_placeholder: train_batch_data_traj,\
                                                             self.train_labels_traj_placeholder: train_batch_labels_traj,\
