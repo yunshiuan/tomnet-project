@@ -177,6 +177,10 @@ class PreferencePredictor(mp.ModelParameter):
     Returns:
       :data_set_predicted_labels:
         an array of predictions for the input data (num_files, 1).
+      :data_set_ground_truth_labels:  
+        an array of ground truth labels for the input data (num_files, 1).
+      :preference_ranking:
+        an array of the preference ranking (num_classes, 1).
     '''
     
     # Number of files for making predictions
@@ -220,6 +224,10 @@ class PreferencePredictor(mp.ModelParameter):
     # collecting prediction_array for each batch
     # will be size of (batch_size * num_batches, num_classes)
     data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
+ 
+   # collecting ground truth labels for each batch
+    # will be size of (batch_size * num_batches, 1)
+    data_set_ground_truth_labels = np.array([]).reshape(-1, )
     
     # Initialize unused constants
     labels_traj = np.full((num_files_prediction,), np.nan)
@@ -234,7 +242,7 @@ class PreferencePredictor(mp.ModelParameter):
       # pdb.set_trace() 
       file_index = step * batch_size
       batch_data_traj, _,\
-      batch_data_query_state, _\
+      batch_data_query_state, batch_labels_query_state\
       = batch_generator.generate_vali_batch(vali_data_traj = data_traj,\
                                             vali_labels_traj = labels_traj,\
                                             vali_data_query_state = data_query_state,\
@@ -249,6 +257,7 @@ class PreferencePredictor(mp.ModelParameter):
       data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
       # data_set_prediction_array will be size of (batch_size * num_batches, num_classes),
       # or (num_files, num_classes), because num_files = sbatch_size * num_batches
+      data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_query_state))
       
     # --------------------------------------------------------------      
     # Make predictions based on the softmax output:
@@ -256,7 +265,14 @@ class PreferencePredictor(mp.ModelParameter):
     # --------------------------------------------------------------     
     pdb.set_trace()
     data_set_predicted_labels = np.argmax(data_set_prediction_array,1)
-    return data_set_predicted_labels
+    
+    # --------------------------------------------------------------      
+    # Make predictions about the preference ranking:
+    # (num_files, num_classes) -> (num_classes, 1)
+    # --------------------------------------------------------------  
+    preference_ranking = np.argmax(data_set_prediction_array,1)
+
+    return  preference_ranking, data_set_predicted_labels, ground_truth_labels
     
       
 if __name__ == "__main__":
