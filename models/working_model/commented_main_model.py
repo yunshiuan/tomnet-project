@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 # -*- coding: utf-8 -*-
 """
 class Model(mp.ModelParameter):
@@ -47,10 +47,13 @@ class Model(mp.ModelParameter):
   BATCH_SIZE_TEST = 16 # size of batch for testing
   
   # for testing on a GPU machine with 10000 files  
-  SUBSET_SIZE = -1 # use all files
+  SUBSET_SIZE = 100 # use all files
+  SUBSET_SIZE = 1000 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 10000
+  TRAIN_STEPS = 50
+  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
+  TRAIN_STEPS = 1000
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation 
