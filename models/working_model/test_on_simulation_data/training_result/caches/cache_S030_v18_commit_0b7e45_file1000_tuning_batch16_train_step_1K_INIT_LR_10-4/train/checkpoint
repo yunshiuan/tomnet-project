@@ -1,0 +1,3 @@
+model_checkpoint_path: "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/models/working_model/training_result/caches/cache_S030_v18_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/train/model.ckpt-999"
+all_model_checkpoint_paths: "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/models/working_model/training_result/caches/cache_S030_v18_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/train/model.ckpt-0"
+all_model_checkpoint_paths: "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/models/working_model/training_result/caches/cache_S030_v18_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/train/model.ckpt-999"

@@ -31,9 +31,25 @@ Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_ste
 
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
+(2) Don't use dropout for preference inference.
+(3) Add 'train_proportion' performance metric
 ########################################
 
-Current training session (v17, commit 48fa87)[At working_model]
+Current training session (v18, commit 0b7e45)[At working_model]
+Time: 2019/07/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v18_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
+
+(1) Following v17 but without prednet.
+Note:
+(1)
+accurary	mode
+84.38%	vali_proportion
+82.29%	test_proportion
+
+########################################
+
+Finished training session (v17, commit 48fa87)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v17_commit_48fa87_file10000_tuning_batch16_train_step_10K_INIT_LR_10-5
@@ -44,8 +60,6 @@ Note:
 accurary	mode
 64.31% vali_proportion
 62.7% test_proportion
-
-
 
 ########################################
 
