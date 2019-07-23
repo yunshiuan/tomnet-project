@@ -11,6 +11,8 @@ import os
 import argparse
 import tensorflow as tf
 import numpy as np
+#from tensorflow.python.tools import inspect_checkpoint as chkp
+
 #import numpy as np
 #from tensorflow.contrib import rnn
 import commented_main_model as mm
@@ -18,6 +20,7 @@ import commented_model_parameters as mp
 import commented_data_handler as dh
 import commented_charnet as cn
 import commented_prednet as pn
+import commented_batch_generator as bg
 # For debugging
 import pdb
 
@@ -33,6 +36,8 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   BATCH_SIZE_PREDICT = 5
   SUBSET_SIZE = 100
+  FILE_CKPT = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-49'
+  #FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v16_commit_926291_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999'
   DIR_PREDICTION_ROOT = os.getcwd()
   DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
                                                  'data','S002a_1000files')
@@ -178,25 +183,7 @@ class PreferencePredictor(mp.ModelParameter):
     num_files_prediction = len(files_prediction)
     num_batches = num_files_prediction // batch_size
     print('%i' %num_batches, 'batches in total for making predictions ...')
-
-    # --------------------------------------------------------------
-    # Set up placeholders
-    # --------------------------------------------------------------
-    # Create the placeholders          
-    data_traj_placeholder = tf.placeholder(dtype = tf.float32,\
-                                           shape = [batch_size,\
-                                                    self.MAX_TRAJECTORY_SIZE,\
-                                                    self.MAZE_HEIGHT,\
-                                                    self.MAZE_WIDTH,\
-                                                    self.MAZE_DEPTH_TRAJECTORY],\
-                                           name = 'data_traj_placeholder')
-    # Note that this placeholder will be used only when with_prednet == True
-    data_query_state_placeholder = tf.placeholder(dtype = tf.float32,\
-                                                  shape = [batch_size,\
-                                                           self.MAZE_HEIGHT,\
-                                                           self.MAZE_WIDTH,\
-                                                           self.MAZE_DEPTH_QUERY_STATE],\
-                                                  name = 'data_query_state_placeholder')    
+   
     # --------------------------------------------------------------
     # Restore the graph and parameters
     # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
@@ -219,6 +206,12 @@ class PreferencePredictor(mp.ModelParameter):
 #      parameters = chkp.print_tensors_in_checkpoint_file(self.FILE_CKPT,\
 #                                                         tensor_name='',\
 #                                                         all_tensors=True)
+    # --------------------------------------------------------------
+    # Restore the placeholders
+    # --------------------------------------------------------------
+    train_data_traj_placeholder = graph.get_tensor_by_name('train_data_traj_placeholder:0')
+    train_data_query_state_placeholder = graph.get_tensor_by_name('train_data_query_state_placeholder:0')
+
     # --------------------------------------------------------------      
     # Make softmax predictions batch by batch
     # output: (num_files, num_classes)
@@ -229,28 +222,29 @@ class PreferencePredictor(mp.ModelParameter):
     data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
     
     # Initialize unused constants
-    labels_traj = np.full((batch_size,), np.nan)
-    labels_query_state = np.full((batch_size,), np.nan)
+    labels_traj = np.full((num_files_prediction,), np.nan)
+    labels_query_state = np.full((num_files_prediction,), np.nan)
 
-    
-    #pdb.set_trace()
+    # Create a batch generator
+    batch_generator = bg.BatchGenerator()
+    # pdb.set_trace()
     for step in range(num_batches):
       if step % 10 == 0:
           print('%i batches finished!' %step)
       # pdb.set_trace() 
       file_index = step * batch_size
-      
       batch_data_traj, _,\
       batch_data_query_state, _\
-      = mm.generate_vali_batch(data_traj,\
-                               labels_traj,\
-                               data_query_state,\
-                               labels_query_state,\
-                               batch_size,\
-                               file_index = file_index)
-      # pdb.set_trace()
-      batch_prediction_array = sess.run(predictions,\
-                                        feed_dict={data_traj_placeholder: batch_data_traj})
+      = batch_generator.generate_vali_batch(vali_data_traj = data_traj,\
+                                            vali_labels_traj = labels_traj,\
+                                            vali_data_query_state = data_query_state,\
+                                            vali_labels_query_state = labels_query_state,\
+                                            vali_batch_size = batch_size,\
+                                            file_index = file_index)
+      #pdb.set_trace()
+      batch_prediction_array = sess.run(predictions_array,\
+                                        feed_dict={train_data_traj_placeholder: batch_data_traj,\
+                                                   train_data_query_state_placeholder: batch_data_query_state})
       # batch_prediction_array = (batch_size, num_classes)
       data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
       # data_set_prediction_array will be size of (batch_size * num_batches, num_classes),
@@ -259,7 +253,8 @@ class PreferencePredictor(mp.ModelParameter):
     # --------------------------------------------------------------      
     # Make predictions based on the softmax output:
     # (num_files, num_classes) -> (num_files, 1)
-    # --------------------------------------------------------------      
+    # --------------------------------------------------------------     
+    pdb.set_trace()
     data_set_predicted_labels = np.argmax(data_set_prediction_array,1)
     return data_set_predicted_labels
     
@@ -298,13 +293,14 @@ if __name__ == "__main__":
     # make predictions
     # output = (num_files, 1)
     # --------------------------------------------------------------      
-    # pdb.set_trace()
+    pdb.set_trace()
     data_set_predicted_labels = \
     preference_predictor.predict_whole_data_set_final_targets(files_prediction_trajectory,\
                                                               prediction_data_trajectory,\
                                                               prediction_data_query_state,\
                                                               batch_size = preference_predictor.BATCH_SIZE_PREDICT,\
                                                               with_prednet = preference_predictor.WITH_PREDNET)
+    pdb.set_trace()
    
 
 
