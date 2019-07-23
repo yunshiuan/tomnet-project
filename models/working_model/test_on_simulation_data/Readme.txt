@@ -35,12 +35,26 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (3) Add 'train_proportion' performance metric
 ########################################
 
-Current training session (v18, commit 0b7e45)[At working_model]
+Current training session (v19, commit ???)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v18_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
+Output file name: /cache_S002a_v19_commit_???_file10000_tuning_batch16_train_step_0.2M_INIT_LR_10-5
 
-(1) Following v17 but without prednet.
+(1) Follow v17 (with prednet) but with more trainig steps.
+Note:
+(1)
+accurary	mode
+	vali_proportion
+	test_proportion
+
+########################################
+
+Finished training session (v18, commit 0b7e45)[At working_model]
+Time: 2019/07/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v18_commit_0b7e45_file1000_tuning_batch16_train_step_1K_INIT_LR_10-5
+
+(1) Follow v17 but without prednet.
 Note:
 (1)
 accurary	mode
@@ -54,7 +68,7 @@ Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v17_commit_48fa87_file10000_tuning_batch16_train_step_10K_INIT_LR_10-5
 
-(1) Following v15 but with the bugs fixed.
+(1) Follow v15 but with the bugs fixed.
 Note:
 (1)
 accurary	mode

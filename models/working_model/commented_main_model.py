@@ -47,10 +47,10 @@ class Model(mp.ModelParameter):
   BATCH_SIZE_TEST = 16 # size of batch for testing
   
   # for testing on a GPU machine with 10000 files  
-  SUBSET_SIZE = 1000 # use all files
+  SUBSET_SIZE = -1 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 1000
+  TRAIN_STEPS = 200000
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation 
@@ -63,8 +63,8 @@ class Model(mp.ModelParameter):
   # Variable: Training parameters
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v18_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v18_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
+  ckpt_fname = 'training_result/caches/cache_S030_v19_commit_???_file10000_tuning_batch16_train_step_0.2M_INIT_LR_10-4'
+  train_fname = 'training_result/caches/cache_S030_v19_commit_???_file10000_tuning_batch16_train_step_0.2M_INIT_LR_10-4'
   txt_data_path ='../../data/S002a/'
   #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)

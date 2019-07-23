@@ -29,7 +29,7 @@ class ModelParameter:
     # (5, same in the paper, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
     NUM_RESIDUAL_BLOCKS = 5
     TRAIN_EMA_DECAY = 0.95
-    WITH_PREDNET = False # True for including both charnet and prednet
+    WITH_PREDNET = True # True for including both charnet and prednet
     
     # Initial learning rate (LR) # paper: 10−4
     INIT_LR = 0.0001  
