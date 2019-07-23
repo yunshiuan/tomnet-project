@@ -182,80 +182,43 @@ class PreferencePredictor(mp.ModelParameter):
     # --------------------------------------------------------------
     # Set up placeholders
     # --------------------------------------------------------------
-    # Create the  placeholders          
-    data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
-                                      shape=[batch_size,\
-                                             self.MAX_TRAJECTORY_SIZE,\
-                                             self.MAZE_HEIGHT,\
-                                             self.MAZE_WIDTH,\
-                                             self.MAZE_DEPTH_TRAJECTORY])
-    # Note that this placeholder will be used only when with_prednet ==True
-    data_query_state_placeholder = tf.placeholder(dtype=tf.float32,\
-                                                  shape=[batch_size,\
-                                                         self.MAZE_HEIGHT,\
-                                                         self.MAZE_WIDTH,\
-                                                         self.MAZE_DEPTH_QUERY_STATE])    
+    # Create the placeholders          
+    data_traj_placeholder = tf.placeholder(dtype = tf.float32,\
+                                           shape = [batch_size,\
+                                                    self.MAX_TRAJECTORY_SIZE,\
+                                                    self.MAZE_HEIGHT,\
+                                                    self.MAZE_WIDTH,\
+                                                    self.MAZE_DEPTH_TRAJECTORY],\
+                                           name = 'data_traj_placeholder')
+    # Note that this placeholder will be used only when with_prednet == True
+    data_query_state_placeholder = tf.placeholder(dtype = tf.float32,\
+                                                  shape = [batch_size,\
+                                                           self.MAZE_HEIGHT,\
+                                                           self.MAZE_WIDTH,\
+                                                           self.MAZE_DEPTH_QUERY_STATE],\
+                                                  name = 'data_query_state_placeholder')    
     # --------------------------------------------------------------
-    # Build the graph
+    # Restore the graph and parameters
+    # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
     # --------------------------------------------------------------
-           
-    if not with_prednet:
-      # --------------------------------------------------------------      
-      # Model with only charnet
-      # -------------------------------------------------------------- 
-      data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
-                                        shape=[batch_size,\
-                                               self.MAX_TRAJECTORY_SIZE,\
-                                               self.MAZE_HEIGHT,\
-                                               self.MAZE_WIDTH,\
-                                               self.MAZE_DEPTH_TRAJECTORY])    
-      charnet = cn.CharNet()
-      logits = charnet.build_charnet(data_traj_placeholder,\
-                                     n=self.NUM_RESIDUAL_BLOCKS,\
-                                     num_classes=self.NUM_CLASS,\
-                                     reuse=True,\
-                                     train=False)
-      # logits = (batch_size, num_classes)
-      predictions = tf.nn.softmax(logits)
-      # predictions = (batch_size, num_classes)
-    else:
-      # --------------------------------------------------------------
-      # Model with both prednet and charnet
-      # --------------------------------------------------------------
-      pdb.set_trace()
-      charnet = cn.CharNet()
-      prednet = pn.PredNet()
-      length_e_char = mp.ModelParameter.LENGTH_E_CHAR
-      # TODO: *** ValueError: No variables to save
-      # http://jermmy.xyz/2017/04/23/2017-4-23-learn-tensorflow-save-restore-model/
-      sess = tf.Session()
-      saver = tf.train.Saver() 
-      saver.restore(sess, self.ckpt_path)
+    # pdb.set_trace()
+    # Restore the graph from the meta graph
+    # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
+    saver = tf.train.import_meta_graph(self.FILE_CKPT+'.meta')
 
-
-      e_char = charnet.build_charnet(input_tensor = data_traj_placeholder,\
-                                     n = self.NUM_RESIDUAL_BLOCKS,\
-                                     num_classes = length_e_char,\
-                                     reuse=True,\
-                                     train=False)  
-      logits = prednet.build_prednet(e_char,\
-                                     data_query_state_placeholder,\
-                                     n=self.NUM_RESIDUAL_BLOCKS,\
-                                     num_classes = self.NUM_CLASS,\
-                                     reuse=True)
-      # logits = (batch_size, num_classes)
-      predictions = tf.nn.softmax(logits)
-      # predictions = (batch_size, num_classes)
-  
-    # --------------------------------------------------------------
-    # Initialize a new session and restore a checkpoint
-    # --------------------------------------------------------------
-    saver = tf.train.Saver(tf.all_variables())
+    # Create a new session and restore the saved parameters from the checkpoint
     sess = tf.Session()
+    saver.restore(sess, self.FILE_CKPT)
+    print('Model restored from ', self.FILE_CKPT)
 
-    saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-    print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-
+    graph = tf.get_default_graph()
+    #predictions_array = (batch_size, num_classes)
+    predictions_array = graph.get_tensor_by_name('train_predictions_array:0')
+    
+    # Inspect variables in a checkpoint
+#      parameters = chkp.print_tensors_in_checkpoint_file(self.FILE_CKPT,\
+#                                                         tensor_name='',\
+#                                                         all_tensors=True)
     # --------------------------------------------------------------      
     # Make softmax predictions batch by batch
     # output: (num_files, num_classes)

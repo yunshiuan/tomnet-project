@@ -93,16 +93,32 @@ class Model(mp.ModelParameter):
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
 
     # For trajectory data and the corresponding labels 
-    self.train_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_TRAJECTORY])
-    self.train_labels_traj_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
-    self.vali_data_traj_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_TRAJECTORY])
-    self.vali_labels_traj_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
+    self.train_data_traj_placeholder = tf.placeholder(dtype = tf.float32,\
+                                                      shape = [self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_TRAJECTORY],\
+                                                      name = 'train_data_traj_placeholder')
+    self.train_labels_traj_placeholder = tf.placeholder(dtype = tf.int32,\
+                                                        shape = [self.BATCH_SIZE_TRAIN],\
+                                                        name = 'train_labels_traj_placeholder')
+    self.vali_data_traj_placeholder = tf.placeholder(dtype = tf.float32,\
+                                                     shape = [self.BATCH_SIZE_VAL, self.MAX_TRAJECTORY_SIZE, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_TRAJECTORY],\
+                                                     name = 'vali_data_traj_placeholder')
+    self.vali_labels_traj_placeholder = tf.placeholder(dtype = tf.int32,\
+                                                       shape = [self.BATCH_SIZE_VAL],\
+                                                       name = 'vali_labels_traj_placeholder')
         
     # For query state data and the cooresponding labels
-    self.train_data_query_state_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_TRAIN, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_QUERY_STATE])
-    self.train_labels_query_state_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_TRAIN])
-    self.vali_data_query_state_placeholder = tf.placeholder(dtype=tf.float32, shape=[self.BATCH_SIZE_VAL, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_QUERY_STATE])
-    self.vali_labels_query_state_placeholder = tf.placeholder(dtype=tf.int32, shape=[self.BATCH_SIZE_VAL])
+    self.train_data_query_state_placeholder = tf.placeholder(dtype = tf.float32,\
+                                                             shape = [self.BATCH_SIZE_TRAIN, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_QUERY_STATE],\
+                                                             name = 'train_data_query_state_placeholder')
+    self.train_labels_query_state_placeholder = tf.placeholder(dtype = tf.int32,\
+                                                               shape = [self.BATCH_SIZE_TRAIN],\
+                                                               name = 'train_labels_query_state_placeholder')
+    self.vali_data_query_state_placeholder = tf.placeholder(dtype = tf.float32,\
+                                                            shape = [self.BATCH_SIZE_VAL, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_QUERY_STATE],\
+                                                            name = 'vali_data_query_state_placeholder')
+    self.vali_labels_query_state_placeholder = tf.placeholder(dtype = tf.int32,\
+                                                              shape = [self.BATCH_SIZE_VAL],\
+                                                              name = 'vali_labels_query_state_placeholder')
 
     # --------------------------------------------------------------
     # Parse the trajectory data and labels
