@@ -210,6 +210,11 @@ class Model(mp.ModelParameter):
       # - Use train=True for batch-wise validation along training to make the error metric
       # - comparable to training error
       vali_logits = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
+      
+      # Define the placeholder for final targets
+      self.train_final_target_placeholder = self.train_labels_traj_placeholder
+      self.vali_final_target_placeholder = self.vali_labels_traj_placeholder
+ 
     else:
       charnet = cn.CharNet()
       prednet = pn.PredNet()
@@ -226,6 +231,10 @@ class Model(mp.ModelParameter):
       # - comparable to training error
       vali_e_char = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=True, train=True)      
       vali_logits = prednet.build_prednet(vali_e_char, self.vali_data_query_state_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes = self.NUM_CLASS, reuse=True )
+      
+      # Define the placeholder for final targets
+      self.train_final_target_placeholder = self.train_labels_query_state_placeholder
+      self.vali_final_target_placeholder = self.vali_labels_query_state_placeholder
       
     # --------------------------------------------------------------
     # Define the regularization operation for training
@@ -247,14 +256,14 @@ class Model(mp.ModelParameter):
     # WARNING: This op expects unscaled logits, 
     # since it performs a softmax on logits internally for efficiency. 
     # Do not call this op with the output of softmax, as it will produce incorrect results.
-    loss = self.loss(logits, self.train_labels_traj_placeholder)
+    loss = self.loss(logits, self.train_final_target_placeholder)
     
     #  tf.add_n: Adds all input tensors element-wise.
     #  - Using sum or + might create many tensors in graph to store intermediate result.
     self.full_loss = tf.add_n([loss] + regu_losses) 
     
     #Validation loss and error
-    self.vali_loss = self.loss(vali_logits, self.vali_labels_traj_placeholder)
+    self.vali_loss = self.loss(vali_logits, self.vali_final_target_placeholder)
 
     # --------------------------------------------------------------
     # Make prediction based on the output of the model
@@ -267,8 +276,8 @@ class Model(mp.ModelParameter):
     # - Note that, by comparison,  the loss function 'def loss(self, logits, labels):'
     # - use the cross entropy loss.
     # --------------------------------------------------------------
-    self.train_top1_error = self.top_k_error(predictions, self.train_labels_traj_placeholder, 1)
-    self.vali_top1_error = self.top_k_error(vali_predictions, self.vali_labels_traj_placeholder, 1)
+    self.train_top1_error = self.top_k_error(predictions, self.train_final_target_placeholder, 1)
+    self.vali_top1_error = self.top_k_error(vali_predictions, self.vali_final_target_placeholder, 1)
 
     # --------------------------------------------------------------
     # Define optimizer
@@ -368,7 +377,7 @@ class Model(mp.ModelParameter):
 #        else:
         _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss],\
                                                                     {self.vali_data_traj_placeholder: vali_batch_data_traj,\
-                                                                     self.vali_labels_traj_placeholder: vali_batch_labels_traj,\
+                                                                     self.vali_final_target_placeholder: vali_batch_labels_traj,\
                                                                      self.vali_data_query_state_placeholder: vali_batch_data_query_state,\
                                                                      self.vali_labels_query_state_placeholder: vali_batch_labels_query_state,\
                                                                      self.lr_placeholder: self.INIT_LR})
@@ -387,9 +396,9 @@ class Model(mp.ModelParameter):
       #                self.full_loss,
       #                self.train_top1_error], 
       #     feed_dict = {self.train_data_traj_placeholder: train_batch_data,
-      #                  self.train_labels_traj_placeholder: train_batch_labels,
+      #                  self.train_final_target_placeholder: train_batch_labels,
       #                  self.vali_data_traj_placeholder: validation_batch_data,
-      #                  self.vali_labels_traj_placeholder: validation_batch_labels,
+      #                  self.vali_final_target_placeholder: validation_batch_labels,
       #                  self.lr_placeholder: self.INIT_LR})
       # Parameters:
       # -----------------------------
@@ -409,7 +418,7 @@ class Model(mp.ModelParameter):
       #             - comes from: self.full_loss = tf.add_n([loss] + regu_losses)
       #         - param: self.train_top1_error: 
       #             def _create_graphs(self):
-      #                self.train_top1_error = self.top_k_error(predictions, self.train_labels_traj_placeholder, 1)
+      #                self.train_top1_error = self.top_k_error(predictions, self.train_final_target_placeholder, 1)
       #                   def top_k_error(self, predictions, labels, k):
       #                        The Top-1 error is the percentage of the time that the classifier 
       #                        did not give the correct class the highest score.
@@ -421,7 +430,7 @@ class Model(mp.ModelParameter):
       # (4) self.train_top1_error
       # - (1) comes from:
       # - def _create_graphs(self):
-      # --- self.train_top1_error = self.top_k_error(predictions, self.train_labels_traj_placeholder, 1)
+      # --- self.train_top1_error = self.top_k_error(predictions, self.train_final_target_placeholder, 1)
       # --- def top_k_error(self, predictions, labels, k):
       # - (2) The Top-1 error is the percentage of the time that the classifier 
       #       did not give the correct class the highest score.
@@ -431,18 +440,18 @@ class Model(mp.ModelParameter):
       # -----------------------------
       # self.train_data_traj_placeholder: train_batch_data
       # - feed in the trajectories of the training batch
-      # self.train_labels_traj_placeholder: train_batch_labels
+      # self.train_final_target_placeholder: train_batch_labels
       # - feed in the labels of the training batch
       # self.vali_data_traj_placeholder: validation_batch_data
       # - feed in the trajectories of the validation batch
-      # self.vali_labels_traj_placeholder: validation_batch_labels
+      # self.vali_final_target_placeholder: validation_batch_labels
       # - feed in the labels of the validation batch
       # self.lr_placeholder: self.INIT_LR
       # - feed in the initial learning rate
       # pdb.set_trace()
       _, _, train_loss_value, train_error_value = sess.run([self.train_op, self.train_ema_op, self.full_loss, self.train_top1_error],\
                                                            {self.train_data_traj_placeholder: train_batch_data_traj,\
-                                                            self.train_labels_traj_placeholder: train_batch_labels_traj,\
+                                                            self.train_final_target_placeholder: train_batch_labels_traj,\
                                                             self.train_data_query_state_placeholder: train_batch_data_query_state,\
                                                             self.train_labels_query_state_placeholder: train_batch_labels_query_state,\
                                                             self.lr_placeholder: self.INIT_LR})
@@ -451,11 +460,11 @@ class Model(mp.ModelParameter):
       if step % self.REPORT_FREQ == 0:
         summary_str = sess.run(summary_op,\
                                {self.train_data_traj_placeholder: train_batch_data_traj,\
-                                self.train_labels_traj_placeholder: train_batch_labels_traj,\
+                                self.train_final_target_placeholder: train_batch_labels_traj,\
                                 self.train_data_query_state_placeholder: train_batch_data_query_state,\
                                 self.train_labels_query_state_placeholder: train_batch_labels_query_state,\
                                 self.vali_data_traj_placeholder: vali_batch_data_traj,\
-                                self.vali_labels_traj_placeholder: vali_batch_labels_traj,\
+                                self.vali_final_target_placeholder: vali_batch_labels_traj,\
                                 self.vali_data_query_state_placeholder: vali_batch_data_query_state,\
                                 self.vali_labels_query_state_placeholder: vali_batch_labels_query_state,\
                                 self.lr_placeholder: self.INIT_LR})
