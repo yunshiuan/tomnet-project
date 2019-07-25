@@ -50,7 +50,7 @@ class Model(mp.ModelParameter):
   SUBSET_SIZE = -1 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 200000
+  TRAIN_STEPS = 10000
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation 

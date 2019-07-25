@@ -25,13 +25,31 @@ See README in it for detail.
 #########################################
 Future training session
 Time: 2019/06/03
-Future training session (v13, commit ???)[At working_model]
+Future training session (v?, commit ???)[At working_model]
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v?_commit_???_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
+
+
+########################################
+
+Current training session (v20, commit ?)[At working_model]
+Time: 2019/07/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v20_commit_?_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
+
+(1) Follow v19 but with less steps.
+(2) Add the train_proportion metric.
+Note:
+(1)
+accurary	mode
+?	train_proportion
+?	vali_proportion
+?	test_proportion
+
 ########################################
 
 Finshed training session (v19, commit 36462b)[At working_model]
