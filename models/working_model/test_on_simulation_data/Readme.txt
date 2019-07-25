@@ -44,11 +44,13 @@ Output file name: /cache_S002a_v20_commit_?_file10000_tuning_batch16_train_step_
 (1) Follow v19 but with less steps.
 (2) Add the train_proportion metric.
 Note:
-(1)
+(1) Seems to be overfitting.
+(2)
 accurary	mode
-?	train_proportion
-?	vali_proportion
-?	test_proportion
+95.12%	train_proportion
+68.25%	vali_proportion
+65.52%	test_proportion
+
 
 ########################################
 
@@ -59,8 +61,8 @@ Output file name: /cache_S002a_v19_commit_36462b_file10000_tuning_batch16_train_
 
 (1) Follow v17 (with prednet) but with more trainig steps.
 Note:
-(2) Seems to be overfitting.
-(1)
+(1) Seems to be overfitting.
+(2)
 accurary	mode
 67.54% 	vali_proportion
 64.72% 	test_proportion
