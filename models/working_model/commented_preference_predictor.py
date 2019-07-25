@@ -40,7 +40,7 @@ class PreferencePredictor(mp.ModelParameter):
   #FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v16_commit_926291_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999'
   DIR_PREDICTION_ROOT = os.getcwd()
   DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-                                                 'data','S002a_1000files')
+                                                 'data','data_simulation','S002a_1000files')
   DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
 #  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
 #                                                  'data','data_for_making_preference_predictions',\
@@ -281,7 +281,7 @@ if __name__ == "__main__":
     tf.reset_default_graph()
     
     preference_predictor = PreferencePredictor()
-    #pdb.set_trace()
+    # pdb.set_trace()
     
     # --------------------------------------------------------------      
     # parse in data for making predictions
@@ -310,10 +310,11 @@ if __name__ == "__main__":
     # output = (num_files, 1)
     # --------------------------------------------------------------      
     pdb.set_trace()
-    data_set_predicted_labels = \
-    preference_predictor.predict_whole_data_set_final_targets(files_prediction_trajectory,\
-                                                              prediction_data_trajectory,\
-                                                              prediction_data_query_state,\
+    preference_score, data_set_predicted_labels, data_set_ground_truth_labels = \
+    preference_predictor.predict_whole_data_set_final_targets(files_prediction = files_prediction_trajectory,\
+                                                              data_traj = prediction_data_trajectory,\
+                                                              data_query_state = prediction_data_query_state,\
+                                                              final_target_ground_truth_labels = final_target_ground_truth_labels,\
                                                               batch_size = preference_predictor.BATCH_SIZE_PREDICT,\
                                                               with_prednet = preference_predictor.WITH_PREDNET)
     pdb.set_trace()
