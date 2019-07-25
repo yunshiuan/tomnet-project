@@ -36,7 +36,7 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   BATCH_SIZE_PREDICT = 5
   SUBSET_SIZE = 100
-  FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/train/model.ckpt-49'
+  FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/train/model.ckpt-49'
   #FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v16_commit_926291_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999'
   DIR_PREDICTION_ROOT = os.getcwd()
   DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
@@ -270,7 +270,7 @@ class PreferencePredictor(mp.ModelParameter):
     # Make predictions based on the softmax output:
     # (num_files, num_classes) -> (num_files, 1)
     # --------------------------------------------------------------     
-    # pdb.set_trace()
+    pdb.set_trace()
     data_set_predicted_labels = np.argmax(data_set_prediction_array, 1)
     
     # --------------------------------------------------------------      
@@ -280,17 +280,23 @@ class PreferencePredictor(mp.ModelParameter):
     preference_frequency = np.argmax(data_set_prediction_array, 0)
     preference_score = np.round(preference_frequency/np.sum(preference_frequency), 2)
     
+    # --------------------------------------------------------------      
+    # Set ground truth labels as final target labels:
+    # --------------------------------------------------------------      
 
+    data_set_ground_truth_labels = final_target_ground_truth_labels
     return  preference_score, data_set_predicted_labels, data_set_ground_truth_labels
     
       
 if __name__ == "__main__":
     # reseting the graph is necessary for running the script via spyder or other
     # ipython intepreter
+    # pdb.set_trace()
+
     tf.reset_default_graph()
     
     preference_predictor = PreferencePredictor()
-    pdb.set_trace()
+    # pdb.set_trace()
     
     # --------------------------------------------------------------      
     # parse in data for making predictions
@@ -327,7 +333,7 @@ if __name__ == "__main__":
     # data_set_predicted_labels = (num_files, 1)
     # data_set_ground_truth_labels = (num_files, 1)
     # --------------------------------------------------------------      
-    # pdb.set_trace()
+    pdb.set_trace()
     preference_score, data_set_predicted_labels, data_set_ground_truth_labels = \
     preference_predictor.predict_whole_data_set_final_targets(files_prediction = files_prediction_trajectory,\
                                                               data_traj = prediction_data_trajectory,\
