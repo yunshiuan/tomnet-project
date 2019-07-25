@@ -36,7 +36,7 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   BATCH_SIZE_PREDICT = 5
   SUBSET_SIZE = 100
-  FILE_CKPT = 'training_result/caches/cache_S030_v16_commit_???_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-49'
+  FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v19_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/train/model.ckpt-49'
   #FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v16_commit_926291_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999'
   DIR_PREDICTION_ROOT = os.getcwd()
   DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
@@ -263,16 +263,18 @@ class PreferencePredictor(mp.ModelParameter):
     # Make predictions based on the softmax output:
     # (num_files, num_classes) -> (num_files, 1)
     # --------------------------------------------------------------     
-    pdb.set_trace()
-    data_set_predicted_labels = np.argmax(data_set_prediction_array,1)
+    # pdb.set_trace()
+    data_set_predicted_labels = np.argmax(data_set_prediction_array, 1)
     
     # --------------------------------------------------------------      
     # Make predictions about the preference ranking:
     # (num_files, num_classes) -> (num_classes, 1)
     # --------------------------------------------------------------  
-    preference_ranking = np.argmax(data_set_prediction_array,1)
-
-    return  preference_ranking, data_set_predicted_labels, ground_truth_labels
+    preference_ranking = np.argmax(data_set_prediction_array, 0)
+    preference_ranking = preference_ranking.argsort()
+    pdb.set_trace()
+    # TODO
+    return  preference_ranking, data_set_predicted_labels, data_set_ground_truth_labels
     
       
 if __name__ == "__main__":

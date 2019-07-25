@@ -42,16 +42,17 @@ class Model(mp.ModelParameter):
   # Constant: Training parameters
   # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
-  BATCH_SIZE_VAL = 16 # size of the batch for validation
-  BATCH_SIZE_TEST = 16 # size of batch for testing
+  BATCH_SIZE = 5
+  BATCH_SIZE_TRAIN = BATCH_SIZE # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE_VAL = BATCH_SIZE # size of the batch for validation
+  BATCH_SIZE_TEST = BATCH_SIZE # size of batch for testing
   
   # for testing on a GPU machine with 10000 files  
-  SUBSET_SIZE = -1 # use all files
+  SUBSET_SIZE = 100 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 10000
-  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
+  TRAIN_STEPS = 50
+  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
