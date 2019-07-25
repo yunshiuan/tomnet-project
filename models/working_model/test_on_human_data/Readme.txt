@@ -29,20 +29,22 @@ data path:
 
 #########################################
 
-Future training session (v9, commit ???) 
-Time: 2019/0?/?
+Future training session (v9, commit 78092b) 
+Time: 2019/07/25
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v?_commit_???_file?_tuning_batch16_train_step_10K_INIT_LR_10-5
+Output file name: /cache_S030_v9_commit_78092b_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4
 
 (1) Use the model as in 'working_model (simulation, v20').
 Note
-(1)
+(1) A bit overfitting.
+(2)
 accurary	mode
-%	vali_proportion
-%	test_proportion
+97.51%	train_proportion
+75.0%	vali_proportion
+73.26%	test_proportion
 -----------------------------------------
 Current training session (v8, commit 0c7df5) [At working_model/human_data]
-Time: 2019/0?/?
+Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v8_commit_0c7df5_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
