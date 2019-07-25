@@ -29,13 +29,17 @@ data path:
 
 #########################################
 
-Future training session (v?, commit ???) [At working_model/human_data]
+Future training session (v9, commit ???) 
 Time: 2019/0?/?
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v?_commit_???_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v?_commit_???_file?_tuning_batch16_train_step_10K_INIT_LR_10-5
 
-(1) Add predict_ranking() function to the commented_data_handler.py for making predictions on target preference ranking.
-
+(1) Use the model as in 'working_model (simulation, v20').
+Note
+(1)
+accurary	mode
+%	vali_proportion
+%	test_proportion
 -----------------------------------------
 Current training session (v8, commit 0c7df5) [At working_model/human_data]
 Time: 2019/0?/?
@@ -55,7 +59,7 @@ accurary	mode
 Finished training session (v7, commit 0050d9) [At working_model/human_data]
 Time: 2019/05/22
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v7_commit_0050d9_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
+Output file name: /cache_S002a_v7_commit_0050d9_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-4
 
 (1) Remove the scripts in this folder.
 (2) Use the scripts in 'sandbox/temporary' and set the output to here. 
