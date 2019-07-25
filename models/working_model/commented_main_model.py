@@ -63,10 +63,15 @@ class Model(mp.ModelParameter):
   # Variable: Training parameters
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
-  train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
-  txt_data_path ='../../data/S002a/'
-  #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
+  # for simulation data
+  # ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
+  # train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
+  # txt_data_path ='../../data/S002a/'
+  # for human data 
+  ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
+  train_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
+  txt_data_path ='../../data/data_human/processed/S030/'
+
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
   txt_data_path = os.path.join(path_mode,txt_data_path)
