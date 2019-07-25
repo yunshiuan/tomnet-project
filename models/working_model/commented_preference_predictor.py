@@ -8,9 +8,10 @@ model.
 @author: Chuang, Yun-Shiuan
 """
 import os
-import argparse
 import tensorflow as tf
 import numpy as np
+import pandas as pd
+
 #from tensorflow.python.tools import inspect_checkpoint as chkp
 
 #import numpy as np
@@ -50,9 +51,45 @@ class PreferencePredictor(mp.ModelParameter):
   def __init__(self):
     pass  
   
+  def parse_prediction_data_whole_data_set(self):
+    '''
+    This encapsulated function wil parse all the prediction files in the directory and 
+    return both the tensors, labels file names of corresponding 
+    trajectories and query states.
+    
+    '''
+    # --------------------------------------------------------------      
+    # parse in data for making predictions
+    # --------------------------------------------------------------  
+    # parse trajectory data
+    self.prediction_data_trajectory, self.prediction_data_ground_truth_labels_traj, self.files_prediction_trajectory = \
+    preference_predictor.parse_prediction_data_trajectory(directory = preference_predictor.DIR_PREDICTION_DATA_TRAJECTORY,\
+                                                          subset_size = preference_predictor.SUBSET_SIZE)
+
+    if self.WITH_PREDNET:      
+      # --------------------------------------------------------------      
+      # model with both charnet and prednet
+      # --------------------------------------------------------------  
+      # parse query state data      
+      self.prediction_data_query_state, self.prediction_data_ground_truth_labels_query_state, self.files_prediction_query_state = \
+      preference_predictor.parse_prediction_data_query_state(directory = preference_predictor.DIR_PREDICTION_DATA_QUERY_STATE,\
+                                                             subset_size = preference_predictor.SUBSET_SIZE)
+      
+      # ground truth labels for the final targets
+      self.final_target_ground_truth_labels = self.prediction_data_ground_truth_labels_query_state
+      
+    else:
+      # --------------------------------------------------------------      
+      # model with only charnet
+      # -------------------------------------------------------------- 
+      self.prediction_data_query_state = np.full((len(self.prediction_data_query_state),),\
+                                                 np.nan)  
+      # ground truth labels for the final targets
+      self.final_target_ground_truth_labels = self.prediction_data_ground_truth_labels_traj
+
   def parse_prediction_data_trajectory(self, directory, subset_size = -1):
     '''
-    This function wil parse all the prediction files in the directoy and return 
+    This function wil parse all the prediction files in the directory and return 
     the corresponding trajectories.
     
     Args:
@@ -73,7 +110,7 @@ class PreferencePredictor(mp.ModelParameter):
     '''
     prediction_data_trajectory, prediction_data_ground_truth_labels_traj,\
     files_prediction_trajectory = \
-    self.parse_prediction_data(directory,\
+    self.parse_prediction_data_subset(directory,\
                                parse_query_state = False,\
                                subset_size = subset_size)
     
@@ -81,7 +118,7 @@ class PreferencePredictor(mp.ModelParameter):
   
   def parse_prediction_data_query_state(self, directory, subset_size = -1):
     '''
-    This function wil parse all the prediction files in the directoy and return 
+    This function wil parse all the prediction files in the directory and return 
     the corresponding query states.
     
     Args:
@@ -102,16 +139,17 @@ class PreferencePredictor(mp.ModelParameter):
     '''
     prediction_data_query_state, prediction_data_ground_truth_labels_query_state,\
     files_prediction_query_state = \
-    self.parse_prediction_data(directory,\
+    self.parse_prediction_data_subset(directory,\
                                parse_query_state = True,\
                                subset_size = subset_size)
     
     return prediction_data_query_state, prediction_data_ground_truth_labels_query_state, files_prediction_query_state
   
-  def parse_prediction_data(self, directory, parse_query_state, subset_size):
+  def parse_prediction_data_subset(self, directory, parse_query_state, subset_size):
     '''
-    This function wil parse all the prediction files in the directoy and return 
-    the corresponding tensors (no need to return labels).
+    This function wil parse either the trajectory-type prediction files
+    or the query-state-type prediction files in the directory and 
+    return the corresponding tensors.
     
     Args:
       :param directory: 
@@ -139,6 +177,7 @@ class PreferencePredictor(mp.ModelParameter):
     '''
     # --------------------------------------
     # List all txt files to be parsed
+    # - input for data_handler.parse_subset()
     # --------------------------------------
     data_handler = dh.DataHandler()
     files_prediction = data_handler.list_txt_files(directory) 
@@ -161,6 +200,18 @@ class PreferencePredictor(mp.ModelParameter):
                                                    files_prediction,\
                                                    parse_query_state = parse_query_state)
     return prediction_data, ground_truth_labels, files_prediction
+  
+  def predict_preferences(self):
+    '''
+    The encapusulated function of predict_whole_data_set_final_targets()
+    '''
+    self.preference_score, self.data_set_predicted_labels, self.data_set_ground_truth_labels = \
+    self.predict_whole_data_set_final_targets(files_prediction = self.files_prediction_trajectory,\
+                                                              data_traj = self.prediction_data_trajectory,\
+                                                              data_query_state = self.prediction_data_query_state,\
+                                                              final_target_ground_truth_labels = self.final_target_ground_truth_labels,\
+                                                              batch_size = self.BATCH_SIZE_PREDICT,\
+                                                              with_prednet = self.WITH_PREDNET)
   
   def predict_whole_data_set_final_targets(self, files_prediction, data_traj, data_query_state, final_target_ground_truth_labels, batch_size, with_prednet):
     '''
@@ -196,7 +247,7 @@ class PreferencePredictor(mp.ModelParameter):
       :data_set_ground_truth_labels:  
         an array of ground truth labels for the input data (num_files, 1).
     '''
-    pdb.set_trace()
+    # pdb.set_trace()
     # Number of files for making predictions
     num_files_prediction = len(files_prediction)
     num_batches = num_files_prediction // batch_size
@@ -270,7 +321,7 @@ class PreferencePredictor(mp.ModelParameter):
     # Make predictions based on the softmax output:
     # (num_files, num_classes) -> (num_files, 1)
     # --------------------------------------------------------------     
-    pdb.set_trace()
+    # pdb.set_trace()
     data_set_predicted_labels = np.argmax(data_set_prediction_array, 1)
     
     # --------------------------------------------------------------      
@@ -297,52 +348,22 @@ if __name__ == "__main__":
     
     preference_predictor = PreferencePredictor()
     # pdb.set_trace()
-    
     # --------------------------------------------------------------      
-    # parse in data for making predictions
-    # --------------------------------------------------------------  
-    # parse trajectory data
-    prediction_data_trajectory, prediction_data_ground_truth_labels_traj, files_prediction_trajectory = \
-    preference_predictor.parse_prediction_data_trajectory(directory = preference_predictor.DIR_PREDICTION_DATA_TRAJECTORY,\
-                                                          subset_size = preference_predictor.SUBSET_SIZE)
-
-    if preference_predictor.WITH_PREDNET:      
-      # --------------------------------------------------------------      
-      # model with both charnet and prednet
-      # --------------------------------------------------------------  
-      # parse query state data      
-      prediction_data_query_state, prediction_data_ground_truth_labels_query_state, files_prediction_query_state = \
-      preference_predictor.parse_prediction_data_query_state(directory = preference_predictor.DIR_PREDICTION_DATA_QUERY_STATE,\
-                                                             subset_size = preference_predictor.SUBSET_SIZE)
-      
-      # ground truth labels for the final targets
-      final_target_ground_truth_labels = prediction_data_ground_truth_labels_query_state
-      
-    else:
-      # --------------------------------------------------------------      
-      # model with only charnet
-      # -------------------------------------------------------------- 
-      prediction_data_query_state = np.full((len(files_prediction_trajectory),),\
-                                             np.nan)  
-      # ground truth labels for the final targets
-      final_target_ground_truth_labels = prediction_data_ground_truth_labels_traj
- 
+    # parse data and files
+    # --------------------------------------------------------------      
+    preference_predictor.parse_prediction_data_whole_data_set()
+    
     # --------------------------------------------------------------      
     # make predictions
     # preference_score = (num_classes, 1)
     # data_set_predicted_labels = (num_files, 1)
     # data_set_ground_truth_labels = (num_files, 1)
     # --------------------------------------------------------------      
-    pdb.set_trace()
-    preference_score, data_set_predicted_labels, data_set_ground_truth_labels = \
-    preference_predictor.predict_whole_data_set_final_targets(files_prediction = files_prediction_trajectory,\
-                                                              data_traj = prediction_data_trajectory,\
-                                                              data_query_state = prediction_data_query_state,\
-                                                              final_target_ground_truth_labels = final_target_ground_truth_labels,\
-                                                              batch_size = preference_predictor.BATCH_SIZE_PREDICT,\
-                                                              with_prednet = preference_predictor.WITH_PREDNET)
-    pdb.set_trace()
+    # pdb.set_trace()
+    preference_predictor.predict_preferences()
     
+    # pdb.set_trace()
+ 
     # --------------------------------------------------------------      
     # Save predictions
     # output = (num_files, 1)
