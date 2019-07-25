@@ -32,7 +32,6 @@ Output file name: /cache_S002a_v14_commit_???_epoch8000_tuning_batch16_train_ste
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
-(3) Add 'train_proportion' performance metric
 ########################################
 
 Finshed training session (v19, commit 36462b)[At working_model]

@@ -63,8 +63,8 @@ class Model(mp.ModelParameter):
   # Variable: Training parameters
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
-  ckpt_fname = 'training_result/caches/cache_S030_v19_commit_???_file10000_tuning_batch16_train_step_0.2M_INIT_LR_10-4'
-  train_fname = 'training_result/caches/cache_S030_v19_commit_???_file10000_tuning_batch16_train_step_0.2M_INIT_LR_10-4'
+  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S030_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
+  train_fname = 'test_on_simulation_data/training_result/caches/cache_S030_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
   txt_data_path ='../../data/S002a/'
   #txt_data_path = os.getcwd() + '/test_on_human_data/data/processed/S030/'
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
@@ -501,9 +501,15 @@ class Model(mp.ModelParameter):
 
   def test(self):
     '''
-    This function is used to evaluate the validation and test data. Please finish pre-precessing in advance
+    This function is used to evaluate the model based on traing, validation and test data.
+    Please finish pre-precessing in advance
     It will write a csv file with both validation and test perforance.
     '''
+    # --------------------------------------------------------------
+    # Evaluate the model on the training set
+    # --------------------------------------------------------------
+    # pdb.set_trace()
+    df_train_all = self.evaluate_on_training_set()
 
     # --------------------------------------------------------------
     # Evaluate the model on the whole validation set
@@ -522,13 +528,13 @@ class Model(mp.ModelParameter):
     # Combine all dfs into one
     # -------------------------------------------------------------- 
     #pdb.set_trace()
-
-    df_vali_and_test = df_vali_all.append(df_test_all)
+    df_train_and_vali = df_train_all.append(df_vali_all)
+    df_train_vali_and_test = df_train_and_vali.append(df_test_all)
     
-    df_vali_and_test.to_csv(self.train_path + '_test_and_validation_accuracy.csv')
+    df_train_vali_and_test.to_csv(self.train_path + '_train_test_and_validation_accuracy.csv')
 
-    return df_vali_and_test
-
+    return df_train_vali_and_test
+      
   def evaluate_on_test_set(self):
       '''
       Evaluate a model with the test data (instead of a single batch).
@@ -559,7 +565,6 @@ class Model(mp.ModelParameter):
       Returns:
         :df_accuracy_all: a dataframe with model accuracy.
       '''
-      #TODO
       df_accuracy_all = self.evaluate_whole_data_set(files_traj = self.vali_files_traj,\
                                                      data_traj = self.vali_data_traj,\
                                                      labels_traj= self.vali_labels_traj,\
@@ -567,6 +572,27 @@ class Model(mp.ModelParameter):
                                                      labels_query_state = self.vali_labels_query_state,\
                                                      batch_size = self.BATCH_SIZE_VAL,\
                                                      mode = 'vali',
+                                                     with_prednet = self.WITH_PREDNET)
+      
+      return df_accuracy_all
+    
+  def evaluate_on_training_set(self):
+      '''
+      Evaluate a model with the training data (instead of a single batch).
+      It will evaluate the data batch-by-batch and summarize the performance.
+      It will return a dataframe with model accuracy.
+      
+      Returns:
+        :df_accuracy_all: a dataframe with model accuracy.
+      '''
+  
+      df_accuracy_all = self.evaluate_whole_data_set(files_traj = self.train_files_traj,\
+                                                     data_traj = self.train_data_traj,\
+                                                     labels_traj= self.train_labels_traj,\
+                                                     data_query_state = self.train_data_query_state,\
+                                                     labels_query_state = self.train_labels_query_state,\
+                                                     batch_size = self.BATCH_SIZE_TRAIN,\
+                                                     mode = 'train',
                                                      with_prednet = self.WITH_PREDNET)
       
       return df_accuracy_all
@@ -640,11 +666,12 @@ class Model(mp.ModelParameter):
         # Build the graph
         # --------------------------------------------------------------
         charnet = cn.CharNet()
+        # train=False -> Not dropout for LSTM
         logits = charnet.build_charnet(data_traj_placeholder,\
                                        n=self.NUM_RESIDUAL_BLOCKS,\
                                        num_classes=self.NUM_CLASS,\
                                        reuse=True,\
-                                       train=False)
+                                       train=False) 
         # logits = (batch_size, num_classes)
         predictions = tf.nn.softmax(logits)
         # predictions = (batch_size, num_classes)
@@ -714,6 +741,8 @@ class Model(mp.ModelParameter):
         charnet = cn.CharNet()
         prednet = pn.PredNet()
         length_e_char = mp.ModelParameter.LENGTH_E_CHAR
+        
+        # train=False -> Not dropout for LSTM
         e_char = charnet.build_charnet(input_tensor = data_traj_placeholder,\
                                        n = self.NUM_RESIDUAL_BLOCKS,\
                                        num_classes = length_e_char,\
