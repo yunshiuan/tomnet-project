@@ -16,6 +16,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import pandas as pd
+from sklearn.utils import shuffle
 
 #from tensorflow.python.tools import inspect_checkpoint as chkp
 
@@ -42,7 +43,7 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   # param
   BATCH_SIZE_PREDICT = 16
-  SUBSET_SIZE = 160
+  SUBSET_SIZE = -1
   BREAK_CORRESPONDENCE = True # This should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
   
   # dir
@@ -164,11 +165,15 @@ class PreferencePredictor(mp.ModelParameter):
                                parse_query_state = True,\
                                subset_size = subset_size)
     if break_correspondence:
-      np.random.seed(1) # Make the result reproducible
-      np.random.shuffle(prediction_data_query_state)
-      np.random.shuffle(prediction_data_ground_truth_labels_query_state)
-      np.random.shuffle(files_total_query_state)
-      pdb.set_trace()
+      # random_state = 0 -> Make the result reproducible
+      prediction_data_query_state,\
+      prediction_data_ground_truth_labels_query_state,\
+      files_total_query_state = \
+      shuffle(prediction_data_query_state,\
+              prediction_data_ground_truth_labels_query_state,\
+              files_total_query_state,\
+              random_state = 0)
+      # pdb.set_trace()
 
     return prediction_data_query_state, prediction_data_ground_truth_labels_query_state, files_total_query_state
   
@@ -518,6 +523,8 @@ if __name__ == "__main__":
     # Save predictions
     # -------------------------------------------------------------- 
     preference_predictor.save_predictions()
+    # pdb.set_trace()
+
 
 
 
