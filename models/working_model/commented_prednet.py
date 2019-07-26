@@ -27,11 +27,12 @@ we make three predictions:
 
 
 import tensorflow as tf
-import numpy as np
+# import numpy as np
 #from tensorflow.contrib import rnn
 import commented_nn_layers as nnl
 # For debugging
 import pdb
+
 class PredNet(nnl.NeuralNetLayers): 
   
   def __init__(self):
