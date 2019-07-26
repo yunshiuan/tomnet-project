@@ -8,7 +8,7 @@ model.
 Note that the input data should be carefully designed so that
 all targets are of the same distance to the agent. By doing this,
 the physical distance will be cancelled out and the social distance will
-be the only remaining factor. Thus, the 'prediction frequency' will 
+be the only remaining factor. Thus, the 'prediction proportion' will 
 equal to 'preference score'.
 @author: Chuang, Yun-Shiuan
 """
@@ -220,7 +220,8 @@ class PreferencePredictor(mp.ModelParameter):
     '''
     The encapusulated function of predict_whole_data_set_final_targets()
     '''
-    self.prediction_frequency, self.ground_truth_label_frequency,\
+    self.prediction_proportion, self.ground_truth_label_proportion,\
+    self.prediction_count, self.ground_truth_label_count,\
     self.data_set_predicted_labels, self.data_set_ground_truth_labels,\
     self.files_prediction_traj, self.files_prediction_query_state= \
     self.predict_whole_data_set_final_targets(files_total_traj = self.files_total_traj,\
@@ -262,10 +263,14 @@ class PreferencePredictor(mp.ModelParameter):
         If `with_prednet = False`, then construct the partial model including
         only the charnet.        
     Returns:
-      :prediction_frequency:
+      :prediction_proportion:
         an array of the frequncey of predictions (num_classes, 1).      
-      :ground_truth_label_frequency:
+      :ground_truth_label_proportion:
         an array of the frequncey of ground truth labels (num_classes, 1).      
+      :prediction_count:
+        an array of the count of predictions (num_classes, 1).      
+      :ground_truth_label_count:
+        an array of the count of predictions (num_classes, 1).              
       :data_set_predicted_labels:
         an array of predictions for the input data (num_batch * batch_size, 1).
         Note that (num_batch * batch_size) might not equal to num_files
@@ -343,7 +348,7 @@ class PreferencePredictor(mp.ModelParameter):
     # (num_files, num_classes) -> (num_classes, 1)
     # --------------------------------------------------------------  
     prediction_count = np.argmax(data_set_prediction_array, 0)
-    prediction_frequency = np.round(prediction_count/np.sum(prediction_count), 2)
+    prediction_proportion = np.round(prediction_count/np.sum(prediction_count), 2)
     
     # --------------------------------------------------------------      
     # Set ground truth labels as final target labels:
@@ -357,7 +362,7 @@ class PreferencePredictor(mp.ModelParameter):
     # --------------------------------------------------------------  
     # pdb.set_trace()
     ground_truth_label_count = np.unique(data_set_ground_truth_labels,return_counts=True)[1]
-    ground_truth_label_frequency = np.round(ground_truth_label_count/np.sum(ground_truth_label_count), 2)
+    ground_truth_label_proportion = np.round(ground_truth_label_count/np.sum(ground_truth_label_count), 2)
      
     # --------------------------------------------------------------      
     # Return the files used for making predictions
@@ -365,12 +370,12 @@ class PreferencePredictor(mp.ModelParameter):
     # --------------------------------------------------------------      
     files_prediction_traj = files_total_traj[0:num_files_prediction]
     files_prediction_query_state = files_total_query_state[0:num_files_prediction]
-    return  prediction_frequency, ground_truth_label_frequency, data_set_predicted_labels, data_set_ground_truth_labels, files_prediction_traj, files_prediction_query_state
+    
+    return  prediction_proportion, ground_truth_label_proportion, prediction_count, ground_truth_label_count, data_set_predicted_labels, data_set_ground_truth_labels, files_prediction_traj, files_prediction_query_state
   
   def restore_graph(self):
     '''
     Restore the graph and parameters from a checkpoint.    
-
            
     Returns:
       :graph:
@@ -426,13 +431,13 @@ class PreferencePredictor(mp.ModelParameter):
   def save_predictions(self):
     '''
     The encapusulated function to save the predictions, including
-      (1) prediction_frequency (num_classes, 1)
+      (1) prediction_proportion (num_classes, 1)
       (2) data_set_predicted_labels (num_files, 1)
       (3) data_set_ground_truth_labels (num_files, 1)
     
     output:
       (1) final_target_predictions.csv
-      (2) frequency_prediction_and_ground_truth_labels.csv
+      (2) proportion_prediction_and_ground_truth_labels.csv
     ''' 
     # pdb.set_trace()
 
@@ -440,14 +445,23 @@ class PreferencePredictor(mp.ModelParameter):
     # collect the predictions
     # --------------------------------------------------------------      
     # the predictions about the final targets
+    correctness = np.equal(self.data_set_ground_truth_labels,\
+                           self.data_set_predicted_labels)
+
     df_final_target_predictions = pd.DataFrame(data = {'files_trajectory': self.files_prediction_traj,\
                                                        'files_query_state': self.files_prediction_query_state,\
                                                        'final_target_ground_truth_labels': self.data_set_ground_truth_labels,\
-                                                       'final_target_predicted_labels': self.data_set_predicted_labels})
+                                                       'final_target_predicted_labels': self.data_set_predicted_labels,\
+                                                       'correctness': correctness.astype(int)})
     # the frequncey of predictions the ground truth labels for each target
-    df_frequency_prediction_and_ground_truth_labels = pd.DataFrame(data = {'targets': range(0,4),\
-                                                                           'ground_truth_label_frequency':self.ground_truth_label_frequency,\
-                                                                           'prediction_frequency': self.prediction_frequency})
+    # pdb.set_trace()
+    df_proportion_prediction_and_ground_truth_labels = pd.DataFrame(data = {'targets': range(0,4),\
+                                                                           'ground_truth_label_proportion':self.ground_truth_label_proportion,\
+                                                                           'prediction_proportion': self.prediction_proportion,\
+                                                                           'ground_truth_label_count':self.ground_truth_label_count,\
+                                                                           'prediction_count': self.prediction_count,\
+                                                                           'accuracy_data_set': np.round((sum(correctness)/len(correctness))*100,2)
+                                                                           })
     # --------------------------------------------------------------      
     # write csv files
     # -------------------------------------------------------------- 
@@ -457,10 +471,10 @@ class PreferencePredictor(mp.ModelParameter):
     df_final_target_predictions.to_csv(file_name_final_target_predictions)
     
     # the frequncey of predictions the ground truth labels for each target
-    file_name_frequency_prediction_and_ground_truth_labels =\
+    file_name_proportion_prediction_and_ground_truth_labels =\
     os.path.join(self.DIR_MODEL_PREDICTION_RESULT,\
-                 'frequency_prediction_and_ground_truth_labels.csv')
-    df_frequency_prediction_and_ground_truth_labels.to_csv(file_name_frequency_prediction_and_ground_truth_labels)
+                 'proportion_prediction_and_ground_truth_labels.csv')
+    df_proportion_prediction_and_ground_truth_labels.to_csv(file_name_proportion_prediction_and_ground_truth_labels)
 
       
 if __name__ == "__main__":
@@ -479,7 +493,7 @@ if __name__ == "__main__":
     
     # --------------------------------------------------------------      
     # make predictions
-    # prediction_frequency = (num_classes, 1)
+    # prediction_proportion = (num_classes, 1)
     # data_set_predicted_labels = (num_files, 1)
     # data_set_ground_truth_labels = (num_files, 1)
     # --------------------------------------------------------------      
