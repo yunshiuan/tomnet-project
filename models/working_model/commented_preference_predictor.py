@@ -42,8 +42,9 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   # param
   BATCH_SIZE_PREDICT = 16
-  SUBSET_SIZE = -1
-
+  SUBSET_SIZE = 160
+  BREAK_CORRESPONDENCE = True # This should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
+  
   # dir
   DIR_PREDICTION_ROOT = os.getcwd() # the script dir
   DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
@@ -71,7 +72,6 @@ class PreferencePredictor(mp.ModelParameter):
     This encapsulated function wil parse all the prediction files in the directory and 
     return both the tensors, labels file names of corresponding 
     trajectories and query states.
-    
     '''
     # --------------------------------------------------------------      
     # parse in data for making predictions
@@ -88,11 +88,11 @@ class PreferencePredictor(mp.ModelParameter):
       # parse query state data      
       self.prediction_data_query_state, self.prediction_data_ground_truth_labels_query_state, self.files_total_query_state = \
       preference_predictor.parse_prediction_data_query_state(directory = preference_predictor.DIR_PREDICTION_DATA_QUERY_STATE,\
-                                                             subset_size = preference_predictor.SUBSET_SIZE)
-      
+                                                             subset_size = preference_predictor.SUBSET_SIZE,\
+                                                             break_correspondence = preference_predictor.BREAK_CORRESPONDENCE)         
       # ground truth labels for the final targets
       self.final_target_ground_truth_labels = self.prediction_data_ground_truth_labels_query_state
-      
+        
     else:
       # --------------------------------------------------------------      
       # model with only charnet
@@ -131,7 +131,7 @@ class PreferencePredictor(mp.ModelParameter):
     
     return prediction_data_trajectory, prediction_data_ground_truth_labels_traj, files_total_traj
   
-  def parse_prediction_data_query_state(self, directory, subset_size = -1):
+  def parse_prediction_data_query_state(self, directory, subset_size = -1, break_correspondence = False):
     '''
     This function wil parse all the prediction files in the directory and return 
     the corresponding query states.
@@ -142,6 +142,12 @@ class PreferencePredictor(mp.ModelParameter):
       :param subset_size: The size of the subset (number of files) to be parsed.  
         Default to the special number -1, which means using all the files in  
         the directory. When testing the code, this could help reducing the parsing time.   
+      :param break_correspondence:
+        Whether or not to break the correspondence between trajectory files and
+        query state files. This should be True when using the same set of files
+        for both trajectory and query state data to avoid overestimating the
+        accuracy. If `break_correspondence = True`, the query state data
+        will be shuffled randomly. (Default as False)
     
     Returns: 
       :prediction_data_query_state:  
@@ -157,7 +163,13 @@ class PreferencePredictor(mp.ModelParameter):
     self.parse_prediction_data_subset(directory,\
                                parse_query_state = True,\
                                subset_size = subset_size)
-    
+    if break_correspondence:
+      np.random.seed(1) # Make the result reproducible
+      np.random.shuffle(prediction_data_query_state)
+      np.random.shuffle(prediction_data_ground_truth_labels_query_state)
+      np.random.shuffle(files_total_query_state)
+      pdb.set_trace()
+
     return prediction_data_query_state, prediction_data_ground_truth_labels_query_state, files_total_query_state
   
   def parse_prediction_data_subset(self, directory, parse_query_state, subset_size):

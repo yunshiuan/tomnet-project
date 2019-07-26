@@ -650,9 +650,10 @@ class Model(mp.ModelParameter):
 
       if with_prednet:
         # --------------------------------------------------------------      
-        # Break the correspondence bewteem files_query_state and files_trajectory
-        # for the model with both charnet and prednet.
-        # Otherwise, the performance would be overestimated
+        # Reverse the query state data to break the correspondence 
+        # between files_query_state and files_trajectory (when using the same
+        # set of files) for the model with both charnet and prednet.
+        # Otherwise, the performance would be overestimated.
         # -------------------------------------------------------------- 
         # pdb.set_trace()
         data_query_state = np.flip(data_query_state, 0)
