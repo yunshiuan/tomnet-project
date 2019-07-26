@@ -500,7 +500,8 @@ class Model(mp.ModelParameter):
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
 
-          df = pd.DataFrame(data={'step':step_list, 'train_error':train_error_list,
+          df = pd.DataFrame(data={'step':step_list,\
+                                  'train_error':train_error_list,\
                                   'validation_error': val_error_list})
           # overwrite the csv
           df.to_csv(self.train_path + '_error.csv')

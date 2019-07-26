@@ -5,6 +5,11 @@ class PreferencePredictor:
 
 The class for making preference prediction based on a previously trained
 model.
+Note that the input data should be carefully designed so that
+all targets are of the same distance to the agent. By doing this,
+the physical distance will be cancelled out and the social distance will
+be the only remaining factor. Thus, the 'prediction frequency' will 
+equal to 'preference score'.
 @author: Chuang, Yun-Shiuan
 """
 import os
@@ -35,18 +40,24 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   # Constant: For making predictions
   # --------------------------------------
+  # param
   BATCH_SIZE_PREDICT = 5
   SUBSET_SIZE = 100
-  FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/train/model.ckpt-49'
-  #FILE_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v16_commit_926291_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999'
-  DIR_PREDICTION_ROOT = os.getcwd()
+
+  # dir
+  DIR_PREDICTION_ROOT = os.getcwd() # the script dir
   DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
                                                  'data','data_simulation','S002a_1000files')
   DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
 #  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
 #                                                  'data','data_for_making_preference_predictions',\
 #                                                  'query_state')
-  DIR_PREDICTION_RESULT = os.path.join(DIR_PREDICTION_ROOT,'test_on_human_data')
+  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4/'
+  DIR_MODEL_PREDICTION_RESULT = os.path.join(DIR_MODEL,'prediction')
+
+  # file
+  FILE_MODEL_CKPT = os.path.join(DIR_MODEL,'train','model.ckpt-49')
+  #FILE_MODEL_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v16_commit_926291_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999'
 
   def __init__(self):
     pass  
@@ -205,7 +216,8 @@ class PreferencePredictor(mp.ModelParameter):
     '''
     The encapusulated function of predict_whole_data_set_final_targets()
     '''
-    self.preference_score, self.data_set_predicted_labels, self.data_set_ground_truth_labels = \
+    self.prediction_frequency, self.ground_truth_label_frequency,\
+    self.data_set_predicted_labels, self.data_set_ground_truth_labels = \
     self.predict_whole_data_set_final_targets(files_prediction = self.files_prediction_trajectory,\
                                                               data_traj = self.prediction_data_trajectory,\
                                                               data_query_state = self.prediction_data_query_state,\
@@ -240,8 +252,10 @@ class PreferencePredictor(mp.ModelParameter):
         If `with_prednet = False`, then construct the partial model including
         only the charnet.        
     Returns:
-      :preference_score:
-        an array of the inferred preference scores (num_classes, 1).      
+      :prediction_frequency:
+        an array of the frequncey of predictions (num_classes, 1).      
+      :ground_truth_label_frequency:
+        an array of the frequncey of ground truth labels (num_classes, 1).      
       :data_set_predicted_labels:
         an array of predictions for the input data (num_files, 1).
       :data_set_ground_truth_labels:  
@@ -260,19 +274,19 @@ class PreferencePredictor(mp.ModelParameter):
     # pdb.set_trace()
     # Restore the graph from the meta graph
     # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
-    saver = tf.train.import_meta_graph(self.FILE_CKPT+'.meta')
+    saver = tf.train.import_meta_graph(self.FILE_MODEL_CKPT+'.meta')
 
     # Create a new session and restore the saved parameters from the checkpoint
     sess = tf.Session()
-    saver.restore(sess, self.FILE_CKPT)
-    print('Model restored from ', self.FILE_CKPT)
+    saver.restore(sess, self.FILE_MODEL_CKPT)
+    print('Model restored from ', self.FILE_MODEL_CKPT)
 
     graph = tf.get_default_graph()
     #predictions_array = (batch_size, num_classes)
     predictions_array = graph.get_tensor_by_name('train_predictions_array:0')
     
     # Inspect variables in a checkpoint
-#      parameters = chkp.print_tensors_in_checkpoint_file(self.FILE_CKPT,\
+#      parameters = chkp.print_tensors_in_checkpoint_file(self.FILE_MODEL_CKPT,\
 #                                                         tensor_name='',\
 #                                                         all_tensors=True)
     # --------------------------------------------------------------
@@ -325,19 +339,69 @@ class PreferencePredictor(mp.ModelParameter):
     data_set_predicted_labels = np.argmax(data_set_prediction_array, 1)
     
     # --------------------------------------------------------------      
-    # Make predictions about the preference scores:
+    # Derive the frequncey of predictions for each target :
     # (num_files, num_classes) -> (num_classes, 1)
     # --------------------------------------------------------------  
-    preference_frequency = np.argmax(data_set_prediction_array, 0)
-    preference_score = np.round(preference_frequency/np.sum(preference_frequency), 2)
+    prediction_count = np.argmax(data_set_prediction_array, 0)
+    prediction_frequency = np.round(prediction_count/np.sum(prediction_count), 2)
     
     # --------------------------------------------------------------      
     # Set ground truth labels as final target labels:
     # --------------------------------------------------------------      
-
     data_set_ground_truth_labels = final_target_ground_truth_labels
-    return  preference_score, data_set_predicted_labels, data_set_ground_truth_labels
+
+    # --------------------------------------------------------------      
+    # Derive the frequncey of ground truth labels for each target :
+    # (num_files, num_classes) -> (num_classes, 1)
+    # --------------------------------------------------------------  
+    # pdb.set_trace()
+    ground_truth_label_count = np.unique(data_set_ground_truth_labels,return_counts=True)[1]
+    ground_truth_label_frequency = np.round(ground_truth_label_count/np.sum(ground_truth_label_count), 2)
+        
+    return  prediction_frequency, ground_truth_label_frequency, data_set_predicted_labels, data_set_ground_truth_labels
+
+  def save_predictions(self):
+    '''
+    The encapusulated function to save the predictions, including
+      (1) prediction_frequency (num_classes, 1)
+      (2) data_set_predicted_labels (num_files, 1)
+      (3) data_set_ground_truth_labels (num_files, 1)
     
+    output:
+      (1) final_target_predictions.csv
+      (2) frequency_prediction_and_ground_truth_labels.csv
+    ''' 
+    # pdb.set_trace()
+#    self.prediction_frequency
+#    self.data_set_predicted_labels
+#    self.data_set_ground_truth_labels
+
+    # --------------------------------------------------------------      
+    # collect the predictions
+    # --------------------------------------------------------------      
+    # the predictions about the final targets
+    df_final_target_predictions = pd.DataFrame(data = {'files_trajectory': self.files_prediction_trajectory,\
+                                                       'files_query_state': self.files_prediction_query_state,\
+                                                       'final_target_ground_truth_labels': self.data_set_ground_truth_labels,\
+                                                       'final_target_predicted_labels': self.data_set_predicted_labels})
+    # the frequncey of predictions the ground truth labels for each target
+    df_frequency_prediction_and_ground_truth_labels = pd.DataFrame(data = {'targets': range(0,4),\
+                                                                           'ground_truth_label_frequency':self.ground_truth_label_frequency,\
+                                                                           'prediction_frequency': self.prediction_frequency})
+    # --------------------------------------------------------------      
+    # write csv files
+    # -------------------------------------------------------------- 
+    # the predictions about the final targets
+    file_name_final_target_predictions = os.path.join(self.DIR_MODEL_PREDICTION_RESULT,\
+                                                      'final_target_predictions.csv')
+    df_final_target_predictions.to_csv(file_name_final_target_predictions)
+    
+    # the frequncey of predictions the ground truth labels for each target
+    file_name_frequency_prediction_and_ground_truth_labels =\
+    os.path.join(self.DIR_MODEL_PREDICTION_RESULT,\
+                 'frequency_prediction_and_ground_truth_labels.csv')
+    df_frequency_prediction_and_ground_truth_labels.to_csv(file_name_frequency_prediction_and_ground_truth_labels)
+
       
 if __name__ == "__main__":
     # reseting the graph is necessary for running the script via spyder or other
@@ -355,7 +419,7 @@ if __name__ == "__main__":
     
     # --------------------------------------------------------------      
     # make predictions
-    # preference_score = (num_classes, 1)
+    # prediction_frequency = (num_classes, 1)
     # data_set_predicted_labels = (num_files, 1)
     # data_set_ground_truth_labels = (num_files, 1)
     # --------------------------------------------------------------      
@@ -366,9 +430,8 @@ if __name__ == "__main__":
  
     # --------------------------------------------------------------      
     # Save predictions
-    # output = (num_files, 1)
     # -------------------------------------------------------------- 
-   
+    preference_predictor.save_predictions()
 
 
 
