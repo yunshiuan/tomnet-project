@@ -288,34 +288,13 @@ class PreferencePredictor(mp.ModelParameter):
     num_files_prediction = num_batches * batch_size
     print('%i' %num_batches, 'batches in total for making predictions ...')
    
-    # --------------------------------------------------------------
-    # Restore the graph and parameters
-    # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
+    # --------------------------------------------------------------      
+    # Restore the graph
     # --------------------------------------------------------------
     # pdb.set_trace()
-    # Restore the graph from the meta graph
-    # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
-    saver = tf.train.import_meta_graph(self.FILE_MODEL_CKPT+'.meta')
-
-    # Create a new session and restore the saved parameters from the checkpoint
-    sess = tf.Session()
-    saver.restore(sess, self.FILE_MODEL_CKPT)
-    print('Model restored from ', self.FILE_MODEL_CKPT)
-
-    graph = tf.get_default_graph()
-    #predictions_array = (batch_size, num_classes)
-    predictions_array = graph.get_tensor_by_name('train_predictions_array:0')
+    graph, sess, train_data_traj_placeholder, train_data_query_state_placeholder,\
+    predictions_array = self.restore_graph()
     
-    # Inspect variables in a checkpoint
-#      parameters = chkp.print_tensors_in_checkpoint_file(self.FILE_MODEL_CKPT,\
-#                                                         tensor_name='',\
-#                                                         all_tensors=True)
-    # --------------------------------------------------------------
-    # Restore the placeholders
-    # --------------------------------------------------------------
-    train_data_traj_placeholder = graph.get_tensor_by_name('train_data_traj_placeholder:0')
-    train_data_query_state_placeholder = graph.get_tensor_by_name('train_data_query_state_placeholder:0')
-
     # --------------------------------------------------------------      
     # Make softmax predictions batch by batch
     # output: (num_files, num_classes)
@@ -387,7 +366,63 @@ class PreferencePredictor(mp.ModelParameter):
     files_prediction_traj = files_total_traj[0:num_files_prediction]
     files_prediction_query_state = files_total_query_state[0:num_files_prediction]
     return  prediction_frequency, ground_truth_label_frequency, data_set_predicted_labels, data_set_ground_truth_labels, files_prediction_traj, files_prediction_query_state
+  
+  def restore_graph(self):
+    '''
+    Restore the graph and parameters from a checkpoint.    
 
+           
+    Returns:
+      :graph:
+        the restored graph.    
+      :sess:
+        the session with the restored graph.    
+      :train_data_traj_placeholder:
+        the placeholder for trajectory input data in the graph
+        (batch_size, max_trajectory_size, width, height, depth_trajectory).
+      :train_data_query_state_placeholder:  
+        the placeholder for the query state input data in the graph
+        (batch_size, width, height, depth_query_state).
+      :predictions_array:
+        the placeholder for the prediction array output
+        (batch_size, num_classes).
+    '''
+    
+    # --------------------------------------------------------------
+    # Restore the graph and parameters
+    # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
+    # --------------------------------------------------------------
+    # pdb.set_trace()
+    # Restore the graph from the meta graph
+    # https://cv-tricks.com/tensorflow-tutorial/save-restore-tensorflow-models-quick-complete-tutorial/
+    saver = tf.train.import_meta_graph(self.FILE_MODEL_CKPT+'.meta')
+
+    # Create a new session and restore the saved parameters from the checkpoint
+    sess = tf.Session()
+    saver.restore(sess, self.FILE_MODEL_CKPT)
+    print('Model restored from ', self.FILE_MODEL_CKPT)
+
+    graph = tf.get_default_graph()
+    #predictions_array = (batch_size, num_classes)
+
+    # --------------------------------------------------------------
+    # Restore the output placeholders
+    # --------------------------------------------------------------
+    predictions_array = graph.get_tensor_by_name('train_predictions_array:0')
+    
+    # --------------------------------------------------------------
+    # Restore the input placeholders
+    # --------------------------------------------------------------
+    train_data_traj_placeholder = graph.get_tensor_by_name('train_data_traj_placeholder:0')
+    train_data_query_state_placeholder = graph.get_tensor_by_name('train_data_query_state_placeholder:0')
+    
+
+    # Inspect variables in a checkpoint
+#      parameters = chkp.print_tensors_in_checkpoint_file(self.FILE_MODEL_CKPT,\
+#                                                         tensor_name='',\
+#                                                         all_tensors=True)
+    return graph, sess, train_data_traj_placeholder, train_data_query_state_placeholder, predictions_array
+  
   def save_predictions(self):
     '''
     The encapusulated function to save the predictions, including
@@ -399,7 +434,7 @@ class PreferencePredictor(mp.ModelParameter):
       (1) final_target_predictions.csv
       (2) frequency_prediction_and_ground_truth_labels.csv
     ''' 
-    pdb.set_trace()
+    # pdb.set_trace()
 
     # --------------------------------------------------------------      
     # collect the predictions
