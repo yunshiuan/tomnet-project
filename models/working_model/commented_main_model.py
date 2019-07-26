@@ -42,16 +42,17 @@ class Model(mp.ModelParameter):
   # Constant: Training parameters
   # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE_TRAIN = 16 # size of the batch for traning (number of the steps within each batch)  
-  BATCH_SIZE_VAL = 16 # size of the batch for validation
-  BATCH_SIZE_TEST = 16 # size of batch for testing
+  BATCH_SIZE = 5
+  BATCH_SIZE_TRAIN = BATCH_SIZE # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE_VAL = BATCH_SIZE # size of the batch for validation
+  BATCH_SIZE_TEST = BATCH_SIZE # size of batch for testing
   
   # for testing on a GPU machine with 10000 files  
-  SUBSET_SIZE = -1 # use all files
+  SUBSET_SIZE = 100 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 10000
-  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
+  TRAIN_STEPS = 50
+  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
@@ -64,13 +65,13 @@ class Model(mp.ModelParameter):
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  # ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
-  # train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
-  # txt_data_path ='../../data/S002a/'
+  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
+  train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
+  txt_data_path ='../../data/data_simulation/S002a/'
   # for human data 
-  ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  train_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  txt_data_path ='../../data/data_human/processed/S030/'
+  # ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
+  # train_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
+  # txt_data_path ='../../data/data_human/processed/S030/'
 
   ckpt_fname = os.path.join(path_mode,ckpt_fname)
   train_fname = os.path.join(path_mode,train_fname)
@@ -499,7 +500,8 @@ class Model(mp.ModelParameter):
           checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
 
-          df = pd.DataFrame(data={'step':step_list, 'train_error':train_error_list,
+          df = pd.DataFrame(data={'step':step_list,\
+                                  'train_error':train_error_list,\
                                   'validation_error': val_error_list})
           # overwrite the csv
           df.to_csv(self.train_path + '_error.csv')
@@ -648,9 +650,10 @@ class Model(mp.ModelParameter):
 
       if with_prednet:
         # --------------------------------------------------------------      
-        # Break the correspondence bewteem files_query_state and files_trajectory
-        # for the model with both charnet and prednet.
-        # Otherwise, the performance would be overestimated
+        # Reverse the query state data to break the correspondence 
+        # between files_query_state and files_trajectory (when using the same
+        # set of files) for the model with both charnet and prednet.
+        # Otherwise, the performance would be overestimated.
         # -------------------------------------------------------------- 
         # pdb.set_trace()
         data_query_state = np.flip(data_query_state, 0)
