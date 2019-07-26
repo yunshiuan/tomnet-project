@@ -36,10 +36,10 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 
 ########################################
 
-Current training session (v20, commit ?)[At working_model]
+Current training session (v20, commit 207536)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v20_commit_?_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
+Output file name: /cache_S002a_v20_commit_207536_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
 (1) Follow v19 but with less steps.
 (2) Add the train_proportion metric.
