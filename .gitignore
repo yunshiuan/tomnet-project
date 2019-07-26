@@ -31,3 +31,5 @@ benchmark/test_on_human_data/data
 benchmark/test_on_human_data/data/
 
 *.json
+
+models/working_model/test_on_simulation_data/training_result/caches/cache_S002a_vtest/
