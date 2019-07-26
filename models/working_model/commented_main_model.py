@@ -42,17 +42,17 @@ class Model(mp.ModelParameter):
   # Constant: Training parameters
   # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE = 5
+  BATCH_SIZE = 16
   BATCH_SIZE_TRAIN = BATCH_SIZE # size of the batch for traning (number of the steps within each batch)  
   BATCH_SIZE_VAL = BATCH_SIZE # size of the batch for validation
   BATCH_SIZE_TEST = BATCH_SIZE # size of batch for testing
   
   # for testing on a GPU machine with 10000 files  
-  SUBSET_SIZE = 100 # use all files
+  SUBSET_SIZE = -1 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  TRAIN_STEPS = 50
-  REPORT_FREQ = 10 # the frequency of writing the error to error.csv
+  TRAIN_STEPS = 10000
+  REPORT_FREQ = 100 # the frequency of writing the error to error.csv
   #txt_data_path = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation 
   # (but this would not be fair because a portion of the data has already been seen)
@@ -65,8 +65,8 @@ class Model(mp.ModelParameter):
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
-  train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_vtest_commit_???_file1000_tuning_batch16_train_step_1K_INIT_LR_10-4'
+  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_???_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4'
+  train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_???_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4'
   txt_data_path ='../../data/data_simulation/S002a/'
   # for human data 
   # ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'

@@ -36,7 +36,24 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 
 ########################################
 
-Current training session (v20, commit 207536)[At working_model]
+Current training session (v21, commit ?)[At working_model]
+Time: 2019/07/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v21_commit_?_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
+
+(1) Follow v20 but with greater regularization term 
+(weight decay = 1 x 10-3, increased from 2 x 10-5)
+(2) Aims to tackle the overfitting issues.
+Note:
+(1)
+accurary	mode
+%	train_proportion
+%	vali_proportion
+%	test_proportion
+
+########################################
+
+Finished training session (v20, commit 207536)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v20_commit_207536_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
@@ -50,7 +67,6 @@ accurary	mode
 95.12%	train_proportion
 68.25%	vali_proportion
 65.52%	test_proportion
-
 
 ########################################
 
