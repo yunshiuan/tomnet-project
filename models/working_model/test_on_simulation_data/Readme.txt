@@ -32,14 +32,14 @@ Output file name: /cache_S002a_v?_commit_???_epoch8000_tuning_batch16_train_step
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
-
+(3) Resume weight decay back to 2 x 10-5.
 
 ########################################
 
-Current training session (v21, commit ?)[At working_model]
+Current training session (v21, commit 9f3e1a)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v21_commit_?_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
+Output file name: /cache_S002a_v21_commit_9f3e1a_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
 (1) Follow v20 but with greater regularization term 
 (weight decay = 1 x 10-3, increased from 2 x 10-5)
@@ -47,9 +47,10 @@ Output file name: /cache_S002a_v21_commit_?_file10000_tuning_batch16_train_step_
 Note:
 (1)
 accurary	mode
-%	train_proportion
-%	vali_proportion
-%	test_proportion
+95.11%	train_proportion
+63.41%	vali_proportion
+61.49%	test_proportion
+
 
 ########################################
 
