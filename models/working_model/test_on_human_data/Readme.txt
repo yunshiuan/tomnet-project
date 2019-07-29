@@ -42,7 +42,7 @@ accurary	mode
 97.51%	train_proportion
 75.0%	vali_proportion
 73.26%	test_proportion
-(3) prediction on data S0303, 992 files:
+(3) prediction on data S030, 1000 files:
 ground_truth_label_count	prediction_count	accuracy_data_set
 393	407	92.24
 189	188	92.24

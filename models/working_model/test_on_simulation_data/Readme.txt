@@ -68,6 +68,14 @@ accurary	mode
 95.12%	train_proportion
 68.25%	vali_proportion
 65.52%	test_proportion
+(3)
+prediction on data S002a_1000files, -1 files:
+ground_truth_label_count	prediction_count	accuracy_data_set
+151	137	65.73
+270	210	65.73
+258	256	65.73
+313	389	65.73
+
 
 ########################################
 
