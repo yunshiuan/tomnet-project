@@ -42,6 +42,13 @@ accurary	mode
 97.51%	train_proportion
 75.0%	vali_proportion
 73.26%	test_proportion
+(3) prediction on data S0303, 992 files:
+ground_truth_label_count	prediction_count	accuracy_data_set
+393	407	92.24
+189	188	92.24
+221	206	92.24
+189	191	92.24
+
 -----------------------------------------
 Current training session (v8, commit 0c7df5) [At working_model/human_data]
 Time: 2019/06/03
