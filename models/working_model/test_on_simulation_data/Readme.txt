@@ -45,12 +45,19 @@ Output file name: /cache_S002a_v21_commit_9f3e1a_file10000_tuning_batch16_train_
 (weight decay = 1 x 10-3, increased from 2 x 10-5)
 (2) Aims to tackle the overfitting issues.
 Note:
-(1)
+(1) It is still overfitting.
+(2)
 accurary	mode
 95.11%	train_proportion
 63.41%	vali_proportion
 61.49%	test_proportion
-
+(3)
+prediction on data S002a_1000files, -1 files:
+ground_truth_label_count	prediction_count	accuracy_data_set
+151	176	62.1
+270	288	62.1
+258	236	62.1
+313	292	62.1
 
 ########################################
 
@@ -62,7 +69,7 @@ Output file name: /cache_S002a_v20_commit_207536_file10000_tuning_batch16_train_
 (1) Follow v19 but with less steps.
 (2) Add the train_proportion metric.
 Note:
-(1) Seems to be overfitting.
+(1) It is overfitting.
 (2)
 accurary	mode
 95.12%	train_proportion
