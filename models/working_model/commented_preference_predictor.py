@@ -45,7 +45,7 @@ class PreferencePredictor(mp.ModelParameter):
   BATCH_SIZE_PREDICT = 16
   SUBSET_SIZE = 1000
   BREAK_CORRESPONDENCE = True # This should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
-  
+  VERSION = 'S030_subset1000'
   # dir
   DIR_PREDICTION_ROOT = os.getcwd() # the script dir
   
@@ -54,7 +54,7 @@ class PreferencePredictor(mp.ModelParameter):
                                                 'data','data_human','processed','S030')
   DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
 
-  DIR_MODEL = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_78092b_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
+  DIR_MODEL = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_78092b'
 
   # For simulation data-----------
   # DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
@@ -66,10 +66,12 @@ class PreferencePredictor(mp.ModelParameter):
   # DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002a_v20_commit_207563_file1000_tuning_batch16_train_step_10K_INIT_LR_10-4/'
   # --------------------
   
-  DIR_MODEL_PREDICTION_RESULT = os.path.join(DIR_MODEL,'prediction')
-  
-  if not os.path.exists(DIR_MODEL_PREDICTION_RESULT):
-    os.makedirs(DIR_MODEL_PREDICTION_RESULT)
+  DIR_MODEL_PREDICTION_RESULT_ROOT = os.path.join(DIR_MODEL,'prediction')
+  DIR_MODEL_PREDICTION_RESULT_THIS_VERSION = \
+  os.path.join( DIR_MODEL_PREDICTION_RESULT_ROOT,VERSION)
+
+  if not os.path.exists(DIR_MODEL_PREDICTION_RESULT_THIS_VERSION):
+    os.makedirs(DIR_MODEL_PREDICTION_RESULT_THIS_VERSION)
     
   # file
   FILE_MODEL_CKPT = os.path.join(DIR_MODEL,'train','model.ckpt-9999')
@@ -494,13 +496,13 @@ class PreferencePredictor(mp.ModelParameter):
     # write csv files
     # -------------------------------------------------------------- 
     # the predictions about the final targets
-    file_name_final_target_predictions = os.path.join(self.DIR_MODEL_PREDICTION_RESULT,\
+    file_name_final_target_predictions = os.path.join(self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION,\
                                                       'final_target_predictions.csv')
     df_final_target_predictions.to_csv(file_name_final_target_predictions)
     
     # the frequncey of predictions the ground truth labels for each target
     file_name_proportion_prediction_and_ground_truth_labels =\
-    os.path.join(self.DIR_MODEL_PREDICTION_RESULT,\
+    os.path.join(self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION,\
                  'proportion_prediction_and_ground_truth_labels.csv')
     df_proportion_prediction_and_ground_truth_labels.to_csv(file_name_proportion_prediction_and_ground_truth_labels)
 
