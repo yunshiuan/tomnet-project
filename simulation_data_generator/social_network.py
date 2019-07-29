@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct 19 10:35:39 2018
+This script is for generating simulation data.
 
-@author: Hsinyi
+@author: Hsinyi; Chuang, Yun-Shiuang
 """
 
 from __future__ import absolute_import
@@ -18,28 +18,50 @@ from __future__ import print_function
 import numpy as np
 import csv
 import random 
+import pdb
+import os
 
 from queue import *
 
-
+# pdb.set_trace()
+# --------------------------------------------------------------      
+# Constant block
+# --------------------------------------------------------------      
 # Read suject's network
-fname='/bml/Data/Bank5/AI/AI_simulation/S002_familyonly.csv'
-#fname='/bml/Data/Bank5/AI/ai-safety-gridworlds-master/Robohon/Subj_social_network_paramerter_simulation/S001.csv'
-with open(fname, encoding='utf-8') as csvfile:
+# - param
+FNAME = 'S002a_familyonly.csv'
+RANDOM_NUM_GOALS = False # If true, the number of goals will vary across mazes
+VERSION_NAME = 'S002a_4goals'
+# - dir
+DIR_ROOT = os.getcwd()
+DIR_TXT_OUTPUT = os.path.join(DIR_ROOT, '..','data','data_simulation',\
+                              VERSION_NAME)
+if not os.path.exists(DIR_TXT_OUTPUT):
+  os.makedirs(DIR_TXT_OUTPUT)
+
+# - file
+
+#FNAME='/bml/Data/Bank5/AI/AI_simulation/S002_familyonly.csv'
+#FNAME='/bml/Data/Bank5/AI/ai-safety-gridworlds-master/Robohon/Subj_social_network_paramerter_simulation/S001.csv'
+with open(FNAME, encoding='utf-8') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     agents_list=list(readCSV)
 
 simulation_time=0
 
 while simulation_time<10001:
-        
+    # pdb.set_trace()
     # Number of agents in the environment 
-    number_agents=len(agents_list)
-    if number_agents<=11:
-        n_chosen_agents=random.choice(list(range(1,number_agents-1)))
-    else :
-        n_chosen_agents=random.choice(list(range(1,10)))
-            
+    number_agents=len(agents_list) - 2 #exclude the header and the acting agent
+    if RANDOM_NUM_GOALS:
+      if number_agents<=11:
+          n_chosen_agents = random.choice(list(range(1,number_agents+1)))
+      else :
+          pdb.set_trace()
+          n_chosen_agents = random.choice(list(range(1,10))) # do not choose more than 9 goals
+    else:
+      n_chosen_agents = number_agents
+              
     #Grid world environment
 
 
@@ -64,8 +86,8 @@ while simulation_time<10001:
     Chosen_agents_label=['A','B','C','D', 'E', 'F']
     #Chosen_agents_label=['A','B','C','D','E','F','G','H', 'I', 'J','K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm']
       
-
-    c = list(range(2, number_agents))
+    # pdb.set_trace()
+    c = list(range(0+2, number_agents+2)) 
     Chosen_agents_index=random.sample(c, n_chosen_agents)
     Chosen_agents_index=np.asarray(Chosen_agents_index)
     Chosen_agents=[]
@@ -145,7 +167,7 @@ while simulation_time<10001:
     #GAME_FG_COLOURS = dict.fromkeys(list(GAME_BG_COLOURS.keys()), (0, 0, 0))
     #GAME_FG_COLOURS.update(safety_game.GAME_FG_COLOURS)
 
-
+    # pdb.set_trace()
     Subj_parameter=agents_list[1]
 
     D_eff=np.zeros(n_chosen_agents)
@@ -246,6 +268,7 @@ while simulation_time<10001:
 
 
     Path=np.zeros(n_chosen_agents)
+    
     if __name__ == '__main__':
         for i in range(n_chosen_agents):
             field = Field(len=14, start=tuple((x_s, y_s)), finish=tuple((x_random[i], y_random[i])),
@@ -282,9 +305,9 @@ while simulation_time<10001:
             field.emit()
             field()
             try:
-                
-                fname="S002_"+str(simulation_time)+".txt"
-                text_file = open(fname, "w")
+                output_file  = os.path.join(DIR_TXT_OUTPUT, \
+                                            "S002_"+str(simulation_time)+".txt")
+                text_file = open(output_file, "w")
                 text_file.write('Maze:\n')
                 
                 for i in range(14):

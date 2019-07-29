@@ -46,7 +46,7 @@ class PreferencePredictor(mp.ModelParameter):
   SUBSET_SIZE = 96
   BREAK_CORRESPONDENCE = True # This should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
 #  VERSION = 'Traj_S030_Query_Stest_subset96'
-  WITH_LABEL = True# whether the query state has final target label
+  WITH_LABEL = True # whether the query state has final target label
   VERSION = 'Traj_S002a_Query_S002a_subset96'
   # dir
   DIR_PREDICTION_ROOT = os.getcwd() # the script dir
