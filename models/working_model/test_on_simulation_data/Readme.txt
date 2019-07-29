@@ -33,7 +33,7 @@ Output file name: /cache_S002a_v?_commit_???_epoch8000_tuning_batch16_train_step
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
 (3) Resume weight decay back to 2 x 10-5.
-
+(4) Train on new data which each maze has equal number of potential targets.
 ########################################
 
 Current training session (v21, commit 9f3e1a)[At working_model]
@@ -52,19 +52,19 @@ accurary	mode
 63.41%	vali_proportion
 61.49%	test_proportion
 (3)
-prediction on data S002a_1000files, -1 files:
-ground_truth_label_count	prediction_count	accuracy_data_set
-151	176	62.1
-270	288	62.1
-258	236	62.1
-313	292	62.1
+Traj_S002a_Query_S002a_subset96:
+avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+0.13	10	12	85.42
+0.3	28	28	85.42
+0.25	26	25	85.42
+0.32	32	31	85.42
 
-Traj_S002a_1000_Query_Stest_subset96:
+Traj_S002a_Query_Stest_subset96:
 prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
-0.48	0.3	0	46
-0.42	0.35	0	40
+0.5	0.3	0	48
+0.44	0.35	0	42
 0	0.07	0	0
-0.1	0.27	0	10
+0.06	0.28	0	6
 
 ########################################
 
@@ -83,19 +83,20 @@ accurary	mode
 68.25%	vali_proportion
 65.52%	test_proportion
 (3)
-S002a_1000files_subset-1:
-ground_truth_label_count	prediction_count	accuracy_data_set
-151	137	65.73
-270	210	65.73
-258	256	65.73
-313	389	65.73
+Traj_S002a_Query_S002a_subset96
+avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+0.1	10	8	92.71
+0.28	28	27	92.71
+0.28	26	27	92.71
+0.35	32	34	92.71
 
 Traj_S002a_1000_Query_Stest_subset96:
 prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
-0.04	0.11	0	4
-0	0.08	0	0
-0.24	0.25	0	23
-0.72	0.57	0	69
+0.05	0.11	0	5
+0	0.07	0	0
+0.25	0.25	0	24
+0.7	0.57	0	67
+
 ########################################
 
 Finshed training session (v19, commit 36462b)[At working_model]
