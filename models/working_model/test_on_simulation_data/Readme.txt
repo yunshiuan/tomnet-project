@@ -34,18 +34,23 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
 ########################################
 
-Finished training session (v22, commit ?)[At working_model]
+Finished training session (v22, commit c293fa)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v20_commit_207536_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
+Output file name: /cache_S002b_v22_commit_c293fa
+Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
 (1) Follow v21 but with a new data set S020b (each maze has equal number of potential targets.)
 (2) Resume weight decay back to 2 x 10-5.
 
 Note:
-(1) 
+(1) Overfitting is reduced but still exists.
 (2)
 accurary	mode
+accurary	mode
+97.66%	train_proportion
+77.62%	vali_proportion
+80.85%	test_proportion
 
 (3)
 Traj_S002a_Query_S002a_subset96
