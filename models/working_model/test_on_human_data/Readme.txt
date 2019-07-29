@@ -42,13 +42,20 @@ accurary	mode
 97.51%	train_proportion
 75.0%	vali_proportion
 73.26%	test_proportion
-(3) prediction on data S030, 1000 files:
+(3) 
+S030_subset1000:
 ground_truth_label_count	prediction_count	accuracy_data_set
 393	407	92.24
 189	188	92.24
 221	206	92.24
 189	191	92.24
 
+Traj_S030_Query_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+0.71	0.59	0	68
+0.01	0.08	0	1
+0.28	0.29	0	27
+0	0.04	0	0
 -----------------------------------------
 Current training session (v8, commit 0c7df5) [At working_model/human_data]
 Time: 2019/06/03
