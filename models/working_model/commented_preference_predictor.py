@@ -8,8 +8,8 @@ model.
 Note that the input data should be carefully designed so that
 all targets are of the same distance to the agent. By doing this,
 the physical distance will be cancelled out and the social distance will
-be the only remaining factor. Thus, the 'prediction proportion' will 
-equal to 'preference score'.
+be the only remaining factor. Thus, the 'prediction proportion'/'avg_prediction_probability'
+will equal to 'preference score'.
 @author: Chuang, Yun-Shiuan
 """
 import os
@@ -43,27 +43,31 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   # param
   BATCH_SIZE_PREDICT = 16
-  SUBSET_SIZE = -1
+  SUBSET_SIZE = 96
   BREAK_CORRESPONDENCE = True # This should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
-  VERSION = 'S002a_1000files_subset-1'
+  VERSION = 'Traj_S030_Query_Stest_subset96'
+  WITH_LABEL = False # whether the query state has final target label
+#  VERSION = 'S002a_1000files_subset-1'
   # dir
   DIR_PREDICTION_ROOT = os.getcwd() # the script dir
   
   # For human data----------
-#  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-#                                                'data','data_human','processed','S030')
-#  DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
-#
-#  DIR_MODEL = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_78092b'
+  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+                                                'data','data_human','processed','S030')
+  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+                                                'data','data_preference_predictions',\
+                                                'query_state')
+
+  DIR_MODEL = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_78092b'
 
   # For simulation data-----------
-  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-                                                 'data','data_simulation','S002a_1000files')
-  DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
-#  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-#                                                  'data','data_for_making_preference_predictions',\
-#                                                  'query_state')
-  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_9f3e1a'
+#  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+#                                                 'data','data_simulation','S002a_1000files')
+#  DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
+##  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+##                                                  'data','data_for_making_preference_predictions',\
+##                                                  'query_state')
+#  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_9f3e1a'
   # --------------------
   
   DIR_MODEL_PREDICTION_RESULT_ROOT = os.path.join(DIR_MODEL,'prediction')
@@ -102,7 +106,8 @@ class PreferencePredictor(mp.ModelParameter):
       self.prediction_data_query_state, self.prediction_data_ground_truth_labels_query_state, self.files_total_query_state = \
       preference_predictor.parse_prediction_data_query_state(directory = preference_predictor.DIR_PREDICTION_DATA_QUERY_STATE,\
                                                              subset_size = preference_predictor.SUBSET_SIZE,\
-                                                             break_correspondence = preference_predictor.BREAK_CORRESPONDENCE)         
+                                                             break_correspondence = preference_predictor.BREAK_CORRESPONDENCE,\
+                                                             with_label = self.WITH_LABEL)         
       # ground truth labels for the final targets
       self.final_target_ground_truth_labels = self.prediction_data_ground_truth_labels_query_state
         
@@ -144,7 +149,7 @@ class PreferencePredictor(mp.ModelParameter):
     
     return prediction_data_trajectory, prediction_data_ground_truth_labels_traj, files_total_traj
   
-  def parse_prediction_data_query_state(self, directory, subset_size = -1, break_correspondence = False):
+  def parse_prediction_data_query_state(self, directory, subset_size = -1, break_correspondence = False, with_label = True):
     '''
     This function wil parse all the prediction files in the directory and return 
     the corresponding query states.
@@ -175,7 +180,8 @@ class PreferencePredictor(mp.ModelParameter):
     files_total_query_state = \
     self.parse_prediction_data_subset(directory,\
                                parse_query_state = True,\
-                               subset_size = subset_size)
+                               subset_size = subset_size,\
+                               with_label = with_label)
     if break_correspondence:
       # random_state = 0 -> Make the result reproducible
       prediction_data_query_state,\
@@ -189,7 +195,7 @@ class PreferencePredictor(mp.ModelParameter):
 
     return prediction_data_query_state, prediction_data_ground_truth_labels_query_state, files_total_query_state
   
-  def parse_prediction_data_subset(self, directory, parse_query_state, subset_size):
+  def parse_prediction_data_subset(self, directory, parse_query_state, subset_size, with_label = True):
     '''
     This function wil parse either the trajectory-type prediction files
     or the query-state-type prediction files in the directory and 
@@ -205,6 +211,11 @@ class PreferencePredictor(mp.ModelParameter):
      :param subset_size: The size of the subset (number of files) to be parsed.  
        The special number -1 means using all the files in  
        the directory. When testing the code, this could help reducing the parsing time. 
+     :param with_label:
+       whether the query state file contains the final
+       target (default to True). Note that this will be False for
+       preference inference on equal-distance files since there are no
+       final tagrgets in such files.
   
     Returns: 
       :prediction_data:
@@ -241,8 +252,9 @@ class PreferencePredictor(mp.ModelParameter):
     # Parse the txt files
     # --------------------------------------     
     prediction_data, ground_truth_labels = data_handler.parse_subset(directory,\
-                                                   files_prediction,\
-                                                   parse_query_state = parse_query_state)
+                                                                     files_prediction,\
+                                                                     parse_query_state = parse_query_state,\
+                                                                     with_label = with_label)
     return prediction_data, ground_truth_labels, files_prediction
   
   def predict_preferences(self):
@@ -250,7 +262,8 @@ class PreferencePredictor(mp.ModelParameter):
     The encapusulated function of predict_whole_data_set_final_targets()
     '''
     self.prediction_proportion, self.ground_truth_label_proportion,\
-    self.prediction_count, self.ground_truth_label_count,\
+    self.prediction_count, self.averaged_predicted_probability,\
+    self.ground_truth_label_count,\
     self.data_set_predicted_labels, self.data_set_ground_truth_labels,\
     self.files_prediction_traj, self.files_prediction_query_state= \
     self.predict_whole_data_set_final_targets(files_total_traj = self.files_total_traj,\
@@ -259,9 +272,10 @@ class PreferencePredictor(mp.ModelParameter):
                                               data_query_state = self.prediction_data_query_state,\
                                               final_target_ground_truth_labels = self.final_target_ground_truth_labels,\
                                               batch_size = self.BATCH_SIZE_PREDICT,\
-                                              with_prednet = self.WITH_PREDNET)
+                                              with_prednet = self.WITH_PREDNET,
+                                              with_label = self.WITH_LABEL)
 
-  def predict_whole_data_set_final_targets(self, files_total_traj, files_total_query_state, data_traj, data_query_state, final_target_ground_truth_labels, batch_size, with_prednet):
+  def predict_whole_data_set_final_targets(self, files_total_traj, files_total_query_state, data_traj, data_query_state, final_target_ground_truth_labels, batch_size, with_prednet, with_label = True):
     '''
     Given one set of trajectory data and query state data,
     ask the already trained model make the predictions about the final target.
@@ -290,7 +304,12 @@ class PreferencePredictor(mp.ModelParameter):
         If `with_prednet = True`, then construct the complete model includeing
         both charnet and prednet.
         If `with_prednet = False`, then construct the partial model including
-        only the charnet.        
+        only the charnet.    
+      :param with_label:
+        whether the query state file contains the final
+        target (default to True). Note that this will be False for
+        preference inference on equal-distance files since there are no
+        final tagrgets in such files.
     Returns:
       :prediction_proportion:
         an array of the frequncey of predictions (num_classes, 1).      
@@ -298,6 +317,9 @@ class PreferencePredictor(mp.ModelParameter):
         an array of the frequncey of ground truth labels (num_classes, 1).      
       :prediction_count:
         an array of the count of predictions (num_classes, 1).      
+      :averaged_predicted_probability:
+        the averaged predicted probability of each target across all mazes 
+        (num_classes, 1)
       :ground_truth_label_count:
         an array of the count of predictions (num_classes, 1).              
       :data_set_predicted_labels:
@@ -377,9 +399,24 @@ class PreferencePredictor(mp.ModelParameter):
     # (num_files, num_classes) -> (num_classes, 1)
     # --------------------------------------------------------------  
     # pdb.set_trace()
-    prediction_count = np.unique(data_set_predicted_labels,return_counts=True)[1]
+    prediction_count = np.zeros(self.NUM_CLASS)
+    prediction_count_detail = np.unique(data_set_predicted_labels,return_counts=True)
+    # use loop to fill in the value in case the number of unique
+    # labels in less than the NUM_CLASS
+    for class_index in range(0,len(prediction_count_detail[0])):      
+      class_name = prediction_count_detail[0][class_index]
+      prediction_count[class_name] = prediction_count_detail[1][class_index]
+      
     prediction_proportion = np.round(prediction_count/np.sum(prediction_count), 2)
     
+    
+    # --------------------------------------------------------------      
+    # Derive the averaged predicted probability of each target across all mazes :
+    # (num_files, num_classes) -> (num_classes, 1)
+    # --------------------------------------------------------------      
+    averaged_predicted_probability = np.round(np.mean(data_set_prediction_array, 0),2)
+ 
+
     # --------------------------------------------------------------      
     # Set ground truth labels as final target labels:
     # (num_files_total, 1) -> (num_files_prediction, 1)
@@ -391,9 +428,12 @@ class PreferencePredictor(mp.ModelParameter):
     # (num_files, num_classes) -> (num_classes, 1)
     # --------------------------------------------------------------  
     # pdb.set_trace()
-    ground_truth_label_count = np.unique(data_set_ground_truth_labels,return_counts=True)[1]
-    ground_truth_label_proportion = np.round(ground_truth_label_count/np.sum(ground_truth_label_count), 2)
-     
+    if with_label:
+      ground_truth_label_count = np.unique(data_set_ground_truth_labels,return_counts=True)[1]
+      ground_truth_label_proportion = np.round(ground_truth_label_count/np.sum(ground_truth_label_count), 2)
+    else:
+      ground_truth_label_count = np.zeros((self.NUM_CLASS))
+      ground_truth_label_proportion = np.zeros((self.NUM_CLASS))
     # --------------------------------------------------------------      
     # Return the files used for making predictions
     # (num_files_total, 1) -> (num_files_prediction, 1)
@@ -401,7 +441,7 @@ class PreferencePredictor(mp.ModelParameter):
     files_prediction_traj = files_total_traj[0:num_files_prediction]
     files_prediction_query_state = files_total_query_state[0:num_files_prediction]
     
-    return  prediction_proportion, ground_truth_label_proportion, prediction_count, ground_truth_label_count, data_set_predicted_labels, data_set_ground_truth_labels, files_prediction_traj, files_prediction_query_state
+    return  prediction_proportion, ground_truth_label_proportion, prediction_count, averaged_predicted_probability, ground_truth_label_count, data_set_predicted_labels, data_set_ground_truth_labels, files_prediction_traj, files_prediction_query_state
   
   def restore_graph(self):
     '''
@@ -486,9 +526,10 @@ class PreferencePredictor(mp.ModelParameter):
     # the frequncey of predictions the ground truth labels for each target
     # pdb.set_trace()
     df_proportion_prediction_and_ground_truth_labels = pd.DataFrame(data = {'targets': range(0,4),\
-                                                                           'ground_truth_label_proportion':self.ground_truth_label_proportion,\
+                                                                           'ground_truth_label_proportion': self.ground_truth_label_proportion,\
                                                                            'prediction_proportion': self.prediction_proportion,\
-                                                                           'ground_truth_label_count':self.ground_truth_label_count,\
+                                                                           'avg_prediction_probability': self.averaged_predicted_probability,\
+                                                                           'ground_truth_label_count': self.ground_truth_label_count,\
                                                                            'prediction_count': self.prediction_count,\
                                                                            'accuracy_data_set': np.round((sum(correctness)/len(correctness))*100,2)
                                                                            })

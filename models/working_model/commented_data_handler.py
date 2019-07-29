@@ -132,7 +132,7 @@ class DataHandler(mp.ModelParameter):
       files = list(filter(r.match, files))    
       return files 
       
-    def parse_subset(self, directory, files, parse_query_state):
+    def parse_subset(self, directory, files, parse_query_state, with_label = True):
         '''
         This function wil parse all the files in the directoy and return 
         the corresponding tensors and labels.
@@ -145,7 +145,12 @@ class DataHandler(mp.ModelParameter):
             if 'True', parse only the query states
             and skip the actions; if 'False', parse the whole sequence 
             of trajectories         
-      
+          :param with_label:
+            whether the query state file contains the final
+            target (default to True). Note that this will be False for
+            preference inference on equal-distance files since there are no
+            final tagrgets in such files.
+        
         Returns: 
           :all_data:
             if `parse_query_state == True`, 
@@ -160,7 +165,7 @@ class DataHandler(mp.ModelParameter):
         # --------------------------------------------------------------
         # Initialize empty arrays and constants
         # --------------------------------------------------------------
-        #pdb.set_trace()
+        # pdb.set_trace()
         if not parse_query_state:
           all_data = np.empty([self.MAX_TRAJECTORY_SIZE,self.MAZE_WIDTH,self.MAZE_HEIGHT,self.MAZE_DEPTH_TRAJECTORY])
         else:
@@ -194,7 +199,8 @@ class DataHandler(mp.ModelParameter):
                 if i > j*len(files)/100:
                     print('Parsed ' + str(j) + '%')
                     j+=10
-                query_state, goal = self.parse_query_state(os.path.join(directory, file))
+                query_state, goal = self.parse_query_state(os.path.join(directory, file),\
+                                                           with_label)
                 #pdb.set_trace()
                 all_data = np.vstack((all_data,query_state))
                 all_labels = np.hstack((all_labels,np.array(goal))) 
@@ -363,7 +369,7 @@ class DataHandler(mp.ModelParameter):
         fp.close()
         return output, label
       
-    def parse_query_state(self, filename):
+    def parse_query_state(self, filename, with_label = True):
         '''
         This function wil return a 3-dim tensor including the static information
         of a maze, including 6 layers: 
@@ -373,13 +379,19 @@ class DataHandler(mp.ModelParameter):
         This function is primary for prednet as it needs query state as input.
         
         Args:
-          :param file: the txt file of the trajectory of interest
+          :param filename:
+            the txt file of the trajectory of interest
+          :param with_label:
+            whether the query state file contains the final target (default to True).
+            Note that this will be False for preference inference on 
+            equal-distance files since there are no final tagrgets in such files.
       
         Returns: 
           :np_query_state_tensor:
             a batch data. 3D numpy array of the query state
             (MAZE_WIDTH, MAZE_HEIGHT, MAZE_DEPTH_QUERY_STATE)
-          :label: the numeric index of the final target.
+          :label: the numeric index of the final target. This will be -1
+          if `with_label = False`
         '''
         # --------------------------------------------------------------
         # Construct the query state tensor: (12, 12, 6)
@@ -422,30 +434,36 @@ class DataHandler(mp.ModelParameter):
             # DEPTH = 11 layers = 1 (obstacle) + 4 (targets) + 1 (agent initial position)
             np_query_state_tensor = np.dstack((np_obstacles,np_targets,np_agent))
             
-            # --------------------------------------------------------------
-            # Retrieve the final target (could be training_label, valid_label, testing_label):
-            # size = 1, an int from 0 to 3
-            # --------------------------------------------------------------            
-            #Parse trajectory into 2d array
-            # pdb.set_trace()
-            trajectory = lines[15:]
-            agent_locations = []
-            for i in trajectory:
-                i = i[1:len(i)-2]
-                tmp = i.split(",")
-                try:
-                    agent_locations.append([tmp[0],tmp[1]])
-                except:pass
-  
-            # Make the label from the letter in the final position of the agent 
-            goal = np_maze[int(agent_locations[-1][1])-1][int(agent_locations[-1][0])-1]
-            char_to_int = dict((c, i) for i, c in enumerate(targets))
-            integer_encoded = char_to_int[goal]
-            #label = [0 for _ in range(len(targets))]
-            #label[integer_encoded] = 1
-            
-            #Return label as a number 
-            label = int(integer_encoded)                 
+            if with_label:              
+              # --------------------------------------------------------------
+              # Retrieve the final target (could be training_label, valid_label, testing_label):
+              # size = 1, an int from 0 to 3
+              # --------------------------------------------------------------            
+              #Parse trajectory into 2d array
+              # pdb.set_trace()
+              trajectory = lines[15:]
+              agent_locations = []
+              for i in trajectory:
+                  i = i[1:len(i)-2]
+                  tmp = i.split(",")
+                  try:
+                      agent_locations.append([tmp[0],tmp[1]])
+                  except:pass
+    
+              # Make the label from the letter in the final position of the agent 
+              goal = np_maze[int(agent_locations[-1][1])-1][int(agent_locations[-1][0])-1]
+              char_to_int = dict((c, i) for i, c in enumerate(targets))
+              integer_encoded = char_to_int[goal]
+              #label = [0 for _ in range(len(targets))]
+              #label[integer_encoded] = 1
+              
+              #Return label as a number 
+              label = int(integer_encoded)    
+            else:
+              # --------------------------------------------------------------
+              # When there is no label in the query state file.
+              # --------------------------------------------------------------
+              label = int(-1)
         fp.close()
         # pdb.set_trace()
         return np_query_state_tensor, label
