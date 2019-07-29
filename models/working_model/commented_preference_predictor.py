@@ -45,29 +45,29 @@ class PreferencePredictor(mp.ModelParameter):
   BATCH_SIZE_PREDICT = 16
   SUBSET_SIZE = 96
   BREAK_CORRESPONDENCE = True # This should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
-  VERSION = 'Traj_S030_Query_Stest_subset96'
+#  VERSION = 'Traj_S030_Query_Stest_subset96'
   WITH_LABEL = False # whether the query state has final target label
-#  VERSION = 'S002a_1000files_subset-1'
+  VERSION = 'Traj_S002a_1000_Query_Stest_subset96'
   # dir
   DIR_PREDICTION_ROOT = os.getcwd() # the script dir
   
   # For human data----------
+#  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+#                                                'data','data_human','processed','S030')
+#  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
+#                                                'data','data_preference_predictions',\
+#                                                'query_state')
+#
+#  DIR_MODEL = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_78092b'
+
+  # For simulation data-----------
   DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-                                                'data','data_human','processed','S030')
+                                                 'data','data_simulation','S002a_1000files')
+#  DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
   DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
                                                 'data','data_preference_predictions',\
                                                 'query_state')
-
-  DIR_MODEL = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_78092b'
-
-  # For simulation data-----------
-#  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-#                                                 'data','data_simulation','S002a_1000files')
-#  DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
-##  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-##                                                  'data','data_for_making_preference_predictions',\
-##                                                  'query_state')
-#  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_9f3e1a'
+  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_9f3e1a'
   # --------------------
   
   DIR_MODEL_PREDICTION_RESULT_ROOT = os.path.join(DIR_MODEL,'prediction')

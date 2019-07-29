@@ -59,6 +59,13 @@ ground_truth_label_count	prediction_count	accuracy_data_set
 258	236	62.1
 313	292	62.1
 
+Traj_S002a_1000_Query_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+0.48	0.3	0	46
+0.42	0.35	0	40
+0	0.07	0	0
+0.1	0.27	0	10
+
 ########################################
 
 Finished training session (v20, commit 207536)[At working_model]
