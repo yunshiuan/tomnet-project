@@ -30,8 +30,8 @@ class CharNet(nnl.NeuralNetLayers):
       
       # hyperparameter for create_variables()
       # this is especially for "tf.contrib.layers.l2_regularizer"
-      #self.WEIGHT_DECAY = 0.00002
-      self.WEIGHT_DECAY = 0.001
+      self.WEIGHT_DECAY = 0.00002
+      # self.WEIGHT_DECAY = 0.001
       self.MAZE_DEPTH = 11
   
   def build_charnet(self,input_tensor, n, num_classes, reuse, train):

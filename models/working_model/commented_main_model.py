@@ -65,9 +65,9 @@ class Model(mp.ModelParameter):
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_???_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_v21_commit_???_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  txt_data_path ='../../data/data_simulation/S002a/'
+  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_v22_commit_???'
+  train_fname = 'test_on_simulation_data/training_result/caches/cache_S002a_v22_commit_???'
+  txt_data_path ='../../data/data_simulation/S002b/'
   # for human data 
   # ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
   # train_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'

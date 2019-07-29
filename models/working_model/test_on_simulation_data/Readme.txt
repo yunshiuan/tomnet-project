@@ -32,11 +32,31 @@ Output file name: /cache_S002a_v?_commit_???_epoch8000_tuning_batch16_train_step
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
-(3) Resume weight decay back to 2 x 10-5.
-(4) Train on new data which each maze has equal number of potential targets.
 ########################################
 
-Current training session (v21, commit 9f3e1a)[At working_model]
+Finished training session (v22, commit ?)[At working_model]
+Time: 2019/07/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002a_v20_commit_207536_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
+
+(1) Follow v21 but with a new data set S020b (each maze has equal number of potential targets.)
+(2) Resume weight decay back to 2 x 10-5.
+
+Note:
+(1) 
+(2)
+accurary	mode
+
+(3)
+Traj_S002a_Query_S002a_subset96
+avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+
+Traj_S002a_1000_Query_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+
+########################################
+
+Finished training session (v21, commit 9f3e1a)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002a_v21_commit_9f3e1a_file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
