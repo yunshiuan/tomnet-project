@@ -374,7 +374,8 @@ class PreferencePredictor(mp.ModelParameter):
     # Derive the frequncey of predictions for each target :
     # (num_files, num_classes) -> (num_classes, 1)
     # --------------------------------------------------------------  
-    prediction_count = np.argmax(data_set_prediction_array, 0)
+    # pdb.set_trace()
+    prediction_count = np.unique(data_set_predicted_labels,return_counts=True)[1]
     prediction_proportion = np.round(prediction_count/np.sum(prediction_count), 2)
     
     # --------------------------------------------------------------      
