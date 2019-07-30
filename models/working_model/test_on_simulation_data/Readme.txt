@@ -32,6 +32,8 @@ Output file name: /cache_S002a_v?_commit_???_epoch8000_tuning_batch16_train_step
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
+(3) Reconsider the data format of 'data_preference_predictions'. Maybe I should try more combination?
+
 ########################################
 
 Finished training session (v22, commit c293fa)[At working_model]
@@ -46,7 +48,6 @@ Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 Note:
 (1) Overfitting is reduced but still exists.
 (2)
-accurary	mode
 accurary	mode
 97.66%	train_proportion
 77.62%	vali_proportion
