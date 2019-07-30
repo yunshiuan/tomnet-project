@@ -35,18 +35,22 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (3) Reconsider the data format of 'data_preference_predictions'. Maybe I should try more combination?
 ########################################
 
-Current training session (v23, commit ?)[At working_model]
+Current training session (v23, commit 72fb48)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002b_v23_commit ?_c293fa
+Output file name: /cache_S002b_v23_commit_72fb48
 Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
 (1) Follow v22 but with a larger regularization term (wight decay), from 1x 10-3 to2 x 10-5. 
 
 Note:
-(1) 
+(1) The model is still overfitting.
+
 (2)
 accurary	mode
+96.28%	train_proportion
+76.31%	vali_proportion
+80.14%	test_proportion
 
 (3)
 Traj_S002a_Query_S002a_subset96
