@@ -33,6 +33,28 @@ Output file name: /cache_S002a_v?_commit_???_epoch8000_tuning_batch16_train_step
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
 (3) Reconsider the data format of 'data_preference_predictions'. Maybe I should try more combination?
+########################################
+
+Current training session (v23, commit ?)[At working_model]
+Time: 2019/07/23
+Author: Chuang, Yun-Shiuan
+Output file name: /cache_S002b_v23_commit ?_c293fa
+Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
+
+(1) Follow v22 but with a larger regularization term (wight decay), from 1x 10-3 to2 x 10-5. 
+
+Note:
+(1) 
+(2)
+accurary	mode
+
+(3)
+Traj_S002a_Query_S002a_subset96
+avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+
+
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+
 
 ########################################
 
