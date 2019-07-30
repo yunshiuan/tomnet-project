@@ -55,10 +55,17 @@ accurary	mode
 (3)
 Traj_S002a_Query_S002a_subset96
 avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+0.17	19	16	89.58
+0.21	24	19	89.58
+0.23	22	23	89.58
+0.39	31	38	89.58
 
-
+Traj_S002b_Query_Stest_subset96:
 prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
-
+0.01	0.07	0	1
+0.25	0.23	0	24
+0	0.03	0	0
+0.74	0.67	0	71
 
 ########################################
 

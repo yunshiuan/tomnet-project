@@ -67,7 +67,7 @@ class PreferencePredictor(mp.ModelParameter):
 #  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
 #                                                'data','data_preference_predictions',\
 #                                                'query_state')
-  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002b_v22_commit_c293fa'
+  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S002b_v23_commit_72fb48'
   # --------------------
   
   DIR_MODEL_PREDICTION_RESULT_ROOT = os.path.join(DIR_MODEL,'prediction')
