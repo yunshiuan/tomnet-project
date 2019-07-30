@@ -15,7 +15,7 @@ import os
 import sys
 import numpy as np
 from random import shuffle
-from commented_utils import plot_trajectory
+# from commented_utils import plot_trajectory # no longer needs it
 import re
 import pdb
 import commented_model_parameters as mp
