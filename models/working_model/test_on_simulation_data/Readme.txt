@@ -24,18 +24,15 @@ See README in it for detail.
 
 #########################################
 Future training session
-Time: 2019/06/03
-Future training session (v?, commit ???)[At working_model]
-Author: Chuang, Yun-Shiuan
-Output file name: /cache_S002a_v?_commit_???_epoch8000_tuning_batch16_train_step_0.5M_INIT_LR_10-5
 
 (1) Train the model with variable sequence lengths:
 https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
 (3) Reconsider the data format of 'data_preference_predictions'. Maybe I should try more combination?
+(4)
 ########################################
 
-Current training session (v23, commit 72fb48)[At working_model]
+Finished training session (v23, commit 72fb48)[At working_model]
 Time: 2019/07/23
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002b_v23_commit_72fb48
