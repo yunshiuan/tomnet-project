@@ -266,7 +266,7 @@ while simulation_time<10001:
                         #            print(j)
                         #        print(i)
 
-
+    # pdb.set_trace()
     Path=np.zeros(n_chosen_agents)
     
     if __name__ == '__main__':
@@ -291,7 +291,7 @@ while simulation_time<10001:
         else:
             simulation_time=simulation_time+1
             Path=Path/sum(Path)
-    
+            pdb.set_trace()
             energy_cost=-Path*np.log2(Path)
             social_reward=-D_eff*np.log2(D_eff)
     
