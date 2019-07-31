@@ -20,6 +20,7 @@ import csv
 import random 
 import pdb
 import os
+import pandas as pd
 
 from queue import *
 
@@ -29,9 +30,10 @@ from queue import *
 # --------------------------------------------------------------      
 # Read suject's network
 # - param
-FNAME = 'S002a_familyonly.csv'
+FNAME = 'S002_test'
 RANDOM_NUM_GOALS = False # If true, the number of goals will vary across mazes
 VERSION_NAME = 'S002a_4goals'
+TARGET_ORDER = np.array(['C','D','E','F'])
 # - dir
 DIR_ROOT = os.getcwd()
 DIR_TXT_OUTPUT = os.path.join(DIR_ROOT, '..','data','data_simulation',\
@@ -40,16 +42,22 @@ if not os.path.exists(DIR_TXT_OUTPUT):
   os.makedirs(DIR_TXT_OUTPUT)
 
 # - file
-
+FILE_CSV_SUMMARY = os.path.join(DIR_TXT_OUTPUT, 'summary_simulation.csv')
 #FNAME='/bml/Data/Bank5/AI/AI_simulation/S002_familyonly.csv'
 #FNAME='/bml/Data/Bank5/AI/ai-safety-gridworlds-master/Robohon/Subj_social_network_paramerter_simulation/S001.csv'
+  
+# ---------------------------------------------
+# A data frame to collect parameters maze by maze
+# ---------------------------------------------
+df_collect_final_target_predictions = pd.DataFrame()
+
 with open(FNAME, encoding='utf-8') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     agents_list=list(readCSV)
 
 simulation_time=0
-
-while simulation_time<10001:
+simulation_total = 100
+while simulation_time <= simulation_total:
     # pdb.set_trace()
     # Number of agents in the environment 
     number_agents=len(agents_list) - 2 #exclude the header and the acting agent
@@ -86,7 +94,7 @@ while simulation_time<10001:
     Chosen_agents_label=['A','B','C','D', 'E', 'F']
     #Chosen_agents_label=['A','B','C','D','E','F','G','H', 'I', 'J','K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm']
       
-    # pdb.set_trace()
+    #pdb.set_trace()
     c = list(range(0+2, number_agents+2)) 
     Chosen_agents_index=random.sample(c, n_chosen_agents)
     Chosen_agents_index=np.asarray(Chosen_agents_index)
@@ -271,6 +279,7 @@ while simulation_time<10001:
     
     if __name__ == '__main__':
         for i in range(n_chosen_agents):
+
             field = Field(len=14, start=tuple((x_s, y_s)), finish=tuple((x_random[i], y_random[i])),
                   barriers=Barrier)
             field.emit()
@@ -289,6 +298,13 @@ while simulation_time<10001:
         if len(tem[0])>0:
             continue
         else:
+            # Note that the order of agents is not sequential
+            # because 'random.sample(c, n_chosen_agents)'
+            agent_order_index = Chosen_agents_index.astype(int) - 2
+            agent_order_name = np.array(Chosen_agents_label)[agent_order_index+2]
+            # the location of C, D, E, F
+            agent_CDEF_index =  agent_order_index.argsort()
+            
             simulation_time=simulation_time+1
             Path=Path/sum(Path)
             pdb.set_trace()
@@ -298,7 +314,30 @@ while simulation_time<10001:
             subj_get=social_reward-energy_cost
             determine=np.where(subj_get==np.nanmax(subj_get))
             index_determine=determine[0][0]
-        
+            # pdb.set_trace()
+            
+            # Save the parameters of this maze
+            path_ordered = Path[agent_CDEF_index]
+            energy_cost_ordered = energy_cost[agent_CDEF_index]
+            social_reward_ordered = social_reward[agent_CDEF_index]
+            total_score_ordered = subj_get[agent_CDEF_index]
+            final_target_index = np.where((total_score_ordered == np.nanmax(total_score_ordered)))
+            final_target_name = TARGET_ORDER[final_target_index]
+            df_final_target_predictions = pd.DataFrame(data = {'target_name': TARGET_ORDER,\
+                                                               'social_reward': social_reward_ordered,\
+                                                               'path': path_ordered,\
+                                                               'energy_cost': energy_cost_ordered,\
+                                                               'total_score': total_score_ordered,\
+                                                               'final_target': np.repeat(final_target_name,4),\
+                                                               'simulation_index': np.repeat(str(simulation_time),4)})
+            
+            # pdb.set_trace()
+            if simulation_time > 0:
+              df_collect_final_target_predictions = df_collect_final_target_predictions.append(df_final_target_predictions)
+              
+            if simulation_time == simulation_total:
+              df_collect_final_target_predictions.to_csv(FILE_CSV_SUMMARY)              
+            
         if __name__ == '__main__':   
             field = Field(len=14, start=tuple((x_s, y_s)), finish=tuple((x_random[index_determine], y_random[index_determine])),
                   barriers=Barrier)
