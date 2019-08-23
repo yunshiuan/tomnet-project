@@ -30,7 +30,7 @@ from queue import *
 # --------------------------------------------------------------      
 # Read suject's network
 # - param
-FNAME = 'S002_test'
+FNAME = 'S002_test.csv'
 RANDOM_NUM_GOALS = False # If true, the number of goals will vary across mazes
 VERSION_NAME = 'S002a_4goals'
 TARGET_ORDER = np.array(['C','D','E','F'])
@@ -307,7 +307,7 @@ while simulation_time <= simulation_total:
             
             simulation_time=simulation_time+1
             Path=Path/sum(Path)
-            pdb.set_trace()
+            # pdb.set_trace()
             energy_cost=-Path*np.log2(Path)
             social_reward=-D_eff*np.log2(D_eff)
     
