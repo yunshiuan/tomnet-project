@@ -1,1 +1,1 @@
-See the link for a summarised report: https://gitlab.com/brain-and-mind-lab/research-projects/tomnet-project/blob/v2_test_GPUserver/report/ToMNET.pptx
+See the link for a summarised report: [Click here](report/ToMNET.pptx)/report/ToMNET.pptx
