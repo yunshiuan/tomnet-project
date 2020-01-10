@@ -38,7 +38,7 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002b_v23_commit_72fb48
 Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
-(1) Follow v22 but with a larger regularization term (wight decay), from 1x 10-3 to2 x 10-5. 
+(1) Follow v22 but with a larger regularization term (wight decay), to 1x 10-3 from 2 x 10-5. 
 
 Note:
 (1) The model is still overfitting.
@@ -50,7 +50,7 @@ accurary	mode
 80.14%	test_proportion
 
 (3)
-Traj_S002a_Query_S002a_subset96
+Traj_S002b_Query_S002b_subset96
 avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
 0.17	19	16	89.58
 0.21	24	19	89.58
@@ -72,7 +72,7 @@ Author: Chuang, Yun-Shiuan
 Output file name: /cache_S002b_v22_commit_c293fa
 Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
-(1) Follow v21 but with a new data set S020b (each maze has equal number of potential targets.)
+(1) Follow v21 but with a new data set S002b (each maze has equal number of potential targets.)
 (2) Resume weight decay back to 2 x 10-5.
 
 Note:
@@ -84,7 +84,7 @@ accurary	mode
 80.85%	test_proportion
 
 (3)
-Traj_S002a_Query_S002a_subset96
+Traj_S002b_Query_S002b_subset96
 avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
 0.2	19	19	92.71
 0.22	24	21	92.71
