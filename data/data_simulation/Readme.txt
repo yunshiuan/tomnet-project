@@ -12,5 +12,5 @@ S002b:
 - This is to make the task easier for model to learn. It is impossible for a
 model to infer the target by a qeury state if the trajectory the model saw
 contained only 1 goal.
-- Based on 'S002a_familyonly.csv'.
+- Based on 'S002b_familyonly.csv'.
  
