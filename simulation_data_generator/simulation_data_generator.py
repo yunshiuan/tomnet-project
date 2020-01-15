@@ -30,10 +30,11 @@ from queue import *
 # --------------------------------------------------------------      
 # Read suject's network
 # - param
-FNAME = 'S002_test.csv'
+FNAME = 'S003b.csv'
 RANDOM_NUM_GOALS = False # If true, the number of goals will vary across mazes
-VERSION_NAME = 'S002a_4goals'
+VERSION_NAME = 'S003b'
 TARGET_ORDER = np.array(['C','D','E','F'])
+SIMULATION_TOTAL = 10000
 # - dir
 DIR_ROOT = os.getcwd()
 DIR_TXT_OUTPUT = os.path.join(DIR_ROOT, '..','data','data_simulation',\
@@ -56,8 +57,8 @@ with open(FNAME, encoding='utf-8') as csvfile:
     agents_list=list(readCSV)
 
 simulation_time=0
-simulation_total = 100
-while simulation_time <= simulation_total:
+
+while simulation_time <= SIMULATION_TOTAL:
     # pdb.set_trace()
     # Number of agents in the environment 
     number_agents=len(agents_list) - 2 #exclude the header and the acting agent
@@ -179,6 +180,7 @@ while simulation_time <= simulation_total:
     Subj_parameter=agents_list[1]
 
     D_eff=np.zeros(n_chosen_agents)
+
     for i in range (n_chosen_agents):
         personality_weight=np.sqrt(((int(Chosen_agents[i][6])-int(Subj_parameter[6]))/45)**2+((int(Chosen_agents[i][7])-int(Subj_parameter[7]))/50)**2+((int(Chosen_agents[i][8])-int(Subj_parameter[8])/50)**2))
         association=np.sqrt(((int(Chosen_agents[i][3]))/26)**2+((int(Chosen_agents[i][4]))/5)**2+((int(Chosen_agents[i][5]))/3)**2)
@@ -335,7 +337,7 @@ while simulation_time <= simulation_total:
             if simulation_time > 0:
               df_collect_final_target_predictions = df_collect_final_target_predictions.append(df_final_target_predictions)
               
-            if simulation_time == simulation_total:
+            if simulation_time == SIMULATION_TOTAL:
               df_collect_final_target_predictions.to_csv(FILE_CSV_SUMMARY)              
             
         if __name__ == '__main__':   
