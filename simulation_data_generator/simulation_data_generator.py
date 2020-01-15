@@ -34,7 +34,8 @@ FNAME = 'S003b.csv'
 RANDOM_NUM_GOALS = False # If true, the number of goals will vary across mazes
 VERSION_NAME = 'S003b'
 TARGET_ORDER = np.array(['C','D','E','F'])
-SIMULATION_TOTAL = 10000
+SIMULATION_TOTAL = 10
+AGENT_NAME = "S003"
 # - dir
 DIR_ROOT = os.getcwd()
 DIR_TXT_OUTPUT = os.path.join(DIR_ROOT, '..','data','data_simulation',\
@@ -347,7 +348,7 @@ while simulation_time <= SIMULATION_TOTAL:
             field()
             try:
                 output_file  = os.path.join(DIR_TXT_OUTPUT, \
-                                            "S002_"+str(simulation_time)+".txt")
+                                            str(AGENT_NAME)+"_"+str(simulation_time)+".txt")
                 text_file = open(output_file, "w")
                 text_file.write('Maze:\n')
                 
