@@ -65,9 +65,9 @@ class Model(mp.ModelParameter):
   # --------------------------------------  
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S002b_v23_commit_?'
-  train_fname = 'test_on_simulation_data/training_result/caches/cache_S002b_v23_commit_?'
-  txt_data_path ='../../data/data_simulation/S002b/'
+  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
+  train_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
+  txt_data_path ='../../data/data_simulation/S003b/'
   # for human data 
   # ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
   # train_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
@@ -478,6 +478,7 @@ class Model(mp.ModelParameter):
         sec_per_batch = float(duration) # seconds for this step
 
         format_str = ('%s: step %d, loss = %.4f (%.1f examples/sec; %.3f ' 'sec/batch)')
+        # pdb.set_trace()
         print(format_str % (datetime.datetime.now(), step, train_loss_value, examples_per_sec, sec_per_batch))
         print('Train top1 error = ', train_error_value)
         print('Validation top1 error = %.4f' % validation_error_value)
@@ -987,7 +988,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()	
     model = Model(args)
-    
+    # pdb.set_trace()
     if args.mode == 'train' or args.mode == 'all':
       model.train()
     if args.mode == 'test' or args.mode == 'all':
