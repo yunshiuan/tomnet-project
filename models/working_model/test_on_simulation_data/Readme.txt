@@ -32,10 +32,10 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (4)
 ########################################
 
-Finished training session (v24, commit ?)[At working_model]
+Finished training session (v24, commit 014d79)[At working_model]
 Time: 2020/01/15
 Author: Elaine
-Output file name: /cache_S003b_v24_commit_?
+Output file name: /cache_S003b_v24_commit_014d79
 Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
 (1) Follow v23 but train it with S003b data.
@@ -44,6 +44,9 @@ Note:
 
 (2)
 accurary	mode
+97.09%	train_proportion
+75.91%	vali_proportion
+75.3%	test_proportion
 
 
 (3)

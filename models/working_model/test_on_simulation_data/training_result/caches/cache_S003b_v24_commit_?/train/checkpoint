@@ -1,0 +1,3 @@
+model_checkpoint_path: "/home/elaine/Desktop/tomnet-project/models/working_model/test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?/train/model.ckpt-9999"
+all_model_checkpoint_paths: "/home/elaine/Desktop/tomnet-project/models/working_model/test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?/train/model.ckpt-0"
+all_model_checkpoint_paths: "/home/elaine/Desktop/tomnet-project/models/working_model/test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?/train/model.ckpt-9999"
