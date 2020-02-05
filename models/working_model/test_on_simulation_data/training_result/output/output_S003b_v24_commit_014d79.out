@@ -1,0 +1,690 @@
+/home/elaine/.conda/envs/tomnet/lib/python3.6/site-packages/tensorflow/python/framework/dtypes.py:519: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint8 = np.dtype([("qint8", np.int8, 1)])
+/home/elaine/.conda/envs/tomnet/lib/python3.6/site-packages/tensorflow/python/framework/dtypes.py:520: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_quint8 = np.dtype([("quint8", np.uint8, 1)])
+/home/elaine/.conda/envs/tomnet/lib/python3.6/site-packages/tensorflow/python/framework/dtypes.py:521: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint16 = np.dtype([("qint16", np.int16, 1)])
+/home/elaine/.conda/envs/tomnet/lib/python3.6/site-packages/tensorflow/python/framework/dtypes.py:522: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_quint16 = np.dtype([("quint16", np.uint16, 1)])
+/home/elaine/.conda/envs/tomnet/lib/python3.6/site-packages/tensorflow/python/framework/dtypes.py:523: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  _np_qint32 = np.dtype([("qint32", np.int32, 1)])
+/home/elaine/.conda/envs/tomnet/lib/python3.6/site-packages/tensorflow/python/framework/dtypes.py:528: FutureWarning: Passing (type, 1) or '1type' as a synonym of type is deprecated; in a future version of numpy, it will be understood as (type, (1,)) / '(1,)type'.
+  np_resource = np.dtype([("resource", np.ubyte, 1)])
+WARNING:tensorflow:From /home/elaine/Desktop/tomnet-project/models/working_model/commented_nn_layers.py:346: UniformUnitScaling.__init__ (from tensorflow.python.ops.init_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.initializers.variance_scaling instead with distribution=uniform to get equivalent behavior.
+WARNING:tensorflow:From /home/elaine/.conda/envs/tomnet/lib/python3.6/site-packages/tensorflow/python/util/tf_should_use.py:118: initialize_all_variables (from tensorflow.python.ops.variables) is deprecated and will be removed after 2017-03-02.
+Instructions for updating:
+Use `tf.global_variables_initializer` instead.
+2020-01-15 18:09:43.790948: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
+2020-01-15 18:09:43.791144: I tensorflow/core/common_runtime/process_util.cc:63] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+Parse  trajectories---------------
+Found 10001 files in /home/elaine/Desktop/tomnet-project/models/working_model/../../data/data_simulation/S003b/
+Parsing training data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (8000, 10, 12, 12, 11) datapoints
+Parsing validation data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (1000, 10, 12, 12, 11) datapoints
+Parsing testing data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (1001, 10, 12, 12, 11) datapoints
+Parse  query states---------------
+Found 10001 files in /home/elaine/Desktop/tomnet-project/models/working_model/../../data/data_simulation/S003b/
+Parsing training data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (8000, 12, 12, 6) datapoints
+Parsing validation data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (1000, 12, 12, 6) datapoints
+Parsing testing data
+Parsed 0%
+Parsed 10%
+Parsed 20%
+Parsed 30%
+Parsed 40%
+Parsed 50%
+Parsed 60%
+Parsed 70%
+Parsed 80%
+Parsed 90%
+Parsed 100%
+Got (1001, 12, 12, 6) datapoints
+Start training-----------------
+Start training batch by batch...
+----------------------------
+2020-01-15 18:09:52.375953: step 0, loss = 2.1065 (4.0 examples/sec; 3.992 sec/batch)
+Train top1 error =  0.75
+Validation top1 error = 0.6875
+Validation loss =  2.080649
+----------------------------
+2020-01-15 18:11:34.674353: step 100, loss = 1.7194 (17.0 examples/sec; 0.940 sec/batch)
+Train top1 error =  0.6875
+Validation top1 error = 0.5000
+Validation loss =  1.2645025
+----------------------------
+2020-01-15 18:13:16.131836: step 200, loss = 1.6386 (16.7 examples/sec; 0.958 sec/batch)
+Train top1 error =  0.5
+Validation top1 error = 0.8750
+Validation loss =  1.4274259
+----------------------------
+2020-01-15 18:14:55.313736: step 300, loss = 1.8103 (15.6 examples/sec; 1.027 sec/batch)
+Train top1 error =  0.9375
+Validation top1 error = 0.8125
+Validation loss =  1.5129362
+----------------------------
+2020-01-15 18:16:37.087146: step 400, loss = 1.6418 (17.2 examples/sec; 0.928 sec/batch)
+Train top1 error =  0.6875
+Validation top1 error = 0.6250
+Validation loss =  1.4579201
+----------------------------
+2020-01-15 18:18:17.681683: step 500, loss = 1.7118 (17.7 examples/sec; 0.904 sec/batch)
+Train top1 error =  0.625
+Validation top1 error = 0.6250
+Validation loss =  1.2720609
+----------------------------
+2020-01-15 18:19:59.576747: step 600, loss = 1.6720 (14.7 examples/sec; 1.092 sec/batch)
+Train top1 error =  0.625
+Validation top1 error = 0.6250
+Validation loss =  1.315572
+----------------------------
+2020-01-15 18:21:41.817674: step 700, loss = 1.8148 (15.3 examples/sec; 1.044 sec/batch)
+Train top1 error =  0.8125
+Validation top1 error = 0.8125
+Validation loss =  1.3713303
+----------------------------
+2020-01-15 18:23:23.403633: step 800, loss = 1.5548 (18.0 examples/sec; 0.890 sec/batch)
+Train top1 error =  0.5
+Validation top1 error = 0.8750
+Validation loss =  1.531074
+----------------------------
+2020-01-15 18:25:04.833553: step 900, loss = 1.6486 (15.4 examples/sec; 1.038 sec/batch)
+Train top1 error =  0.625
+Validation top1 error = 0.6875
+Validation loss =  1.2878486
+----------------------------
+2020-01-15 18:26:45.588747: step 1000, loss = 1.5327 (18.2 examples/sec; 0.881 sec/batch)
+Train top1 error =  0.375
+Validation top1 error = 0.6250
+Validation loss =  1.3858497
+----------------------------
+2020-01-15 18:28:26.988481: step 1100, loss = 1.5192 (16.9 examples/sec; 0.947 sec/batch)
+Train top1 error =  0.5625
+Validation top1 error = 0.6250
+Validation loss =  1.3790281
+----------------------------
+2020-01-15 18:30:08.435809: step 1200, loss = 1.7157 (15.7 examples/sec; 1.016 sec/batch)
+Train top1 error =  0.8125
+Validation top1 error = 0.7500
+Validation loss =  1.3915375
+----------------------------
+2020-01-15 18:31:48.640605: step 1300, loss = 1.5356 (15.7 examples/sec; 1.021 sec/batch)
+Train top1 error =  0.5
+Validation top1 error = 0.6250
+Validation loss =  1.3322084
+----------------------------
+2020-01-15 18:33:30.104715: step 1400, loss = 1.6231 (16.3 examples/sec; 0.979 sec/batch)
+Train top1 error =  0.5625
+Validation top1 error = 0.7500
+Validation loss =  1.4634203
+----------------------------
+2020-01-15 18:35:11.018624: step 1500, loss = 1.6121 (17.5 examples/sec; 0.913 sec/batch)
+Train top1 error =  0.6875
+Validation top1 error = 0.5625
+Validation loss =  1.2980237
+----------------------------
+2020-01-15 18:36:50.789485: step 1600, loss = 1.5959 (17.6 examples/sec; 0.908 sec/batch)
+Train top1 error =  0.5625
+Validation top1 error = 0.6250
+Validation loss =  1.2612169
+----------------------------
+2020-01-15 18:38:32.588598: step 1700, loss = 1.7628 (17.6 examples/sec; 0.908 sec/batch)
+Train top1 error =  0.6875
+Validation top1 error = 0.5625
+Validation loss =  1.3607426
+----------------------------
+2020-01-15 18:40:13.234051: step 1800, loss = 1.4865 (17.9 examples/sec; 0.895 sec/batch)
+Train top1 error =  0.625
+Validation top1 error = 0.6875
+Validation loss =  1.4422333
+----------------------------
+2020-01-15 18:41:52.045721: step 1900, loss = 1.6204 (16.3 examples/sec; 0.981 sec/batch)
+Train top1 error =  0.5
+Validation top1 error = 0.8750
+Validation loss =  1.3600845
+----------------------------
+2020-01-15 18:43:31.977903: step 2000, loss = 1.6708 (16.4 examples/sec; 0.973 sec/batch)
+Train top1 error =  0.75
+Validation top1 error = 0.7500
+Validation loss =  1.5346559
+----------------------------
+2020-01-15 18:45:12.997761: step 2100, loss = 1.6265 (15.2 examples/sec; 1.050 sec/batch)
+Train top1 error =  0.625
+Validation top1 error = 0.6250
+Validation loss =  1.3314483
+----------------------------
+2020-01-15 18:47:00.154725: step 2200, loss = 1.5708 (15.6 examples/sec; 1.028 sec/batch)
+Train top1 error =  0.6875
+Validation top1 error = 0.6250
+Validation loss =  1.4325418
+----------------------------
+2020-01-15 18:48:53.761485: step 2300, loss = 1.5804 (14.6 examples/sec; 1.099 sec/batch)
+Train top1 error =  0.625
+Validation top1 error = 0.5625
+Validation loss =  1.3556927
+----------------------------
+2020-01-15 18:50:51.952094: step 2400, loss = 1.6839 (12.9 examples/sec; 1.239 sec/batch)
+Train top1 error =  0.6875
+Validation top1 error = 0.6875
+Validation loss =  1.3575004
+----------------------------
+2020-01-15 18:52:46.977034: step 2500, loss = 1.5586 (12.6 examples/sec; 1.275 sec/batch)
+Train top1 error =  0.5625
+Validation top1 error = 0.3750
+Validation loss =  1.017062
+----------------------------
+2020-01-15 18:54:41.179487: step 2600, loss = 1.4135 (15.1 examples/sec; 1.061 sec/batch)
+Train top1 error =  0.5625
+Validation top1 error = 0.3750
+Validation loss =  0.8978197
+----------------------------
+2020-01-15 18:56:28.824208: step 2700, loss = 1.1063 (12.7 examples/sec; 1.263 sec/batch)
+Train top1 error =  0.3125
+Validation top1 error = 0.6250
+Validation loss =  1.1965164
+----------------------------
+2020-01-15 18:58:18.527861: step 2800, loss = 0.8483 (12.9 examples/sec; 1.244 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.5625
+Validation loss =  1.0817165
+----------------------------
+2020-01-15 19:00:05.716797: step 2900, loss = 1.0924 (13.7 examples/sec; 1.171 sec/batch)
+Train top1 error =  0.3125
+Validation top1 error = 0.5000
+Validation loss =  1.0855112
+----------------------------
+2020-01-15 19:01:55.183163: step 3000, loss = 1.3308 (14.2 examples/sec; 1.128 sec/batch)
+Train top1 error =  0.375
+Validation top1 error = 0.4375
+Validation loss =  0.9901572
+----------------------------
+2020-01-15 19:03:44.475353: step 3100, loss = 1.1953 (13.0 examples/sec; 1.231 sec/batch)
+Train top1 error =  0.4375
+Validation top1 error = 0.3125
+Validation loss =  0.75747615
+----------------------------
+2020-01-15 19:05:33.080300: step 3200, loss = 0.9873 (14.9 examples/sec; 1.074 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.5625
+Validation loss =  1.2735758
+----------------------------
+2020-01-15 19:07:22.207193: step 3300, loss = 1.0815 (12.9 examples/sec; 1.241 sec/batch)
+Train top1 error =  0.375
+Validation top1 error = 0.1250
+Validation loss =  0.4950322
+----------------------------
+2020-01-15 19:09:10.456221: step 3400, loss = 0.8686 (14.0 examples/sec; 1.139 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.2500
+Validation loss =  0.66147095
+----------------------------
+2020-01-15 19:11:00.651724: step 3500, loss = 0.8566 (14.7 examples/sec; 1.090 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.2500
+Validation loss =  0.62747246
+----------------------------
+2020-01-15 19:12:50.006641: step 3600, loss = 1.0864 (13.4 examples/sec; 1.196 sec/batch)
+Train top1 error =  0.3125
+Validation top1 error = 0.4375
+Validation loss =  0.9567138
+----------------------------
+2020-01-15 19:14:38.489480: step 3700, loss = 1.5615 (13.6 examples/sec; 1.176 sec/batch)
+Train top1 error =  0.4375
+Validation top1 error = 0.3125
+Validation loss =  0.69931924
+----------------------------
+2020-01-15 19:16:24.879067: step 3800, loss = 0.6991 (14.0 examples/sec; 1.140 sec/batch)
+Train top1 error =  0.1875
+Validation top1 error = 0.3125
+Validation loss =  1.0072592
+----------------------------
+2020-01-15 19:18:12.883376: step 3900, loss = 1.1302 (14.2 examples/sec; 1.130 sec/batch)
+Train top1 error =  0.375
+Validation top1 error = 0.3125
+Validation loss =  0.6790386
+----------------------------
+2020-01-15 19:20:03.118954: step 4000, loss = 0.6617 (13.8 examples/sec; 1.156 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.1250
+Validation loss =  0.65922797
+----------------------------
+2020-01-15 19:21:51.938522: step 4100, loss = 0.6667 (12.9 examples/sec; 1.242 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1875
+Validation loss =  0.38037425
+----------------------------
+2020-01-15 19:23:40.643715: step 4200, loss = 0.4021 (16.1 examples/sec; 0.993 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1875
+Validation loss =  0.57308125
+----------------------------
+2020-01-15 19:25:30.320338: step 4300, loss = 1.0373 (13.8 examples/sec; 1.156 sec/batch)
+Train top1 error =  0.375
+Validation top1 error = 0.2500
+Validation loss =  0.87202215
+----------------------------
+2020-01-15 19:27:18.644577: step 4400, loss = 0.5780 (17.5 examples/sec; 0.916 sec/batch)
+Train top1 error =  0.1875
+Validation top1 error = 0.3125
+Validation loss =  0.5727766
+----------------------------
+2020-01-15 19:29:06.407424: step 4500, loss = 0.4831 (15.0 examples/sec; 1.066 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2500
+Validation loss =  0.73663354
+----------------------------
+2020-01-15 19:30:53.778045: step 4600, loss = 0.4981 (16.3 examples/sec; 0.980 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.4375
+Validation loss =  1.0317774
+----------------------------
+2020-01-15 19:32:43.668501: step 4700, loss = 0.6466 (16.2 examples/sec; 0.985 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.0625
+Validation loss =  0.4318034
+----------------------------
+2020-01-15 19:34:30.992488: step 4800, loss = 0.5652 (14.9 examples/sec; 1.073 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1875
+Validation loss =  0.45771006
+----------------------------
+2020-01-15 19:36:17.504287: step 4900, loss = 0.8147 (15.5 examples/sec; 1.029 sec/batch)
+Train top1 error =  0.1875
+Validation top1 error = 0.2500
+Validation loss =  0.7769209
+----------------------------
+2020-01-15 19:38:10.007078: step 5000, loss = 0.3267 (14.3 examples/sec; 1.122 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3750
+Validation loss =  1.0634445
+----------------------------
+2020-01-15 19:40:00.574080: step 5100, loss = 0.4820 (16.5 examples/sec; 0.972 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.3125
+Validation loss =  0.6578932
+----------------------------
+2020-01-15 19:41:50.671398: step 5200, loss = 0.5536 (14.9 examples/sec; 1.074 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.1250
+Validation loss =  0.53516644
+----------------------------
+2020-01-15 19:43:42.075736: step 5300, loss = 0.9387 (15.5 examples/sec; 1.031 sec/batch)
+Train top1 error =  0.25
+Validation top1 error = 0.3125
+Validation loss =  0.8926333
+----------------------------
+2020-01-15 19:45:30.050875: step 5400, loss = 0.6142 (14.6 examples/sec; 1.097 sec/batch)
+Train top1 error =  0.1875
+Validation top1 error = 0.3125
+Validation loss =  0.67957366
+----------------------------
+2020-01-15 19:47:17.641712: step 5500, loss = 0.4485 (16.8 examples/sec; 0.953 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0000
+Validation loss =  0.08658536
+----------------------------
+2020-01-15 19:48:54.374785: step 5600, loss = 0.9969 (18.0 examples/sec; 0.890 sec/batch)
+Train top1 error =  0.3125
+Validation top1 error = 0.3750
+Validation loss =  0.94402605
+----------------------------
+2020-01-15 19:50:32.225615: step 5700, loss = 0.4297 (17.3 examples/sec; 0.924 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.3125
+Validation loss =  0.59758675
+----------------------------
+2020-01-15 19:52:08.574746: step 5800, loss = 0.4263 (17.8 examples/sec; 0.899 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.3125
+Validation loss =  0.78660774
+----------------------------
+2020-01-15 19:53:45.177424: step 5900, loss = 0.4578 (16.5 examples/sec; 0.971 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2500
+Validation loss =  0.729484
+----------------------------
+2020-01-15 19:55:21.936067: step 6000, loss = 0.4988 (17.3 examples/sec; 0.927 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.4375
+Validation loss =  1.4699508
+----------------------------
+2020-01-15 19:57:00.409337: step 6100, loss = 0.6797 (16.4 examples/sec; 0.973 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2500
+Validation loss =  1.1060046
+----------------------------
+2020-01-15 19:58:36.995555: step 6200, loss = 0.3188 (14.4 examples/sec; 1.109 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.5000
+Validation loss =  1.2666196
+----------------------------
+2020-01-15 20:00:13.455783: step 6300, loss = 0.4721 (15.6 examples/sec; 1.023 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.1875
+Validation loss =  0.69519985
+----------------------------
+2020-01-15 20:01:50.208665: step 6400, loss = 0.3070 (15.8 examples/sec; 1.015 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1875
+Validation loss =  0.893046
+----------------------------
+2020-01-15 20:03:25.753104: step 6500, loss = 0.3538 (16.9 examples/sec; 0.948 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1250
+Validation loss =  0.5270516
+----------------------------
+2020-01-15 20:05:02.274213: step 6600, loss = 0.3310 (18.6 examples/sec; 0.859 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3750
+Validation loss =  0.6722502
+----------------------------
+2020-01-15 20:06:40.294204: step 6700, loss = 0.4501 (17.3 examples/sec; 0.923 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1875
+Validation loss =  0.52867407
+----------------------------
+2020-01-15 20:08:16.209207: step 6800, loss = 0.5857 (17.7 examples/sec; 0.904 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.3125
+Validation loss =  0.538502
+----------------------------
+2020-01-15 20:09:51.783504: step 6900, loss = 0.3391 (17.8 examples/sec; 0.901 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1250
+Validation loss =  0.28936982
+----------------------------
+2020-01-15 20:11:29.216074: step 7000, loss = 0.6023 (18.3 examples/sec; 0.873 sec/batch)
+Train top1 error =  0.1875
+Validation top1 error = 0.4375
+Validation loss =  1.7115805
+----------------------------
+2020-01-15 20:13:06.616792: step 7100, loss = 0.6943 (16.1 examples/sec; 0.994 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.0625
+Validation loss =  0.10705595
+----------------------------
+2020-01-15 20:14:42.834885: step 7200, loss = 0.3581 (18.2 examples/sec; 0.877 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2500
+Validation loss =  0.81079656
+WARNING:tensorflow:From commented_main_model.py:772: all_variables (from tensorflow.python.ops.variables) is deprecated and will be removed after 2017-03-02.
+Instructions for updating:
+Please use tf.global_variables instead.
+----------------------------
+2020-01-15 20:16:18.858615: step 7300, loss = 0.2842 (16.0 examples/sec; 1.000 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3750
+Validation loss =  1.7990372
+----------------------------
+2020-01-15 20:17:54.805916: step 7400, loss = 0.4377 (15.6 examples/sec; 1.028 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.3125
+Validation loss =  1.0440484
+----------------------------
+2020-01-15 20:19:32.089169: step 7500, loss = 0.3062 (18.8 examples/sec; 0.850 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3750
+Validation loss =  1.7981051
+----------------------------
+2020-01-15 20:21:09.480097: step 7600, loss = 0.3163 (15.9 examples/sec; 1.006 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3125
+Validation loss =  0.5239005
+----------------------------
+2020-01-15 20:22:46.424804: step 7700, loss = 0.4022 (15.6 examples/sec; 1.023 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2500
+Validation loss =  1.0602094
+----------------------------
+2020-01-15 20:24:23.944549: step 7800, loss = 0.2866 (17.3 examples/sec; 0.923 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.5000
+Validation loss =  1.6591592
+----------------------------
+2020-01-15 20:25:59.419440: step 7900, loss = 0.6310 (17.7 examples/sec; 0.902 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1875
+Validation loss =  0.6577053
+----------------------------
+2020-01-15 20:27:35.986391: step 8000, loss = 0.3639 (18.3 examples/sec; 0.872 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1250
+Validation loss =  0.5215956
+----------------------------
+2020-01-15 20:29:12.823795: step 8100, loss = 0.2763 (16.7 examples/sec; 0.957 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1875
+Validation loss =  0.79579693
+----------------------------
+2020-01-15 20:30:49.491800: step 8200, loss = 0.3707 (16.0 examples/sec; 1.001 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.3125
+Validation loss =  0.8537681
+----------------------------
+2020-01-15 20:32:26.948561: step 8300, loss = 0.3019 (16.6 examples/sec; 0.965 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3125
+Validation loss =  0.9567722
+----------------------------
+2020-01-15 20:34:02.820114: step 8400, loss = 0.3743 (15.1 examples/sec; 1.058 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.0625
+Validation loss =  0.71213675
+----------------------------
+2020-01-15 20:35:39.564758: step 8500, loss = 0.3381 (17.3 examples/sec; 0.925 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1250
+Validation loss =  0.69406325
+----------------------------
+2020-01-15 20:37:17.609049: step 8600, loss = 0.3013 (15.6 examples/sec; 1.027 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1250
+Validation loss =  0.6291617
+----------------------------
+2020-01-15 20:38:54.612491: step 8700, loss = 0.2589 (18.0 examples/sec; 0.887 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.4375
+Validation loss =  2.0356293
+----------------------------
+2020-01-15 20:40:31.071958: step 8800, loss = 0.4820 (17.5 examples/sec; 0.915 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.4375
+Validation loss =  1.6631408
+----------------------------
+2020-01-15 20:42:08.893532: step 8900, loss = 0.3561 (14.6 examples/sec; 1.098 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1875
+Validation loss =  0.57299787
+----------------------------
+2020-01-15 20:43:46.932569: step 9000, loss = 0.4584 (17.7 examples/sec; 0.903 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1250
+Validation loss =  0.4584743
+----------------------------
+2020-01-15 20:45:23.615080: step 9100, loss = 0.4404 (18.2 examples/sec; 0.881 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2500
+Validation loss =  1.3093956
+----------------------------
+2020-01-15 20:46:59.805850: step 9200, loss = 0.2893 (18.5 examples/sec; 0.866 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.2500
+Validation loss =  0.62319165
+----------------------------
+2020-01-15 20:48:37.933616: step 9300, loss = 0.2775 (18.0 examples/sec; 0.891 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.3750
+Validation loss =  1.7698271
+----------------------------
+2020-01-15 20:50:17.091976: step 9400, loss = 0.4531 (17.7 examples/sec; 0.906 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.3125
+Validation loss =  0.750355
+----------------------------
+2020-01-15 20:51:55.069387: step 9500, loss = 0.2473 (18.3 examples/sec; 0.873 sec/batch)
+Train top1 error =  0.0
+Validation top1 error = 0.1875
+Validation loss =  0.49121854
+----------------------------
+2020-01-15 20:53:34.373718: step 9600, loss = 0.2867 (17.7 examples/sec; 0.905 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.2500
+Validation loss =  1.1183957
+----------------------------
+2020-01-15 20:55:14.140264: step 9700, loss = 0.2636 (16.5 examples/sec; 0.972 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.3125
+Validation loss =  1.0525546
+----------------------------
+2020-01-15 20:56:52.029552: step 9800, loss = 0.5262 (18.9 examples/sec; 0.845 sec/batch)
+Train top1 error =  0.125
+Validation top1 error = 0.1875
+Validation loss =  0.54756975
+----------------------------
+2020-01-15 20:58:29.938047: step 9900, loss = 0.3788 (13.9 examples/sec; 1.155 sec/batch)
+Train top1 error =  0.0625
+Validation top1 error = 0.1250
+Validation loss =  0.65436006
+----------------------------
+500 train batches in total...
+Model restored from  /home/elaine/Desktop/tomnet-project/models/working_model/test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?/train/model.ckpt-9999
+0 batches finished!
+10 batches finished!
+20 batches finished!
+30 batches finished!
+40 batches finished!
+50 batches finished!
+60 batches finished!
+70 batches finished!
+80 batches finished!
+90 batches finished!
+100 batches finished!
+110 batches finished!
+120 batches finished!
+130 batches finished!
+140 batches finished!
+150 batches finished!
+160 batches finished!
+170 batches finished!
+180 batches finished!
+190 batches finished!
+200 batches finished!
+210 batches finished!
+220 batches finished!
+230 batches finished!
+240 batches finished!
+250 batches finished!
+260 batches finished!
+270 batches finished!
+280 batches finished!
+290 batches finished!
+300 batches finished!
+310 batches finished!
+320 batches finished!
+330 batches finished!
+340 batches finished!
+350 batches finished!
+360 batches finished!
+370 batches finished!
+380 batches finished!
+390 batches finished!
+400 batches finished!
+410 batches finished!
+420 batches finished!
+430 batches finished!
+440 batches finished!
+450 batches finished!
+460 batches finished!
+470 batches finished!
+480 batches finished!
+490 batches finished!
+
+train: proportion_accuracy()
+Matches: 7767/8000
+Accuracy: 97.09%
+62 vali batches in total...
+Model restored from  /home/elaine/Desktop/tomnet-project/models/working_model/test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?/train/model.ckpt-9999
+0 batches finished!
+10 batches finished!
+20 batches finished!
+30 batches finished!
+40 batches finished!
+50 batches finished!
+60 batches finished!
+
+vali: proportion_accuracy()
+Matches: 753/992
+Accuracy: 75.91%
+62 test batches in total...
+Model restored from  /home/elaine/Desktop/tomnet-project/models/working_model/test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?/train/model.ckpt-9999
+0 batches finished!
+10 batches finished!
+20 batches finished!
+30 batches finished!
+40 batches finished!
+50 batches finished!
+60 batches finished!
+
+test: proportion_accuracy()
+Matches: 747/992
+Accuracy: 75.3%
