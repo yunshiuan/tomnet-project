@@ -40,7 +40,7 @@ Info: file10000_tuning_batch16_train_step_10K_INIT_LR_10-4
 
 (1) Follow v23 but train it with S003b data.
 Note:
-(1) 
+(1) The result is similar to v23.
 
 (2)
 accurary	mode
@@ -50,13 +50,16 @@ accurary	mode
 
 
 (3)
-Traj_S002b_Query_S002b_subset96
+Traj_S003b_Query_S003b_subset96
 avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+0.21	19	19	85.42
+0.25	21	25	85.42
+0.14	19	12	85.42
+0.41	37	40	85.42
 
-
-Traj_S002b_Query_Stest_subset96:
+Traj_S003b_Query_Stest_subset96:
 prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
-
+0.25	0.2	0	240.15	0.2	0	140	0.05	0	00.6	0.55	0	58
 ########################################
 
 ########################################
