@@ -21,7 +21,7 @@ visualize_one_traning_performace <- function(file_error_csv,
   # - param path_output_figure: the path of the output figure.
   # - param overwrite: whether to overwrite if the figure file already exists
   # - return None: It write the plot to a output file.
-  
+
   # check if the figure file already exists
   if (!overwrite) { # skip it if overwrite == F
     figure_full_name <- file.path(path_figure_output, file_name_figure_output)
@@ -77,7 +77,7 @@ visualize_all_traning_performace <- function(path_training_result,
       if (!is.na(train_type)) {
         file_name_figure_output <- paste0(train_type)
       }
-      
+
       # the case for nested result structure (one version with multiple subjects)
       if (is.na(train_type)) {
         version <- str_extract(
@@ -90,7 +90,7 @@ visualize_all_traning_performace <- function(path_training_result,
         )
         file_name_figure_output <- paste0(version, "_", subject_name)
       }
-      
+
       # get the number of the total trajectories in the data set
       # - ignore this if '_train_test_and_validation_accuracy.csv' does not exist
       result_num_files <-
@@ -101,14 +101,14 @@ visualize_all_traning_performace <- function(path_training_result,
               pattern = "_error",
               replacement = "_train_test_and_validation_accuracy"
             ))
-          
+
           df_count <-
             df_count %>%
             mutate(
               num_files = as.numeric(str_extract(string = df_count$matches, pattern = "(?<=/)\\d+"))
             )
           total_num_files <- sum(df_count$num_files)
-          
+
           # Make a valid file name
           file_name_figure_output <- gsub(
             pattern = "/",
@@ -128,7 +128,7 @@ visualize_all_traning_performace <- function(path_training_result,
             paste0(file_name_figure_output, ".pdf")
           return(error_message)
         })
-      
+
       visualize_one_traning_performace(
         file_error_csv = csv_file,
         file_name_figure_output = file_name_figure_output,
