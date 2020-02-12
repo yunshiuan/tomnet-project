@@ -17,12 +17,9 @@ import datetime
 import pandas as pd
 import tensorflow as tf
 import sys
-#sys.path.insert(0, '/temporary_testing_version')
-#import data_handler as dh
 import argparse
 import numpy as np
-# For debugging
-import pdb
+import pdb # For debugging
 import commented_charnet as cn
 import commented_prednet as pn
 import commented_data_handler as dh
@@ -53,29 +50,33 @@ class Model(mp.ModelParameter):
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   TRAIN_STEPS = 10000
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
-  #txt_data_path = os.getcwd() + '/S002a/'
+  #path_txt_data = os.getcwd() + '/S002a/'
   # TRUE: use the full data set for validation
   # (but this would not be fair because a portion of the data has already been seen)
   # FALSE: data split using train:vali:test = 8:1:1
   FULL_VALIDATION = False
   USE_CKPT = False
+  # the version of the training
+  TRAINING_VERSION = 'v10'
 
   # --------------------------------------
   # Variable: Training parameters
   # --------------------------------------
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
-  train_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
-  txt_data_path ='../../data/data_simulation/S003b/'
-  # for human data
-  # ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  # train_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  # txt_data_path ='../../data/data_human/processed/S030/'
+  # ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
+  # train_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
+  # path_txt_data ='../../data/data_simulation/S003b/'
 
-  ckpt_fname = os.path.join(path_mode,ckpt_fname)
-  train_fname = os.path.join(path_mode,train_fname)
-  txt_data_path = os.path.join(path_mode,txt_data_path)
+  # for human data
+  #use panda df to store these values
+  path_ckpt = os.path.join('test_on_human_data','training_result','caches')
+  path_train = os.path.join('test_on_human_data','training_result','caches')
+  path_txt_data = os.path.join('..','..','data','data_human','processed')
+
+  path_ckpt = os.path.join(path_mode,path_ckpt)
+  path_train = os.path.join(path_mode,path_train)
+  path_txt_data = os.path.join(path_mode,path_txt_data)
 
   def __init__(self, args):
     '''
@@ -84,11 +85,32 @@ class Model(mp.ModelParameter):
     # --------------------------------------------------------------
     # Set up constants
     # --------------------------------------------------------------
-    ckpt_path = self.ckpt_fname + '/logs/model.ckpt'
-    train_path = self.train_fname + '/train/'
+    path_ckpt = \
+    os.path.join(self.path_ckpt,\
+                 self.TRAINING_VERSION  + '_commit_xxx',\
+                 args.subj_name)
 
-    self.ckpt_path = ckpt_path
-    self.train_path = train_path
+    path_train = \
+    os.path.join(self.path_ckpt,\
+                 self.TRAINING_VERSION + '_commit_xxx',\
+                 args.subj_name)
+
+    # create the path if not yet existed
+    if not os.path.exists(path_ckpt):
+      os.makedirs(path_ckpt)
+    if not os.path.exists(path_train):
+      os.makedirs(path_train)
+
+    path_ckpt = \
+    os.path.join(path_ckpt,\
+                 'logs','model.ckpt')
+
+    path_train = \
+    os.path.join(path_train,\
+                'train')
+
+    self.path_ckpt = path_ckpt
+    self.path_train = path_train
 
     # Set up batch generator
     self.batch_generator = bg.BatchGenerator()
@@ -132,7 +154,7 @@ class Model(mp.ModelParameter):
     # train_labels_traj = (num_train_files, )
     # --------------------------------------------------------------
     # Load data
-    dir = self.txt_data_path
+    dir = os.path.join(self.path_txt_data,args.subj_name)
     # pdb.set_trace()
     data_handler = dh.DataHandler()
     # Note that all training examples are NOT shuffled randomly (by defualt)
@@ -328,7 +350,9 @@ class Model(mp.ModelParameter):
 
     # This summary writer object helps write summaries on tensorboard
     # this is irrelevant to the error.csv file
-    summary_writer = tf.summary.FileWriter(self.train_path, sess.graph)
+
+    # pdb.set_trace()
+    summary_writer = tf.summary.FileWriter(self.path_train, sess.graph)
 
     # These lists are used to save a csv file at last
     # This is the data for error.csv
@@ -498,14 +522,14 @@ class Model(mp.ModelParameter):
 
       # Save checkpoints every 10000 steps and also at the last step
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
-          checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
+          checkpoint_path = os.path.join(self.path_train, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
 
           df = pd.DataFrame(data={'step':step_list,\
                                   'train_error':train_error_list,\
                                   'validation_error': val_error_list})
           # overwrite the csv
-          df.to_csv(self.train_path + '_error.csv')
+          df.to_csv(os.path.join(self.path_train, '_error.csv'))
 
   def test(self):
     '''
@@ -539,7 +563,8 @@ class Model(mp.ModelParameter):
     df_train_and_vali = df_train_all.append(df_vali_all)
     df_train_vali_and_test = df_train_and_vali.append(df_test_all)
 
-    df_train_vali_and_test.to_csv(self.train_path + '_train_test_and_validation_accuracy.csv')
+    df_train_vali_and_test.to_csv(os.path.join(self.path_train,\
+                                               '_train_test_and_validation_accuracy.csv'))
 
     return df_train_vali_and_test
 
@@ -690,8 +715,8 @@ class Model(mp.ModelParameter):
         # --------------------------------------------------------------
         saver = tf.train.Saver(tf.all_variables())
         sess = tf.Session()
-        saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-        print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+        saver.restore(sess, os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+        print('Model restored from ', os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
 
         # collecting prediction_array for each batch
         # will be size of (batch_size * num_batches, num_classes)
@@ -772,8 +797,8 @@ class Model(mp.ModelParameter):
         saver = tf.train.Saver(tf.all_variables())
         sess = tf.Session()
 
-        saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-        print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+        saver.restore(sess, os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+        print('Model restored from ', os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
 
         # collecting prediction_array for each batch
         # will be size of (batch_size * num_batches, num_classes)
@@ -979,13 +1004,26 @@ class Model(mp.ModelParameter):
 
 
 if __name__ == "__main__":
+  # --------------------------------------------------------
+  # Constants
+  # --------------------------------------------------------
+  LIST_SUBJECTS = ["S0" + str(i) for i in ["24","33","35","50","51","52"]]
+
+  # --------------------------------------------------------
+  # Iterate through the subject list
+  # --------------------------------------------------------
+  for subj_index, subj_name in enumerate(LIST_SUBJECTS):
+    print("\n================================= \n"+
+          "Start working on "+ subj_name+'\n'+
+          "================================= \n")
+
     # reseting the graph is necessary for running the script via spyder or other
     # ipython intepreter
     tf.reset_default_graph()
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
-
+    parser.add_argument('--subj_name',type = str,default=subj_name) # the subject name
     args = parser.parse_args()
     model = Model(args)
     # pdb.set_trace()
