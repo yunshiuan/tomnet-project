@@ -10,14 +10,14 @@
 # (v) it is A, B, C, D instead of C, D, E, F.
 # (vi) do not process if the starting point and the ending point is the same
 # (don't put it to the processed data dir) E.g., S030_3660.txt
-# (2) Because of 1-vi, the number of raw txts and the processed txts might not be the same. 
+# (2) Because of 1-vi, the number of raw txts and the processed txts might not be the same.
 # The processed files should always be equal to or less than the raw txt files.
 
 #################
 library(stringr)
 # Constants-----------------------------------------------
 # Parameter
-LIST_SUBJ = paste0("S0",c(24,30,33,35,50,51,52))
+LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
 # MAZE_HEIGHT = 14 #including upper and lower wall
 MAZE_UPPER_WALL_ROW_INDEX <- 1
 MAZE_LOWER_WALL_ROW_INDEX <- 14
@@ -27,9 +27,9 @@ SYMBOL_AGENT <- "S"
 PADDING_FIRST_ROW <- "Maze:"
 
 # Path
-PATH_ROOT = file.path(getwd(),"..","..","..")
-PATH_HUMAN_DATA = file.path(PATH_ROOT,"data","data_human")
-#PATH_ROOT <- "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/data"
+PATH_ROOT <- file.path(getwd(), "..", "..", "..")
+PATH_HUMAN_DATA <- file.path(PATH_ROOT, "data", "data_human")
+# PATH_ROOT <- "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/data"
 # PATH_ROOT <- "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/data/data_human"
 PATH_DATA_INPUT <- file.path(PATH_HUMAN_DATA, "raw", LIST_SUBJ)
 PATH_TXT_OUTPUT <- file.path(PATH_HUMAN_DATA, "processed", LIST_SUBJ)
@@ -48,52 +48,55 @@ parse_coordinate <- function(step_string) {
 }
 
 # Convert-------------------------------------------------
-for (subj_index in 1:length(PATH_DATA_INPUT)){
+for (subj_index in 1:length(PATH_DATA_INPUT)) {
   # local constants --------------------------------
-  subj_path_data_input = PATH_DATA_INPUT[subj_index]
-  subj_txt_output = PATH_TXT_OUTPUT[subj_index]
-  subj_name = LIST_SUBJ[subj_index]
-  
+  subj_path_data_input <- PATH_DATA_INPUT[subj_index]
+  subj_txt_output <- PATH_TXT_OUTPUT[subj_index]
+  subj_name <- LIST_SUBJ[subj_index]
+
+  if (!dir.exists(subj_txt_output)){
+    dir.create(subj_txt_output)
+  }
   # list all txt files
   txt_raw_files <- list.files(
     path = subj_path_data_input, recursive = F, pattern = ".*txt"
   )
-  
-  cat(paste0("Start processing ",subj_name,".\n"))
+
+  cat(paste0("Start processing ", subj_name, ".\n"))
   # exception handling --------------------------------
   # check if there is any files in the dir
-  if ((length(txt_raw_files) == 0)){
+  if ((length(txt_raw_files) == 0)) {
     warning(paste0(subj_name, " has no input files."))
     next
   }
   # check if the files have already been processed
-  txt_processed_files = list.files(
+  txt_processed_files <- list.files(
     path = subj_txt_output, recursive = F, pattern = ".*txt"
   )
-    
+
   # skip if already processed
-  if ((length(txt_raw_files) >= length(txt_processed_files))&(length(txt_processed_files)>0)){
-    warning(paste0(subj_name,
-                   " has already been processed.","\n",
-                   "#raw files = ",(length(txt_raw_files)),"\n",
-                   "#processed files = ",(length(txt_processed_files),"\n")
-                   )
-            )
+  if ((length(txt_raw_files) >= length(txt_processed_files)) & (length(txt_processed_files) > 0)) {
+    warning(paste0(
+      subj_name,
+      " has already been processed.", "\n",
+      "#raw files = ", length(txt_raw_files), "\n",
+      "#processed files = ", length(txt_processed_files), "\n"
+    ))
     next
   }
-  
+
   # start processing and output txt --------------------------------
   lapply(txt_raw_files, FUN = function(txt_file_name) {
     txt_full_file_name <- file.path(subj_path_data_input, txt_file_name)
     df_txt <- read.delim(txt_full_file_name, header = F, stringsAsFactors = F)
-    
+
     # Remove the commas at each line (except the first line)
     for (row_index in 1:nrow(df_txt)) {
       if (row_index != 1) {
         df_txt[row_index, ] <- substring(df_txt[row_index, ], first = 2)
       }
     }
-    
+
     # Put "S" into the maze
     tryCatch({
       initial_coordinate <- df_txt[MAZE_LOWER_WALL_ROW_INDEX + 1, ]
@@ -132,12 +135,12 @@ for (subj_index in 1:length(PATH_DATA_INPUT)){
       # no need to check repetition for the first step
       if (line_index == step_starting_line) {
         processed_steps <- append(processed_steps, this_step_string)
-        
+
         line_index <- line_index + 1
         previous_step_string <- this_step_string # for the next step to use
         next # skip this iteration
       }
-      
+
       # check repetition
       # previous_step_string = df_txt$V1[line_index-1]
       if (this_step_string != previous_step_string) {
@@ -147,22 +150,22 @@ for (subj_index in 1:length(PATH_DATA_INPUT)){
       line_index <- line_index + 1
     }
     # skip the file if the starting point and the ending point is the same
-    if(processed_steps[1]==processed_steps[length(processed_steps)]){
+    if (processed_steps[1] == processed_steps[length(processed_steps)]) {
       # Do nothing
-    }else{
+    } else {
       # create the output string: replace the steps by the processed one
       output_string <- append(
         x = df_txt$V1[MAZE_UPPER_WALL_ROW_INDEX:MAZE_LOWER_WALL_ROW_INDEX],
         values = processed_steps
       )
-      
+
       # Add 'Maze:' at the first line
       output_string <- append(
         x = output_string,
         values = PADDING_FIRST_ROW,
         after = 0
       )
-      
+
       output_file <- file.path(subj_txt_output, txt_file_name)
       write.table(
         x = output_string,
@@ -171,6 +174,5 @@ for (subj_index in 1:length(PATH_DATA_INPUT)){
         quote = FALSE
       )
     }
-  })  
+  })
 }
-
