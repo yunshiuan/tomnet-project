@@ -8,11 +8,11 @@
 #path
 # Manually set the root path of the repo if running the script via RStudio
 if(interactive()){
-  # Should be manually adjusted to correspond to the root path of your repository.
-  PATH_ROOT = "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark"
+  # Should be manually adjusted to correspond to either 'test_on_human_data' or 'test_on_simulated_data'
+  PATH_ROOT = file.path(getwd(),"..","..","..")
 }else{
-  cat(paste0("Please enter the root path of your repository (without quotation mark), \n",
-             "e.g., /Users/observer_model \n"))
+  cat(paste0("Please enter the path of where the training_result is located in (without quotation mark), \n",
+             "e.g., /Users/tomnet-project/models/working_model/test_on_human_data \n"))
   PATH_ROOT  <- readLines("stdin",n=1);
 }
 

@@ -65,22 +65,70 @@ visualize_all_traning_performace <- function(path_training_result,
     pattern = "_error.csv",
     full.names = T
   )
-  list_warning_message = c()
-  list_error_message = c()
+  list_warning_message <- c()
+  list_error_message <- c()
   result <- lapply(list_error_csv, function(csv_file) {
     tryCatch({
+      # the case for one version with one subject
       train_type <- str_extract(
         string = csv_file,
         pattern = "(?<=cache_).*(?=/train)"
       )
-      file_name_figure_output <- paste0(train_type, ".pdf")
+      if (!is.na(train_type)) {
+        file_name_figure_output <- paste0(train_type)
+      }
 
-      # Make a valid file name
-      file_name_figure_output <- gsub(
-        pattern = "/",
-        x = file_name_figure_output,
-        replacement = "__"
-      )
+      # the case for nested result structure (one version with multiple subjects)
+      if (is.na(train_type)) {
+        version <- str_extract(
+          string = csv_file,
+          pattern = "(?<=caches/).*(?=_commit)"
+        )
+        subject_name <- str_extract(
+          string = csv_file,
+          pattern = "S\\d+(?=/train)"
+        )
+        file_name_figure_output <- paste0(version, "_", subject_name)
+      }
+
+      # get the number of the total trajectories in the data set
+      # - ignore this if '_train_test_and_validation_accuracy.csv' does not exist
+      result_num_files <-
+        tryCatch({
+          df_count <-
+            read.csv(gsub(
+              x = csv_file,
+              pattern = "_error",
+              replacement = "_train_test_and_validation_accuracy"
+            ))
+
+          df_count <-
+            df_count %>%
+            mutate(
+              num_files = as.numeric(str_extract(string = df_count$matches, pattern = "(?<=/)\\d+"))
+            )
+          total_num_files <- sum(df_count$num_files)
+
+          # Make a valid file name
+          file_name_figure_output <- gsub(
+            pattern = "/",
+            x = file_name_figure_output,
+            replacement = "__"
+          )
+          file_name_figure_output <-
+            paste0(file_name_figure_output, "_nTraj_", total_num_files, ".pdf")
+        }, warning = function(msg) {
+          warning_message <- paste0("Warning with ", file_name_figure_output, ": ", msg$message)
+          file_name_figure_output <<-
+            paste0(file_name_figure_output, ".pdf")
+          return(warning_message)
+        }, error = function(msg) {
+          error_message <- paste0("Error with ", file_name_figure_output, ": ", msg$message)
+          file_name_figure_output <<-
+            paste0(file_name_figure_output, ".pdf")
+          return(error_message)
+        })
+
       visualize_one_traning_performace(
         file_error_csv = csv_file,
         file_name_figure_output = file_name_figure_output,
@@ -88,26 +136,27 @@ visualize_all_traning_performace <- function(path_training_result,
       )
       return(paste0("Finish: ", file_name_figure_output))
     }, warning = function(msg) {
-      #print(paste0("Warning with ", file_name_figure_output, ": ", msg))
-      warning_message = paste0("Warning with ", file_name_figure_output, ": ", msg$message)
-      #list_warning_message = append(list_warning_message,warning_message)
+      # print(paste0("Warning with ", file_name_figure_output, ": ", msg))
+      warning_message <- paste0("Warning with ", file_name_figure_output, ": ", msg$message)
+      # list_warning_message = append(list_warning_message,warning_message)
       return(warning_message)
     }, error = function(msg) {
-      #print(paste0("Error with ", file_name_figure_output, ": ", msg))
-      error_message = paste0("Error with ", file_name_figure_output, ": ", msg$message)
-      #list_error_message = append(list_error_message,error_message)
+      # print(paste0("Error with ", file_name_figure_output, ": ", msg))
+      error_message <- paste0("Error with ", file_name_figure_output, ": ", msg$message)
+      # list_error_message = append(list_error_message,error_message)
       return(error_message)
     })
   })
   # Print the summary
-  result = unlist(result)
-  list_finish = grep(pattern = "Finish",x = result,value = T)
-  list_skip = grep(pattern = "already exists",x = result,value = T)
-  summary =  paste0("Output figure: ",length(list_finish),"\n",
-                    "Skip: ", length(list_skip),"\n",
-                    "Total: ", length(result),"\n\n",
-                    "Output details:","\n",
-                    paste(paste0("  ",list_finish),collapse = "\n")
-                    )
+  result <- unlist(result)
+  list_finish <- grep(pattern = "Finish", x = result, value = T)
+  list_skip <- grep(pattern = "already exists", x = result, value = T)
+  summary <- paste0(
+    "Output figure: ", length(list_finish), "\n",
+    "Skip: ", length(list_skip), "\n",
+    "Total: ", length(result), "\n\n",
+    "Output details:", "\n",
+    paste(paste0("  ", list_finish), collapse = "\n")
+  )
   cat(summary)
 }
