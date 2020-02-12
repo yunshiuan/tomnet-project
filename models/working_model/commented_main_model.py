@@ -39,7 +39,7 @@ class Model(mp.ModelParameter):
   # Constant: Training parameters
   # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE = 16
+  BATCH_SIZE = 10 # for human data with less than 160 files
   BATCH_SIZE_TRAIN = BATCH_SIZE # size of the batch for traning (number of the steps within each batch)
   BATCH_SIZE_VAL = BATCH_SIZE # size of the batch for validation
   BATCH_SIZE_TEST = BATCH_SIZE # size of batch for testing
@@ -1007,6 +1007,8 @@ if __name__ == "__main__":
   # --------------------------------------------------------
   # Constants
   # --------------------------------------------------------
+  # LIST_SUBJECTS = ["S0" + str(i) for i in ["35","50","51","52"]]
+
   LIST_SUBJECTS = ["S0" + str(i) for i in ["24","33","35","50","51","52"]]
 
   # --------------------------------------------------------

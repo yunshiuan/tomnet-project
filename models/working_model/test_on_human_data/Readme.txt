@@ -8,7 +8,7 @@ Data source:
 (1) Sign in to server: ssh gibmsadmin@140.112.122.160 (pw: See https://gitlab.com/brain-and-mind-lab/notes-for-bml/bmlab-wiki-home/wikis/server#gibms_server%E6%95%99%E5%AD%B8%E6%96%87%E4%BB%B6)
 (2) Data path: '/var/www/html/bmlab/ai-robo/game/data'
 (3) Note that the txt file is very similar to the simulated txt, except for
-	- This is handled by 'convert_human_data_format.R'
+	- This is handled by 'convert_human_data_format.R' to ensure the format of human data to be the same as the simulated data.
 	(i) there are commas at the start of each line
 	(ii) there is no 'S'. So should take the first position as the position of 'S'.
 	(iii) there is no 'Maze:' at the first line
@@ -29,8 +29,31 @@ data path:
 '/S030'
 
 #########################################
+Finished training session (v10, commit xxx) 
+Time: 2020/02/11
+Author: Chuang, Yun-Shiuan
+Output file name: 
+/v10
 
-Future training session (v9, commit 78092b) 
+(1) Same as human/v9 except that the following subjects are used for training as well, ['S024', 'S033', 'S035', 'S050', 'S051', 'S052'].
+(2) Batch size changes to 10 from 16 because some subject only has about 100 files. Batch size = 16 only works for number of files greater than 160 since the validation and the test set only have 1/10 of the total files. Having 160 files ensures there is at least one batch for dev/test set.
+
+Note
+(1) 
+(2)
+accurary	mode
+
+(3) 
+S030_subset1000:
+ground_truth_label_count	prediction_count	accuracy_data_set
+
+
+Traj_S030_Query_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+
+-----------------------------------------
+
+Finished training session (v9, commit 78092b) 
 Time: 2019/07/25
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v9_commit_78092b_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4
@@ -58,7 +81,7 @@ prediction_proportion	avg_prediction_probability	ground_truth_label_count	predic
 0.28	0.29	0	27
 0	0.04	0	0
 -----------------------------------------
-Current training session (v8, commit 0c7df5) [At working_model/human_data]
+Finished training session (v8, commit 0c7df5) [At working_model/human_data]
 Time: 2019/06/03
 Author: Chuang, Yun-Shiuan
 Output file name: /cache_S030_v8_commit_0c7df5_epoch78600_tuning_batch16_train_step_0.5M_INIT_LR_10-5
