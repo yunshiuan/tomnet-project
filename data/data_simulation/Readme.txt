@@ -13,4 +13,8 @@ S002b:
 model to infer the target by a qeury state if the trajectory the model saw
 contained only 1 goal.
 - Based on 'S002b_familyonly.csv'.
+
+S003b:
+- Like S002b except that it's based on 'tomnet-project\simulation_data_generator\S003b.csv'
+
  
