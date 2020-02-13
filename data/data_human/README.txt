@@ -19,3 +19,11 @@ filtered/
 - mazes with exact 4 targets. 
 - This is based on the processed files. 
 - This is better for preference inference because with all targets being present, the model will have sufficient information about all the 4 targers to make predictions on the query states.
+
+--------------------------------------------
+augmented/
+--------------------------------------------
+- based on 'processed' data.
+- augment the data by flipping the maze by x and/or y axis.
+- This will result in 4 times the original number of mazed.
+? Maybe the filtered data should be based on this?
