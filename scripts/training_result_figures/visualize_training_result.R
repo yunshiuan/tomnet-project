@@ -6,7 +6,9 @@
 library(stringr)
 # Constants
 #parameter
-TYPE = "test_on_human_data"
+TYPE = "test_on_simulation_data"
+# TYPE = "test_on_human_data"
+
 #path
 # the root path of the project
 PATH_ROOT = str_extract(string = getwd(),
