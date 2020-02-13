@@ -1,0 +1,2 @@
+- do the preference prediction for human data on the 'filtered' data.
+- retrain the model by augmentated data.
