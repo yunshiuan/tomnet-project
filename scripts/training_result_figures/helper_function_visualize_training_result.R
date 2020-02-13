@@ -82,7 +82,7 @@ visualize_all_traning_performace <- function(path_training_result,
       if (is.na(train_type)) {
         version <- str_extract(
           string = csv_file,
-          pattern = "(?<=caches/).*(?=_commit)"
+          pattern = "(?<=caches/).*(?=/S)"
         )
         subject_name <- str_extract(
           string = csv_file,
