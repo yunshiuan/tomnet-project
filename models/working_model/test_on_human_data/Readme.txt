@@ -29,7 +29,7 @@ data path:
 '/S030'
 
 #########################################
-Finished training session (v10, commit xxx) 
+Finished training session (v10, commit 35e29c) 
 Time: 2020/02/11
 Author: Chuang, Yun-Shiuan
 Output file name: 
@@ -39,16 +39,19 @@ Output file name:
 (2) Batch size changes to 10 from 16 because some subject only has about 100 files. Batch size = 16 only works for number of files greater than 160 since the validation and the test set only have 1/10 of the total files. Having 160 files ensures there is at least one batch for dev/test set.
 
 Note
-(1) 
-(2)
+(1) All models trained by each set of the new human data is overfitting.
+(2)  The only model with above-random accuracy: S024 (920 trajs). Other subjects have too few trajectories (just above 100).
 accurary	mode
+99.86%	train_proportion
+52.22%	vali_proportion
+42.22%	test_proportion
 
 (3) 
-S030_subset1000:
+S024:
 ground_truth_label_count	prediction_count	accuracy_data_set
 
 
-Traj_S030_Query_Stest_subset96:
+S024_Stest_subset96:
 prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
 
 -----------------------------------------
