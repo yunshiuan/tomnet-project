@@ -7,7 +7,7 @@ The class for training the ToMNET model.
 
 Note:
   Inherit mp.ModelParameter to share model constants.
-  
+
 @author: Chuang, Yun-Shiuan; Edwinn
 """
 import os
@@ -17,12 +17,9 @@ import datetime
 import pandas as pd
 import tensorflow as tf
 import sys
-#sys.path.insert(0, '/temporary_testing_version')
-#import data_handler as dh
 import argparse
 import numpy as np
-# For debugging
-import pdb
+import pdb # For debugging
 import commented_charnet as cn
 import commented_prednet as pn
 import commented_data_handler as dh
@@ -37,68 +34,93 @@ class Model(mp.ModelParameter):
   # Constant: Model parameters
   # --------------------------------------
   # Use inheretance to share the model constants across classes
-  
+
   # --------------------------------------
   # Constant: Training parameters
   # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE = 16
-  BATCH_SIZE_TRAIN = BATCH_SIZE # size of the batch for traning (number of the steps within each batch)  
+  BATCH_SIZE = 10 # for human data with less than 160 files
+  BATCH_SIZE_TRAIN = BATCH_SIZE # size of the batch for traning (number of the steps within each batch)
   BATCH_SIZE_VAL = BATCH_SIZE # size of the batch for validation
   BATCH_SIZE_TEST = BATCH_SIZE # size of batch for testing
-  
-  # for testing on a GPU machine with 10000 files  
+
+  # for testing on a GPU machine with 10000 files
   SUBSET_SIZE = -1 # use all files
   # tota number of minibatches used for training
   # (Paper: 2M minibatches, A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
   TRAIN_STEPS = 10000
   REPORT_FREQ = 100 # the frequency of writing the error to error.csv
-  #txt_data_path = os.getcwd() + '/S002a/'
-  # TRUE: use the full data set for validation 
+  #path_txt_data = os.getcwd() + '/S002a/'
+  # TRUE: use the full data set for validation
   # (but this would not be fair because a portion of the data has already been seen)
   # FALSE: data split using train:vali:test = 8:1:1
-  FULL_VALIDATION = False 
+  FULL_VALIDATION = False
   USE_CKPT = False
-  
+  # the version of the training
+  TRAINING_VERSION = 'v10'
+
   # --------------------------------------
   # Variable: Training parameters
-  # --------------------------------------  
+  # --------------------------------------
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
-  train_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
-  txt_data_path ='../../data/data_simulation/S003b/'
-  # for human data 
-  # ckpt_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  # train_fname = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_???_file9830_tuning_batch16_train_step_10K_INIT_LR_10-4'
-  # txt_data_path ='../../data/data_human/processed/S030/'
+  # ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
+  # train_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
+  # path_txt_data ='../../data/data_simulation/S003b/'
 
-  ckpt_fname = os.path.join(path_mode,ckpt_fname)
-  train_fname = os.path.join(path_mode,train_fname)
-  txt_data_path = os.path.join(path_mode,txt_data_path)
-  
+  # for human data
+  #use panda df to store these values
+  path_ckpt = os.path.join('test_on_human_data','training_result','caches')
+  path_train = os.path.join('test_on_human_data','training_result','caches')
+  path_txt_data = os.path.join('..','..','data','data_human','processed')
+
+  path_ckpt = os.path.join(path_mode,path_ckpt)
+  path_train = os.path.join(path_mode,path_train)
+  path_txt_data = os.path.join(path_mode,path_txt_data)
+
   def __init__(self, args):
     '''
     The constructor for the Model class.
-    ''' 
+    '''
     # --------------------------------------------------------------
     # Set up constants
     # --------------------------------------------------------------
-    ckpt_path = self.ckpt_fname + '/logs/model.ckpt'
-    train_path = self.train_fname + '/train/'
-    
-    self.ckpt_path = ckpt_path
-    self.train_path = train_path  
-    
+    path_ckpt = \
+    os.path.join(self.path_ckpt,\
+                 self.TRAINING_VERSION  + '_commit_xxx',\
+                 args.subj_name)
+
+    path_train = \
+    os.path.join(self.path_ckpt,\
+                 self.TRAINING_VERSION + '_commit_xxx',\
+                 args.subj_name)
+
+    # create the path if not yet existed
+    if not os.path.exists(path_ckpt):
+      os.makedirs(path_ckpt)
+    if not os.path.exists(path_train):
+      os.makedirs(path_train)
+
+    path_ckpt = \
+    os.path.join(path_ckpt,\
+                 'logs','model.ckpt')
+
+    path_train = \
+    os.path.join(path_train,\
+                'train')
+
+    self.path_ckpt = path_ckpt
+    self.path_train = path_train
+
     # Set up batch generator
     self.batch_generator = bg.BatchGenerator()
-  
+
     # --------------------------------------------------------------
     # Set up all the placeholders
     # --------------------------------------------------------------
     self.lr_placeholder = tf.placeholder(dtype=tf.float32, shape=[])
 
-    # For trajectory data and the corresponding labels 
+    # For trajectory data and the corresponding labels
     self.train_data_traj_placeholder = tf.placeholder(dtype = tf.float32,\
                                                       shape = [self.BATCH_SIZE_TRAIN, self.MAX_TRAJECTORY_SIZE, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_TRAJECTORY],\
                                                       name = 'train_data_traj_placeholder')
@@ -111,7 +133,7 @@ class Model(mp.ModelParameter):
     self.vali_labels_traj_placeholder = tf.placeholder(dtype = tf.int32,\
                                                        shape = [self.BATCH_SIZE_VAL],\
                                                        name = 'vali_labels_traj_placeholder')
-        
+
     # For query state data and the cooresponding labels
     self.train_data_query_state_placeholder = tf.placeholder(dtype = tf.float32,\
                                                              shape = [self.BATCH_SIZE_TRAIN, self.MAZE_HEIGHT, self.MAZE_WIDTH, self.MAZE_DEPTH_QUERY_STATE],\
@@ -132,7 +154,7 @@ class Model(mp.ModelParameter):
     # train_labels_traj = (num_train_files, )
     # --------------------------------------------------------------
     # Load data
-    dir = self.txt_data_path
+    dir = os.path.join(self.path_txt_data,args.subj_name)
     # pdb.set_trace()
     data_handler = dh.DataHandler()
     # Note that all training examples are NOT shuffled randomly (by defualt)
@@ -161,15 +183,15 @@ class Model(mp.ModelParameter):
                                         mode=args.mode,\
                                         shuf=args.shuffle,\
                                         subset_size = self.SUBSET_SIZE,\
-                                        parse_query_state = True)                                                                                                                                                                                                                                             
+                                        parse_query_state = True)
 
     #print('End of __init__-----------------')
     #pdb.set_trace()
-            
+
   def _create_graphs(self, with_prednet):
     '''
     Create the graph that includes all tensforflow operations and parameters.
-    
+
     Args:
       :with_prednet:
         If `with_prednet = True`, then construct the complete model includeing
@@ -178,20 +200,20 @@ class Model(mp.ModelParameter):
         only the charnet.
 
     '''
-       
+
     # > for step in range(self.TRAIN_STEPS):
-    # The "step" values will be input to 
+    # The "step" values will be input to
     # (1)"self.train_operation(global_step, self.full_loss, self.train_top1_error)",
     # and then to
     # (2)"tf.train.ExponentialMovingAverage(self.TRAIN_EMA_DECAY, global_step)"
-    # - decay = self.TRAIN_EMA_DECAY 
+    # - decay = self.TRAIN_EMA_DECAY
     # - num_updates = global_step #this is where 'global_step' goes
 
     global_step = tf.Variable(0, trainable=False)
     validation_step = tf.Variable(0, trainable=False)
-    
+
     #pdb.set_trace()
-    
+
     # --------------------------------------------------------------
     # Build the model for training and validation
     # --------------------------------------------------------------
@@ -202,10 +224,10 @@ class Model(mp.ModelParameter):
       # - Add average pooling
       # - Add LSTM layer
       # - Add a fully connected layer
-      # The output of charnet is "logits", which will be feeded into 
+      # The output of charnet is "logits", which will be feeded into
       # the softmax layer to make predictions
-      
-      # "logits" is the output of the charnet (including ResNET and LSTM) 
+
+      # "logits" is the output of the charnet (including ResNET and LSTM)
       # and is the input for a softmax layer (see below)
       charnet = cn.CharNet()
 
@@ -213,32 +235,32 @@ class Model(mp.ModelParameter):
       # - Use train=True for batch-wise validation along training to make the error metric
       # - comparable to training error
       vali_logits = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=self.NUM_CLASS, reuse=True, train=True)
-      
+
       # Define the placeholder for final targets
       self.train_final_target_placeholder = self.train_labels_traj_placeholder
       self.vali_final_target_placeholder = self.vali_labels_traj_placeholder
- 
+
     else:
       charnet = cn.CharNet()
       prednet = pn.PredNet()
       length_e_char = length_e_char = self.LENGTH_E_CHAR
 
-      
+
       # model for training
       # pdb.set_trace()
-      train_e_char = charnet.build_charnet(self.train_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=False, train=True)      
+      train_e_char = charnet.build_charnet(self.train_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=False, train=True)
       logits = prednet.build_prednet(train_e_char, self.train_data_query_state_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes = self.NUM_CLASS, reuse=False )
-      
+
       # model for batch-validation along training
       # - Use train=True for batch-wise validation along training to make the error metric
       # - comparable to training error
-      vali_e_char = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=True, train=True)      
+      vali_e_char = charnet.build_charnet(self.vali_data_traj_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes=length_e_char, reuse=True, train=True)
       vali_logits = prednet.build_prednet(vali_e_char, self.vali_data_query_state_placeholder, n=self.NUM_RESIDUAL_BLOCKS, num_classes = self.NUM_CLASS, reuse=True )
-      
+
       # Define the placeholder for final targets
       self.train_final_target_placeholder = self.train_labels_query_state_placeholder
       self.vali_final_target_placeholder = self.vali_labels_query_state_placeholder
-      
+
     # --------------------------------------------------------------
     # Define the regularization operation for training
     # --------------------------------------------------------------
@@ -250,27 +272,27 @@ class Model(mp.ModelParameter):
     # Define training loss and error
     # Note that for training, regularization is required;
     # however, for validation, regularization is not needed.
-    # --------------------------------------------------------------  
+    # --------------------------------------------------------------
     #  loss: the cross entropy loss given logits and true labels
     #  > loss(logits, labels)
     # Note:
     # (1) To compute loss, it is important to use the output from NN before entering the softmax function
     # https://www.tensorflow.org/api_docs/python/tf/nn/sparse_softmax_cross_entropy_with_logits
-    # WARNING: This op expects unscaled logits, 
-    # since it performs a softmax on logits internally for efficiency. 
+    # WARNING: This op expects unscaled logits,
+    # since it performs a softmax on logits internally for efficiency.
     # Do not call this op with the output of softmax, as it will produce incorrect results.
     loss = self.loss(logits, self.train_final_target_placeholder)
-    
+
     #  tf.add_n: Adds all input tensors element-wise.
     #  - Using sum or + might create many tensors in graph to store intermediate result.
-    self.full_loss = tf.add_n([loss] + regu_losses) 
-    
+    self.full_loss = tf.add_n([loss] + regu_losses)
+
     #Validation loss and error
     self.vali_loss = self.loss(vali_logits, self.vali_final_target_placeholder)
 
     # --------------------------------------------------------------
     # Make prediction based on the output of the model
-    # --------------------------------------------------------------  
+    # --------------------------------------------------------------
     predictions = tf.nn.softmax(logits, name = 'train_predictions_array')
     vali_predictions = tf.nn.softmax(vali_logits, name = 'vali_predictions_array')
 
@@ -287,28 +309,28 @@ class Model(mp.ModelParameter):
     # --------------------------------------------------------------
     self.train_op, self.train_ema_op = self.train_operation(global_step, self.full_loss, self.train_top1_error)
     self.val_op = self.validation_op(validation_step, self.vali_top1_error, self.vali_loss)
-    
+
     return
-        
+
   def train(self):
-    
+
     print('Start training-----------------')
     # pdb.set_trace()
-    
+
     #Build graphs
     self._create_graphs(with_prednet = self.WITH_PREDNET)
-    
+
 
     # Initialize a saver to save checkpoints. Merge all summaries, so we can run all
     # summarizing operations by running summary_op. Initialize a new session
     saver = tf.train.Saver(tf.global_variables()) # <class 'tensorflow.python.training.saver.Saver'>
     summary_op = tf.summary.merge_all() # <class 'tensorflow.python.framework.ops.Tensor'>
-    
-    # initialize_all_variables (from tensorflow.python.ops.variables) 
+
+    # initialize_all_variables (from tensorflow.python.ops.variables)
     # is deprecated and will be removed after 2017-03-02.
     # Instructions for updating:
     # Use `tf.global_variables_initializer` instead.
-    
+
     init = tf.initialize_all_variables() # <class 'tensorflow.python.framework.ops.Operation'>
     # -----------------------
     # Session: This is the start of the tf session
@@ -325,21 +347,23 @@ class Model(mp.ModelParameter):
       # See above: "init = tf.initialize_all_variables()"
       # -----------------------
       sess.run(init)
-      
+
     # This summary writer object helps write summaries on tensorboard
     # this is irrelevant to the error.csv file
-    summary_writer = tf.summary.FileWriter(self.train_path, sess.graph)
+
+    # pdb.set_trace()
+    summary_writer = tf.summary.FileWriter(self.path_train, sess.graph)
 
     # These lists are used to save a csv file at last
     # This is the data for error.csv
     step_list = []
     train_error_list = []
     val_error_list = []
-        
+
     print('Start training batch by batch...')
     print('----------------------------')
     #pdb.set_trace()
-    
+
     for step in range(self.TRAIN_STEPS):
       # pdb.set_trace()
       # --------------------------------------------------------------
@@ -376,7 +400,7 @@ class Model(mp.ModelParameter):
 #          vali_summ.value.add(tag='full_validation_error', simple_value=validation_error_value.astype(np.float))
 #          summary_writer.add_summary(vali_summ, step)
 #          summary_writer.flush()
-#        
+#
 #        else:
         _, validation_error_value, validation_loss_value = sess.run([self.val_op, self.vali_top1_error, self.vali_loss],\
                                                                     {self.vali_data_traj_placeholder: vali_batch_data_traj,\
@@ -384,20 +408,20 @@ class Model(mp.ModelParameter):
                                                                      self.vali_data_query_state_placeholder: vali_batch_data_query_state,\
                                                                      self.vali_labels_query_state_placeholder: vali_batch_labels_query_state,\
                                                                      self.lr_placeholder: self.INIT_LR})
-        
+
         val_error_list.append(validation_error_value)
-      
+
       start_time = time.time()
 
       # Actual training
       # -----------------------------------------------
-      # This is where the train_error_value comes from 
+      # This is where the train_error_value comes from
       # -----------------------------------------------
       # sess.run(
       #     fetches = [self.train_op,
       #                self.train_ema_op,
       #                self.full_loss,
-      #                self.train_top1_error], 
+      #                self.train_top1_error],
       #     feed_dict = {self.train_data_traj_placeholder: train_batch_data,
       #                  self.train_final_target_placeholder: train_batch_labels,
       #                  self.vali_data_traj_placeholder: validation_batch_data,
@@ -407,23 +431,23 @@ class Model(mp.ModelParameter):
       # -----------------------------
       # fetches
       # -----------------------------
-      # (1,2) self.train_op, self.train_ema_op 
+      # (1,2) self.train_op, self.train_ema_op
       # - (1) These define the optimization operation.
       # - (2) come from: def _create_graphs(self):
       #       (1) come from: self.train_operation(global_step, self.full_loss, self.train_top1_error)
-      #         - return: two operations. 
-      #           - Running train_op will do optimization once. 
-      #           - Running train_ema_op will generate the moving average of train error and 
+      #         - return: two operations.
+      #           - Running train_op will do optimization once.
+      #           - Running train_ema_op will generate the moving average of train error and
       #             train loss for tensorboard
-      #         - param: global_step 
-      #         - param: self.full_loss: 
+      #         - param: global_step
+      #         - param: self.full_loss:
       #             - The loss that includes both the loss and the regularized loss
       #             - comes from: self.full_loss = tf.add_n([loss] + regu_losses)
-      #         - param: self.train_top1_error: 
+      #         - param: self.train_top1_error:
       #             def _create_graphs(self):
       #                self.train_top1_error = self.top_k_error(predictions, self.train_final_target_placeholder, 1)
       #                   def top_k_error(self, predictions, labels, k):
-      #                        The Top-1 error is the percentage of the time that the classifier 
+      #                        The Top-1 error is the percentage of the time that the classifier
       #                        did not give the correct class the highest score.
       #
       # (3) self.full_loss
@@ -435,7 +459,7 @@ class Model(mp.ModelParameter):
       # - def _create_graphs(self):
       # --- self.train_top1_error = self.top_k_error(predictions, self.train_final_target_placeholder, 1)
       # --- def top_k_error(self, predictions, labels, k):
-      # - (2) The Top-1 error is the percentage of the time that the classifier 
+      # - (2) The Top-1 error is the percentage of the time that the classifier
       #       did not give the correct class the highest score.
       #
       # -----------------------------
@@ -488,24 +512,24 @@ class Model(mp.ModelParameter):
         # This records the training steps and the corresponding training error
         step_list.append(step)
         train_error_list.append(train_error_value)
-        
+
         #print('End of training report-----------------')
         #pdb.set_trace()
-            
+
       #if step == self.DECAY_STEP_0 or step == self.DECAY_STEP_1:
       #  self.INIT_LR = 0.1 * self.INIT_LR
       #  print('Learning rate decayed to ', self.INIT_LR)
-        
-      # Save checkpoints every 10000 steps and also at the last step      
+
+      # Save checkpoints every 10000 steps and also at the last step
       if step % 10000 == 0 or (step + 1) == self.TRAIN_STEPS:
-          checkpoint_path = os.path.join(self.train_path, 'model.ckpt')
+          checkpoint_path = os.path.join(self.path_train, 'model.ckpt')
           saver.save(sess, checkpoint_path, global_step=step)
 
           df = pd.DataFrame(data={'step':step_list,\
                                   'train_error':train_error_list,\
                                   'validation_error': val_error_list})
           # overwrite the csv
-          df.to_csv(self.train_path + '_error.csv')
+          df.to_csv(os.path.join(self.path_train, '_error.csv'))
 
   def test(self):
     '''
@@ -530,29 +554,30 @@ class Model(mp.ModelParameter):
     # --------------------------------------------------------------
     # pdb.set_trace()
     df_test_all = self.evaluate_on_test_set()
-    
+
     # --------------------------------------------------------------
     # My codes
     # Combine all dfs into one
-    # -------------------------------------------------------------- 
+    # --------------------------------------------------------------
     #pdb.set_trace()
     df_train_and_vali = df_train_all.append(df_vali_all)
     df_train_vali_and_test = df_train_and_vali.append(df_test_all)
-    
-    df_train_vali_and_test.to_csv(self.train_path + '_train_test_and_validation_accuracy.csv')
+
+    df_train_vali_and_test.to_csv(os.path.join(self.path_train,\
+                                               '_train_test_and_validation_accuracy.csv'))
 
     return df_train_vali_and_test
-      
+
   def evaluate_on_test_set(self):
       '''
       Evaluate a model with the test data (instead of a single batch).
       It will evaluate the data batch-by-batch and summarize the performance.
       It will return a dataframe with model accuracy.
-      
+
       Returns:
         :df_accuracy_all: a dataframe with model accuracy.
       '''
-  
+
       df_accuracy_all = self.evaluate_whole_data_set(files_traj = self.test_files_traj,\
                                                      data_traj = self.test_data_traj,\
                                                      labels_traj= self.test_labels_traj,\
@@ -561,15 +586,15 @@ class Model(mp.ModelParameter):
                                                      batch_size = self.BATCH_SIZE_TEST,\
                                                      mode = 'test',
                                                      with_prednet = self.WITH_PREDNET)
-      
+
       return df_accuracy_all
-    
+
   def evaluate_on_validation_set(self):
       '''
       Evaluate a model with the validation data (instead of a single batch).
       It will evaluate the data batch-by-batch and summarize the performance.
       It will return a dataframe with model accuracy.
-      
+
       Returns:
         :df_accuracy_all: a dataframe with model accuracy.
       '''
@@ -581,19 +606,19 @@ class Model(mp.ModelParameter):
                                                      batch_size = self.BATCH_SIZE_VAL,\
                                                      mode = 'vali',
                                                      with_prednet = self.WITH_PREDNET)
-      
+
       return df_accuracy_all
-    
+
   def evaluate_on_training_set(self):
       '''
       Evaluate a model with the training data (instead of a single batch).
       It will evaluate the data batch-by-batch and summarize the performance.
       It will return a dataframe with model accuracy.
-      
+
       Returns:
         :df_accuracy_all: a dataframe with model accuracy.
       '''
-  
+
       df_accuracy_all = self.evaluate_whole_data_set(files_traj = self.train_files_traj,\
                                                      data_traj = self.train_data_traj,\
                                                      labels_traj= self.train_labels_traj,\
@@ -602,26 +627,26 @@ class Model(mp.ModelParameter):
                                                      batch_size = self.BATCH_SIZE_TRAIN,\
                                                      mode = 'train',
                                                      with_prednet = self.WITH_PREDNET)
-      
+
       return df_accuracy_all
-    
+
   def evaluate_whole_data_set(self, files_traj, data_traj, labels_traj, data_query_state, labels_query_state, batch_size, mode, with_prednet):
       '''
       Evaluate a model with a set of data (instead of a single batch).
       It will evaluate the data batch-by-batch and summarize the performance.
       It will return a dataframe with model accuracy.
-      
+
       Args:
-        :param files_traj: 
+        :param files_traj:
           the txt files_traj to be test (only used to compute the number of trajectories)
-        :param data_traj: 
-          the data_traj to be test the model on 
+        :param data_traj:
+          the data_traj to be test the model on
           (num_files, MAX_TRAJECTORY_SIZE, height, width, depth_trajectory)
-        :param labels_traj: 
+        :param labels_traj:
           If `with_prednet = False`, they are the ground truth labels to
           be test the model on (num_files, 1).
           If `with_prednet = True`, they are ignored.
-        :param data_query_state: 
+        :param data_query_state:
           If `with_prednet = True`, it is the query state
           of the new maze (num_files, height, width, depth_query_state).
           If `with_prednet = False`, they are ignored.
@@ -629,40 +654,40 @@ class Model(mp.ModelParameter):
           If `with_prednet = True`, they are the ground truth labels to
           be test the model on (num_files, 1).
           If `with_prednet = False`, they are ignored.
-        :param batch_size: 
+        :param batch_size:
           the batch size
-        :param mode: 
+        :param mode:
           should be either 'vali' or 'test'
         :param with_prednet:
           If `with_prednet = True`, then construct the complete model includeing
           both charnet and prednet.
           If `with_prednet = False`, then construct the partial model including
-          only the charnet.        
+          only the charnet.
       Returns:
         :df_accuracy_all:
           a dataframe with model accuracy.
       '''
       # pdb.set_trace()
-     
+
       num_vali_files = len(files_traj)
       num_batches = num_vali_files // batch_size
 
       print('%i' %num_batches, mode, 'batches in total...')
 
       if with_prednet:
-        # --------------------------------------------------------------      
-        # Reverse the query state data to break the correspondence 
+        # --------------------------------------------------------------
+        # Reverse the query state data to break the correspondence
         # between files_query_state and files_trajectory (when using the same
         # set of files) for the model with both charnet and prednet.
         # Otherwise, the performance would be overestimated.
-        # -------------------------------------------------------------- 
+        # --------------------------------------------------------------
         # pdb.set_trace()
         data_query_state = np.flip(data_query_state, 0)
         labels_query_state = np.flip(labels_query_state, 0)
 
-      # --------------------------------------------------------------      
+      # --------------------------------------------------------------
       # Model with only charnet
-      # --------------------------------------------------------------            
+      # --------------------------------------------------------------
       if not with_prednet:
         # Create the image and labels_traj placeholders
         data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
@@ -670,7 +695,7 @@ class Model(mp.ModelParameter):
                                                  self.MAX_TRAJECTORY_SIZE,\
                                                  self.MAZE_HEIGHT,\
                                                  self.MAZE_WIDTH,\
-                                                 self.MAZE_DEPTH_TRAJECTORY])    
+                                                 self.MAZE_DEPTH_TRAJECTORY])
         # --------------------------------------------------------------
         # Build the graph
         # --------------------------------------------------------------
@@ -680,36 +705,36 @@ class Model(mp.ModelParameter):
                                        n=self.NUM_RESIDUAL_BLOCKS,\
                                        num_classes=self.NUM_CLASS,\
                                        reuse=True,\
-                                       train=False) 
+                                       train=False)
         # logits = (batch_size, num_classes)
         predictions = tf.nn.softmax(logits)
         # predictions = (batch_size, num_classes)
-    
+
         # --------------------------------------------------------------
         # Initialize a new session and restore a checkpoint
         # --------------------------------------------------------------
         saver = tf.train.Saver(tf.all_variables())
         sess = tf.Session()
-        saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-        print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-    
+        saver.restore(sess, os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+        print('Model restored from ', os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+
         # collecting prediction_array for each batch
         # will be size of (batch_size * num_batches, num_classes)
         data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
-        
+
         # collecting ground truth labels for each batch
         # will be size of (batch_size * num_batches, 1)
         data_set_ground_truth_labels = np.array([]).reshape(-1, )
-        
+
         # Test by batches
-        
+
         #pdb.set_trace()
         for step in range(num_batches):
           if step % 10 == 0:
               print('%i batches finished!' %step)
-          # pdb.set_trace() 
+          # pdb.set_trace()
           file_index = step * batch_size
-          
+
           batch_data_traj, batch_labels_traj,\
           batch_data_query_state, batch_labels_query_state\
           = self.batch_generator.generate_vali_batch(data_traj,\
@@ -726,13 +751,13 @@ class Model(mp.ModelParameter):
           data_set_prediction_array = np.concatenate((data_set_prediction_array, batch_prediction_array))
           # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
           data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_traj))
-          
-      # --------------------------------------------------------------      
+
+      # --------------------------------------------------------------
       # Model with both charnet and prednet
-      # --------------------------------------------------------------       
+      # --------------------------------------------------------------
       else:
         #pdb.set_trace()
-        # Create the image and labels_traj placeholders          
+        # Create the image and labels_traj placeholders
         data_traj_placeholder = tf.placeholder(dtype=tf.float32,\
                                           shape=[batch_size,\
                                                  self.MAX_TRAJECTORY_SIZE,\
@@ -743,20 +768,20 @@ class Model(mp.ModelParameter):
                                                       shape=[batch_size,\
                                                              self.MAZE_HEIGHT,\
                                                              self.MAZE_WIDTH,\
-                                                             self.MAZE_DEPTH_QUERY_STATE])    
+                                                             self.MAZE_DEPTH_QUERY_STATE])
         # --------------------------------------------------------------
         # Build the graph
         # --------------------------------------------------------------
         charnet = cn.CharNet()
         prednet = pn.PredNet()
         length_e_char = mp.ModelParameter.LENGTH_E_CHAR
-        
+
         # train=False -> Not dropout for LSTM
         e_char = charnet.build_charnet(input_tensor = data_traj_placeholder,\
                                        n = self.NUM_RESIDUAL_BLOCKS,\
                                        num_classes = length_e_char,\
                                        reuse=True,\
-                                       train=False)  
+                                       train=False)
         logits = prednet.build_prednet(e_char,\
                                        data_query_state_placeholder,\
                                        n=self.NUM_RESIDUAL_BLOCKS,\
@@ -766,31 +791,31 @@ class Model(mp.ModelParameter):
         predictions = tf.nn.softmax(logits)
         # predictions = (batch_size, num_classes)
 
-        # --------------------------------------------------------------    
+        # --------------------------------------------------------------
         # Initialize a new session and restore a checkpoint
         # --------------------------------------------------------------
         saver = tf.train.Saver(tf.all_variables())
         sess = tf.Session()
-    
-        saver.restore(sess, os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-        print('Model restored from ', os.path.join(self.train_path, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
-    
+
+        saver.restore(sess, os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+        print('Model restored from ', os.path.join(self.path_train, 'model.ckpt-' + str(self.TRAIN_STEPS-1)))
+
         # collecting prediction_array for each batch
         # will be size of (batch_size * num_batches, num_classes)
         data_set_prediction_array = np.array([]).reshape(-1, self.NUM_CLASS)
-        
+
         # collecting ground truth labels for each batch
         # will be size of (batch_size * num_batches, 1)
         data_set_ground_truth_labels = np.array([]).reshape(-1, )
-        
+
         # Test by batches
         #pdb.set_trace()
         for step in range(num_batches):
           if step % 10 == 0:
               print('%i batches finished!' %step)
-          # pdb.set_trace() 
+          # pdb.set_trace()
           file_index = step * batch_size
-          
+
           batch_data_traj, batch_labels_traj,\
           batch_data_query_state, batch_labels_query_state\
           = self.batch_generator.generate_vali_batch(data_traj,\
@@ -809,7 +834,7 @@ class Model(mp.ModelParameter):
           # vali_set_prediction_array will be size of (batch_size * num_batches, num_classes)
           data_set_ground_truth_labels = np.concatenate((data_set_ground_truth_labels, batch_labels_query_state))
         # Model with both charnet and prednet
-        
+
       # --------------------------------------------------------------
       # My codes
       # Test accuracy by definition
@@ -817,28 +842,28 @@ class Model(mp.ModelParameter):
       # pdb.set_trace()
       # vali_set_prediction_array = (num_batches*batch_size, num_classes)
       # vali_set_ground_truth = (num_batches*batch_size, 1)
-      
+
       df_accuracy_proportion = self.proportion_accuracy(data_set_prediction_array, data_set_ground_truth_labels, mode)
-  
+
       # --------------------------------------------------------------
       # My codes
       # Combine all dfs into one
-      # -------------------------------------------------------------- 
+      # --------------------------------------------------------------
       #pdb.set_trace()
-  
-#      df_vali_all = df_vali_proportion.append(df_vali_match_estimation, ignore_index = True) 
+
+#      df_vali_all = df_vali_proportion.append(df_vali_match_estimation, ignore_index = True)
       df_accuracy_all = df_accuracy_proportion
       #pdb.set_trace()
       return df_accuracy_all
-    
+
   def proportion_accuracy(self, prediction_array, labels, mode):
     '''
     Evaluate model accuracy defined by proportion (num_matches/num_total).
     Return a df that contains the accuracy metric.
-    
+
     Args:
       :param prediction_array: a tensor with (num_batches * batch_size, num_classes).
-      :param labels: in-batch labels. Note that only in-batch labels (size = length) 
+      :param labels: in-batch labels. Note that only in-batch labels (size = length)
         are tested because they have corresponding predicted labels.
       :param mode: should be either 'vali' or 'test'
     Returns:
@@ -847,7 +872,7 @@ class Model(mp.ModelParameter):
     total_predictions = len(prediction_array)
     # match_predictions
     predicted_labels = np.argmax(prediction_array,1)
-    
+
     # Retrieve corresponding labels
     groud_truth_labels = labels.astype(int)
     # pdb.set_trace()
@@ -855,17 +880,17 @@ class Model(mp.ModelParameter):
 
     matches_percentage = str(match_predictions) + '/' + str(total_predictions)
     accuracy = str(round(match_predictions*100/total_predictions, 2)) + '%'
-    
+
     print('\n' + str(mode)+ ': proportion_accuracy()')
     print('Matches: ' + matches_percentage)
     print('Accuracy: ' + accuracy)
-    
+
     df_summary = pd.DataFrame(data={'matches':matches_percentage,
                                     'accurary':accuracy,
                                     'mode': str(mode + '_proportion')},
                         index = [0])
     return df_summary
-  
+
   def loss(self, logits, labels):
     '''
     Calculate the cross entropy loss given logits and true labels
@@ -874,11 +899,11 @@ class Model(mp.ModelParameter):
     :return: loss tensor with shape [1]
     '''
     labels = tf.cast(labels, tf.int64)
-    
+
     # Note
     # (1) https://www.tensorflow.org/api_docs/python/tf/nn/sparse_softmax_cross_entropy_with_logits
-    # WARNING: This op expects unscaled logits, 
-    # since it performs a softmax on logits internally for efficiency. 
+    # WARNING: This op expects unscaled logits,
+    # since it performs a softmax on logits internally for efficiency.
     # Do not call this op with the output of softmax, as it will produce incorrect results.
     # (2) The ToMNET paper also uses softmax cross entropy for loss function
     # https://www.superdatascience.com/blogs/convolutional-neural-networks-cnn-softmax-crossentropy
@@ -895,35 +920,35 @@ class Model(mp.ModelParameter):
     :return: tensor with shape [1]
     '''
     # -----------
-    # The Top-1 error is the percentage of the time that the classifier 
-    # did not give the correct class the highest score. The Top-5 error 
-    # is the percentage of the time that the classifier did not include 
+    # The Top-1 error is the percentage of the time that the classifier
+    # did not give the correct class the highest score. The Top-5 error
+    # is the percentage of the time that the classifier did not include
     # the correct class among its top 5 guesses.
     # -----------
 
     # predictions:
     # Tensor("Softmax_1:0", shape=(16, 4), dtype=float32)
     batch_size = predictions.get_shape().as_list()[0]
-    
+
     # in_top1
     # Tensor("ToFloat_1:0", shape=(16,), dtype=float32)
     in_top1 = tf.to_float(tf.nn.in_top_k(predictions, labels, k=1))
-    
+
     # num_correct
     # Tensor("Sum_1:0", shape=(), dtype=float32)
     num_correct = tf.reduce_sum(in_top1)
     # print('predictions:')
     # print(predictions)
     # print('in_top1')
-    # print(in_top1) 
+    # print(in_top1)
     # print('num_correct')
     # print(num_correct)
     return (batch_size - num_correct) / float(batch_size)
-  
+
   def train_operation(self, global_step, total_loss, top1_error):
     '''
     Defines train operations
-    
+
     :param global_step: tensor variable with shape [1]
     :param total_loss: tensor with shape [1]
     :param top1_error: tensor with shape [1]
@@ -948,7 +973,7 @@ class Model(mp.ModelParameter):
   def validation_op(self, validation_step, top1_error, loss):
     '''
     Defines validation operations
-    
+
     :param validation_step: tensor with shape [1]
     :param top1_error: tensor with shape [1]
     :param loss: tensor with shape [1]
@@ -973,24 +998,39 @@ class Model(mp.ModelParameter):
     tf.summary.scalar('val_top1_error_avg', top1_error_avg)
     tf.summary.scalar('val_loss', loss_val)
     tf.summary.scalar('val_loss_avg', loss_val_avg)
-    
+
     return val_op
-  
- 
+
+
 
 if __name__ == "__main__":
+  # --------------------------------------------------------
+  # Constants
+  # --------------------------------------------------------
+  # LIST_SUBJECTS = ["S0" + str(i) for i in ["35","50","51","52"]]
+
+  LIST_SUBJECTS = ["S0" + str(i) for i in ["24","33","35","50","51","52"]]
+
+  # --------------------------------------------------------
+  # Iterate through the subject list
+  # --------------------------------------------------------
+  for subj_index, subj_name in enumerate(LIST_SUBJECTS):
+    print("\n================================= \n"+
+          "Start working on "+ subj_name+'\n'+
+          "================================= \n")
+
     # reseting the graph is necessary for running the script via spyder or other
     # ipython intepreter
     tf.reset_default_graph()
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='all', help='all: train and test, train: only train, test: only test')
     parser.add_argument('--shuffle', type=str, default=False, help='shuffle the data for more random result')
-    
-    args = parser.parse_args()	
+    parser.add_argument('--subj_name',type = str,default=subj_name) # the subject name
+    args = parser.parse_args()
     model = Model(args)
     # pdb.set_trace()
     if args.mode == 'train' or args.mode == 'all':
       model.train()
     if args.mode == 'test' or args.mode == 'all':
       model.test()
-    
+
