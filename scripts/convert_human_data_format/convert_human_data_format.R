@@ -17,7 +17,8 @@
 library(stringr)
 # Constants-----------------------------------------------
 # Parameter
-LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
+LIST_SUBJ <- paste0("S0", c(53))
+# LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
 # MAZE_HEIGHT = 14 #including upper and lower wall
 MAZE_UPPER_WALL_ROW_INDEX <- 1
 MAZE_LOWER_WALL_ROW_INDEX <- 14
@@ -27,7 +28,7 @@ SYMBOL_AGENT <- "S"
 PADDING_FIRST_ROW <- "Maze:"
 
 # Path
-PATH_ROOT <- file.path(getwd(), "..", "..", "..")
+PATH_ROOT <- file.path(getwd(), "..", "..")
 PATH_HUMAN_DATA <- file.path(PATH_ROOT, "data", "data_human")
 # PATH_ROOT <- "/Users/vimchiz/bitbucket_local/observer_model_group/benchmark/test_on_human_data/data"
 # PATH_ROOT <- "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/data/data_human"
@@ -54,7 +55,7 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
   subj_txt_output <- PATH_TXT_OUTPUT[subj_index]
   subj_name <- LIST_SUBJ[subj_index]
 
-  if (!dir.exists(subj_txt_output)){
+  if (!dir.exists(subj_txt_output)) {
     dir.create(subj_txt_output)
   }
   # list all txt files
@@ -86,10 +87,43 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
   }
 
   # start processing and output txt --------------------------------
-  lapply(txt_raw_files, FUN = function(txt_file_name) {
+  for (txt_index in 1:length(txt_raw_files)) {
+    txt_file_name = txt_raw_files[txt_index]
     txt_full_file_name <- file.path(subj_path_data_input, txt_file_name)
-    df_txt <- read.delim(txt_full_file_name, header = F, stringsAsFactors = F)
 
+    # read in the current txt file
+    df_txt <- read.delim(txt_full_file_name, header = F, stringsAsFactors = F)
+    
+    # skip if this file is a duplicate of the previous one
+    # - special case for the first file
+    if (txt_index == 1){
+      previous_txt_file_name = txt_raw_files[txt_index]
+      previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)    
+      previous_df_txt <- read.delim(previous_txt_full_file_name, header = F, stringsAsFactors = F)
+      skip_duplicate = FALSE
+    }else if(!skip_duplicate){
+      # - get the previous non-skipped file (start updating on the second file)
+      previous_txt_file_name = txt_raw_files[txt_index-1]
+      previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)    
+      previous_df_txt <- read.delim(previous_txt_full_file_name, header = F, stringsAsFactors = F)
+    }
+    # - see if they share the same maze and the same starting point
+    #   (start checking on the second file)
+    if(txt_index != 1) {
+      if(all(df_txt[1:MAZE_LOWER_WALL_ROW_INDEX+1,] == previous_df_txt[1:MAZE_LOWER_WALL_ROW_INDEX+1,])){
+        warning(paste0("Skip: ", txt_file_name, " is a duplicate of ", previous_txt_file_name),".")
+        skip_duplicate = TRUE
+        # skip this duplicated file
+        next
+      }else{
+        cat(paste0("Does not skip ", txt_file_name,"\n"))
+        skip_duplicate = FALSE
+      }
+    }
+
+    
+
+      
     # Remove the commas at each line (except the first line)
     for (row_index in 1:nrow(df_txt)) {
       if (row_index != 1) {
@@ -174,5 +208,5 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
         quote = FALSE
       )
     }
-  })
+  }
 }
