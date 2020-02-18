@@ -10,7 +10,8 @@ the raw data downloaded from the server.
 --------------------------------------------
 processed/
 --------------------------------------------
-the processed data that is used for model training.
+- the processed data that is used for model training.
+- converted from rat data by 'scripts\convert_human_data_format\convert_human_data_format.R'
 
 --------------------------------------------
 filtered/

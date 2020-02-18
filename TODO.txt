@@ -1,5 +1,5 @@
 - do the preference prediction for human data on the 'filtered' data.
 - retrain the model by augmentated data.
 - Handle bug
-	- delete duplictaed files: e.g., S053_980.txt & S053_980.txt
-	- handle the case where the player has already reached a target but continued to move afterwards. Truncate the trajectory to the step where the player reached the first targte.
+	- delete duplicated files: e.g., S053_980.txt & S053_980.txt
+	- handle the case where the player has already reached a target but continued to move afterwards. Truncate the trajectory to the step where the player reached the first target.

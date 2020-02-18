@@ -9,6 +9,20 @@ training_result_figures
 the script that generated the training result plot, e.g., 'tomnet-project\models\working_model\test_on_simulation_data\training_result\figures'.
 
 --------------------------
+convert_human_data_format
+--------------------------
+Convert human raw data to processed data that are ready for training. The processed human data match the format of simulated data.
+- Note that the txt file is very similar to the simulated txt, except for
+	(i) there are commas at the start of each line
+	(ii) there is no 'S'. So should take the first position as the position of 'S'.
+	(iii) there is no 'Maze:' at the first line
+	(iv) there is 'unmoved' step which should be ignored
+	(v) it is A, B, C, D instead of C, D, E, F.
+	(vi) do not process if the starting point and the ending point is the same
+	     (don't put it to the processed data dir)
+  (vii) delete consecutive files that are from identical maze (e.g., S053_980.txt & S053_981.txt). Keep the first file and delete the rest of the duplicated files. This seems to only be an issue for those who play with computer.
+	(viii) handle the case where the player has already reached a target but continued to move afterwards. Truncate the trajectory to the step where the player reached the first target. This seems to only be an issue when issue vii happens.
+--------------------------
 filter_full_target_trajectories
 --------------------------
 - feed in the processed trajectories, and only keep the mazes with all targets. E.g. for 'tomnet-project\data\data_human\processed\S030', there are 1~4 targets in different mazes. This script will filter in the mazed with exact 4 targets and output the results at 'tomnet-project\data\data_human\filtered'.
