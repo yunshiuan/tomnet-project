@@ -17,8 +17,8 @@
 library(stringr)
 # Constants-----------------------------------------------
 # Parameter
-LIST_SUBJ <- paste0("S0", c(53))
-# LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
+# LIST_SUBJ <- paste0("S0", c(24))
+LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
 # MAZE_HEIGHT = 14 #including upper and lower wall
 MAZE_UPPER_WALL_ROW_INDEX <- 1
 MAZE_LOWER_WALL_ROW_INDEX <- 14
@@ -67,17 +67,22 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
   # exception handling --------------------------------
   # check if there is any files in the dir
   if ((length(txt_raw_files) == 0)) {
-    warning(paste0(subj_name, " has no input files."))
+    cat(paste0(subj_name, " has no input files.\n"))
     next
   }
   # check if the files have already been processed
   txt_processed_files <- list.files(
     path = subj_txt_output, recursive = F, pattern = ".*txt"
   )
-
+  # sort the files so that they follow the number order
+  traj_id <- as.numeric(str_extract(
+    pattern = "(?<=_)\\d+(?=.txt)",
+    string = txt_raw_files
+  ))
+  txt_raw_files <- txt_raw_files[order(traj_id)]
   # skip if already processed
   if ((length(txt_raw_files) >= length(txt_processed_files)) & (length(txt_processed_files) > 0)) {
-    warning(paste0(
+    cat(paste0(
       subj_name,
       " has already been processed.", "\n",
       "#raw files = ", length(txt_raw_files), "\n",
@@ -88,42 +93,45 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
 
   # start processing and output txt --------------------------------
   for (txt_index in 1:length(txt_raw_files)) {
-    txt_file_name = txt_raw_files[txt_index]
+    txt_file_name <- txt_raw_files[txt_index]
     txt_full_file_name <- file.path(subj_path_data_input, txt_file_name)
 
     # read in the current txt file
     df_txt <- read.delim(txt_full_file_name, header = F, stringsAsFactors = F)
-    
+
     # skip if this file is a duplicate of the previous one
     # - special case for the first file
-    if (txt_index == 1){
-      previous_txt_file_name = txt_raw_files[txt_index]
-      previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)    
+    if (txt_index == 1) {
+      previous_txt_file_name <- txt_raw_files[txt_index]
+      previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)
       previous_df_txt <- read.delim(previous_txt_full_file_name, header = F, stringsAsFactors = F)
-      skip_duplicate = FALSE
-    }else if(!skip_duplicate){
+      skip_duplicate <- FALSE
+      count_skip_duplicate = 0
+      count_processed = 0
+    } else if (!skip_duplicate) {
       # - get the previous non-skipped file (start updating on the second file)
-      previous_txt_file_name = txt_raw_files[txt_index-1]
-      previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)    
+      previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)
       previous_df_txt <- read.delim(previous_txt_full_file_name, header = F, stringsAsFactors = F)
     }
     # - see if they share the same maze and the same starting point
     #   (start checking on the second file)
-    if(txt_index != 1) {
-      if(all(df_txt[1:MAZE_LOWER_WALL_ROW_INDEX+1,] == previous_df_txt[1:MAZE_LOWER_WALL_ROW_INDEX+1,])){
-        warning(paste0("Skip: ", txt_file_name, " is a duplicate of ", previous_txt_file_name),".")
-        skip_duplicate = TRUE
+    if (txt_index != 1) {
+      if (all(df_txt[1:MAZE_LOWER_WALL_ROW_INDEX + 1, ] == previous_df_txt[1:MAZE_LOWER_WALL_ROW_INDEX + 1, ])) {
+        cat(paste0("Skip: ", txt_file_name, " is a duplicate of ", previous_txt_file_name), ".\n")
+        count_skip_duplicate = count_skip_duplicate+1
+        skip_duplicate <- TRUE
         # skip this duplicated file
         next
-      }else{
-        cat(paste0("Does not skip ", txt_file_name,"\n"))
-        skip_duplicate = FALSE
+      } else {
+        # cat(paste0("Does not skip ", txt_file_name, "\n"))
+        skip_duplicate <- FALSE
+        count_processed = count_processed + 1
+        # save for next iteraction
+        previous_txt_file_name = txt_file_name
       }
     }
 
-    
 
-      
     # Remove the commas at each line (except the first line)
     for (row_index in 1:nrow(df_txt)) {
       if (row_index != 1) {
@@ -159,6 +167,40 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
         gsub(x = ., pattern = "B", replacement = "D") %>%
         gsub(x = ., pattern = "A", replacement = "C")
     }
+    # Get the position of each target
+    # - for truncating the steps (see the break condition in the while loop below)
+    collect_row_index <- c()
+    collect_col_index <- c()
+    collect_target_name <- c()
+    for (row_index in (MAZE_UPPER_WALL_ROW_INDEX + 1):(MAZE_LOWER_WALL_ROW_INDEX - 1)) {
+      # try to get column coordinate of any target
+      target_col_index <- (df_txt$V1[row_index] %>%
+        str_locate_all(pattern = "[CDEF]", string = .))[[1]][, "start"]
+
+      target_name <- strsplit(df_txt$V1[row_index], "")[[1]][target_col_index]
+      # adjust the wall position
+      target_col_index = target_col_index-1
+      row_index = row_index-1
+      
+      # collect the target coordinate
+      collect_col_index <- append(collect_col_index, target_col_index)
+      collect_row_index <- append(
+        collect_row_index,
+        rep(row_index,
+          times = length(target_col_index)
+        )
+      )
+      collect_target_name <- append(
+        collect_target_name, target_name,
+      )
+    }
+    
+    df_target_coordinates <- data.frame(
+      row = collect_row_index,
+      col = collect_col_index,
+      name = collect_target_name
+    )
+
     # Ignore unmoved steps
     step_starting_line <- MAZE_LOWER_WALL_ROW_INDEX + 1
     line_index <- step_starting_line
@@ -180,9 +222,26 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
       if (this_step_string != previous_step_string) {
         processed_steps <- append(processed_steps, this_step_string)
       }
-      previous_step_string <- this_step_string # for the next step to use
-      line_index <- line_index + 1
+
+
+      # break the while loop if the agent has alreay reached one of the target (truncate the steps)
+      # - this is necessary for handling the bug where the agent keep moving after reaching a target
+      this_step_col = 
+        as.numeric(str_extract(string = this_step_string,pattern = "(?<=())\\d+(?=,)"))
+      this_step_row = 
+        as.numeric(str_extract(string = this_step_string,pattern = "(?<=, )\\d+(?=\\))"))    
+      
+      if (nrow(subset(df_target_coordinates,row == this_step_row & col == this_step_col))>0){
+        # cat(
+        #   paste0("Break at row:", this_step_row," col:", this_step_col," line: ",line_index,"\n")
+        #   )
+        break
+      }
+      # for the next step to use
+      previous_step_string <- this_step_string 
+      line_index <- line_index + 1      
     }
+    
     # skip the file if the starting point and the ending point is the same
     if (processed_steps[1] == processed_steps[length(processed_steps)]) {
       # Do nothing
@@ -209,4 +268,7 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
       )
     }
   }
+  cat("Finish:",subj_name,"\n",
+      "Skip = ",count_skip_duplicate,"\n",
+      "Processed =",count_processed,"\n")
 }
