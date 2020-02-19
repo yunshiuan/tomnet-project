@@ -18,8 +18,36 @@ To derive the scores that participants see:
 (3) bmlab/ai_social_game
 (4) Note that the scores that participants see = round(averaged score * (23/9)). The column 'agent1_value' shown is rounded, but the original value to derive the score is not rounded. Rounding occurs after *(23/9).
 data path:
-'/S030'
+'\data\data_human'
 
+#########################################
+Finished training session (v11, commit c2f0ff) 
+Time: 2020/02/19
+Author: Chuang, Yun-Shiuan
+Output file name: 
+/v11
+
+(1) Same as human/v10 except that 
+	(1)the 'augmented data' were used for training and testing.
+	(2) Batch size changes back to 16 from 10 because all subjects now have enough data.
+	(3) S030 is also included.
+
+Note
+(1) All models have higher accuracy with the augmented data.
+(2)  
+S030:
+accurary	mode
+82.54%	train_proportion
+79.33%	vali_proportion
+79.45%	test_proportion
+
+(3) 
+S024:
+ground_truth_label_count	prediction_count	accuracy_data_set
+
+
+S024_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
 #########################################
 Finished training session (v10, commit 35e29c) 
 Time: 2020/02/11
