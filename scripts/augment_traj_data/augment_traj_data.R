@@ -17,6 +17,8 @@ MAZE_UPPER_WALL_ROW_INDEX <- 2
 MAZE_LOWER_WALL_ROW_INDEX <- 15
 MAZE_HEIGHT <- 12
 MAZE_WIDTH <- 12
+PADDING_FIRST_ROW <- "Maze:"
+
 
 ROTATE_TIMES <- c(0, 1, 2, 3) # how many times of 90 degrees to be rotated
 TRANSPOSE_TIMES <- c(0, 1) # how many times of transposing
@@ -213,6 +215,14 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
 
         # convert to an augmented df and write it out
         df_augmented <- matrix_to_df(matrix_maze)
+        
+        # add 'Maze:' at the first line
+        
+        df_augmented =         
+        data.frame(V1 = PADDING_FIRST_ROW,stringsAsFactors = F)%>%
+          bind_rows(df_augmented)
+        
+        # add steps after the maze
         df_augmented <-
           df_augmented %>%
           bind_rows(data.frame(V1 = transformed_step_string, stringsAsFactors = F))
