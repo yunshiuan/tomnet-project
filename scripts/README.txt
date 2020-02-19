@@ -22,6 +22,7 @@ Convert human raw data to processed data that are ready for training. The proces
 	     (don't put it to the processed data dir)
   (vii) delete consecutive files that are from identical maze (e.g., S053_980.txt & S053_981.txt). Keep the first file and delete the rest of the duplicated files. This seems to only be an issue for those who play with computer.
 	(viii) handle the case where the player has already reached a target but continued to move afterwards. Truncate the trajectory to the step where the player reached the first target. This seems to only be an issue when issue vii happens.
+	
 --------------------------
 filter_full_target_trajectories
 --------------------------
@@ -29,3 +30,21 @@ filter_full_target_trajectories
 - This is to faciliate the process of preference prediction. It is impossible for a
 model to infer the target by a qeury state if the trajectory the model saw
 contained only a subset of the targets.
+- input:
+	- simulated data: No need for now because we could generate data that all have exactly 4 targets, e.g., S002b, S003b
+	- human data: 'processed'
+- output:
+	- simulated data: No need for now
+	- human data: 'filtered'
+--------------------------
+augment_traj_data
+--------------------------
+- augment the trajectory data by reflection and rotation of the x and y axis. Each maze results in 8 agumented data (4 rotation x 2 reflection)
+- the augmented data is based on the processed data format which is good for training.
+- the augmented data is the input for the training. The purpose is to increase the training set size for human data.
+- input:
+	- simulated data: No need for now
+	- human data: 'processed'
+- output:
+	- simulated data: No need for now
+	- human data: 'augmented'
