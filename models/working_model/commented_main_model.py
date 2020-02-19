@@ -1009,8 +1009,9 @@ if __name__ == "__main__":
   # Constants
   # --------------------------------------------------------
   # LIST_SUBJECTS = ["S0" + str(i) for i in ["35","50","51","52"]]
+  LIST_SUBJECTS = ["S030"]
 
-  LIST_SUBJECTS = ["S0" + str(i) for i in ["24","33","35","50","51","52"]]
+  # LIST_SUBJECTS = ["S0" + str(i) for i in ["24","33","35","50","51","52"]]
 
   # --------------------------------------------------------
   # Iterate through the subject list
@@ -1034,4 +1035,7 @@ if __name__ == "__main__":
       model.train()
     if args.mode == 'test' or args.mode == 'all':
       model.test()
+    print("------------------------------------")
+    print("Congratultions! You have reached the end of the script.")
+    print("------------------------------------")
 
