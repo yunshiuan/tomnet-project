@@ -39,7 +39,8 @@ class Model(mp.ModelParameter):
   # Constant: Training parameters
   # --------------------------------------
   #Batch size = 16, same in the paper A.3.1. EXPERIMENT 1: SINGLE PAST MDP)
-  BATCH_SIZE = 10 # for human data with less than 160 files
+  BATCH_SIZE = 16
+  # BATCH_SIZE = 10 # for human data with less than 160 files
   BATCH_SIZE_TRAIN = BATCH_SIZE # size of the batch for traning (number of the steps within each batch)
   BATCH_SIZE_VAL = BATCH_SIZE # size of the batch for validation
   BATCH_SIZE_TEST = BATCH_SIZE # size of batch for testing
@@ -57,7 +58,7 @@ class Model(mp.ModelParameter):
   FULL_VALIDATION = False
   USE_CKPT = False
   # the version of the training
-  TRAINING_VERSION = 'v10'
+  TRAINING_VERSION = 'v11'
 
   # --------------------------------------
   # Variable: Training parameters
@@ -72,7 +73,7 @@ class Model(mp.ModelParameter):
   #use panda df to store these values
   path_ckpt = os.path.join('test_on_human_data','training_result','caches')
   path_train = os.path.join('test_on_human_data','training_result','caches')
-  path_txt_data = os.path.join('..','..','data','data_human','processed')
+  path_txt_data = os.path.join('..','..','data','data_human','augmented')
 
   path_ckpt = os.path.join(path_mode,path_ckpt)
   path_train = os.path.join(path_mode,path_train)
