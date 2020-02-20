@@ -11,7 +11,6 @@ S003b.csv
 -------------------------------------
 simulation_social_reward_generator.r
 generates the social reward factor needed in simulation_data_generator script
-but still with some statistic concerns
 -Elaine added this file on 2/20/2020
 -------------------------------------
 30 agents folder
