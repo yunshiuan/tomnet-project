@@ -1,8 +1,8 @@
 Range:
-social support:0-20(or25?)
+social support:0-25
 social distance:0-5
 biological relative:0-3
-IRI:0-44
+IRI:0-45
 affiliation:7-56
 power distance:7-56
 -------------------------------------
