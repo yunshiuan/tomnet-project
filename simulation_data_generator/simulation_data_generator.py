@@ -31,7 +31,7 @@ from queue import *
 # Read suject's network
 # - param
 FNAME = 'S003b.csv'
-RANDOM_NUM_GOALS = False # If true, the number of goals will vary across mazes
+RANDOM_NUM_GOALS = True # If true, the number of goals will vary across mazes
 VERSION_NAME = 'S003b'
 TARGET_ORDER = np.array(['C','D','E','F'])
 SIMULATION_TOTAL = 10000
