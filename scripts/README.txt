@@ -48,3 +48,16 @@ augment_traj_data
 - output:
 	- simulated data: No need for now
 	- human data: 'augmented'
+	
+--------------------------
+count_playing_time
+--------------------------	
+- count the total playing time based on the modifed time of the raw data.
+# - Total playing time = sum of the playing duration of each file.
+# - File are separated into fragments if the interval of modified time 
+# between two consecutive files is greater than a certain threshold (e.g., 5 mins).
+# - The modified time of the file is the end time of each file (the completion of the trajectory)
+# - The duration of the first file of each segment is uncomputable because only the 
+# end time of each file is recorded.
+# - Use imputation (filling by grand mean of duration) to fill in the duration of 
+# first file of each segment
