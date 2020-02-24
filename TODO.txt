@@ -1,3 +1,7 @@
-- retrain the model with human data with duplicated data removed
 - do the preference prediction for human data on the 'filtered' data.
-- retrain the model by augmentated data.
+- retrain:
+	- human: 
+		- retrain the model by complete human data set
+	- simulated
+		- retrain with different simulated data
+		- try to augment the data as well
