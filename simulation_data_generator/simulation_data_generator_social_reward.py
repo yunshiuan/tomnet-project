@@ -322,13 +322,13 @@ while simulation_time <= SIMULATION_TOTAL:
             # pdb.set_trace()
             
             # Save the parameters of this maze
+            #pdb.set_trace()
             path_ordered = Path[agent_CDEF_index]
             energy_cost_ordered = energy_cost[agent_CDEF_index]
             social_reward_ordered = social_reward[agent_CDEF_index]
             total_score_ordered = subj_get[agent_CDEF_index]
             final_target_index = np.where((total_score_ordered == np.nanmax(total_score_ordered)))
-            final_target_name = TARGET_ORDER[final_target_index]
-            #pdb.set_trace()
+            final_target_name = agent_order_name[agent_CDEF_index][final_target_index]
             df_final_target_predictions = pd.DataFrame(data = {'target_name': agent_order_name[agent_CDEF_index],\
                                                                'social_reward': social_reward_ordered,\
                                                                'path': path_ordered,\
