@@ -58,22 +58,26 @@ class Model(mp.ModelParameter):
   FULL_VALIDATION = False
   USE_CKPT = False
   # the version of the training
-  TRAINING_VERSION = 'v11'
+  
+  # for simulation data
+  TRAINING_VERSION = 'v25'
+  # for human data
+  # TRAINING_VERSION = 'v11'
 
   # --------------------------------------
   # Variable: Training parameters
   # --------------------------------------
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  # ckpt_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
-  # train_fname = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_?'
-  # path_txt_data ='../../data/data_simulation/S003b/'
+  path_ckpt = os.path.join('test_on_simulation_data','training_result','caches')
+  path_train = os.path.join('test_on_simulation_data','training_result','caches')
+  path_txt_data = os.path.join('..','..','data','data_simulation','S004b-S037b')
 
   # for human data
   #use panda df to store these values
-  path_ckpt = os.path.join('test_on_human_data','training_result','caches')
-  path_train = os.path.join('test_on_human_data','training_result','caches')
-  path_txt_data = os.path.join('..','..','data','data_human','augmented')
+  #path_ckpt = os.path.join('test_on_human_data','training_result','caches')
+  #path_train = os.path.join('test_on_human_data','training_result','caches')
+  #path_txt_data = os.path.join('..','..','data','data_human','augmented')
 
   path_ckpt = os.path.join(path_mode,path_ckpt)
   path_train = os.path.join(path_mode,path_train)
@@ -88,12 +92,12 @@ class Model(mp.ModelParameter):
     # --------------------------------------------------------------
     path_ckpt = \
     os.path.join(self.path_ckpt,\
-                 self.TRAINING_VERSION  + '_commit_xxx',\
+                 self.TRAINING_VERSION ,\
                  args.subj_name)
 
     path_train = \
     os.path.join(self.path_ckpt,\
-                 self.TRAINING_VERSION + '_commit_xxx',\
+                 self.TRAINING_VERSION,\
                  args.subj_name)
 
     # create the path if not yet existed
@@ -1008,8 +1012,9 @@ if __name__ == "__main__":
   # --------------------------------------------------------
   # Constants
   # --------------------------------------------------------
-  # LIST_SUBJECTS = ["S0" + str(i) for i in ["35","50","51","52"]]
-  LIST_SUBJECTS = ["S030"]
+  # for S004b-S037b
+  LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,37+1)]
+  # LIST_SUBJECTS = ["S030"]
 
   # LIST_SUBJECTS = ["S0" + str(i) for i in ["24","33","35","50","51","52"]]
 

@@ -32,6 +32,30 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (4)
 ########################################
 
+Finished training session (v25, previous commit 9bb027)[At working_model]
+Time: 2020/02/25
+Author: Chuang, Yun-Shiuan
+Output file name: /v25
+Info: 
+
+(1) Follow v24 but train 34 models with S004b-S037b.
+
+Note:
+
+(2)
+accurary	mode
+
+(3)
+Traj_S003b_Query_S003b_subset96
+avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+
+
+Traj_S003b_Query_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+
+
+########################################
+
 Finished training session (v24, commit 014d79)[At working_model]
 Time: 2020/01/15
 Author: Elaine
