@@ -5,3 +5,5 @@
 	- simulated
 		- retrain with different simulated data
 		- try to augment the data as well
+- count the total playing time for all humans
+	- require re-download all the human files (so that the modified time is intact)
