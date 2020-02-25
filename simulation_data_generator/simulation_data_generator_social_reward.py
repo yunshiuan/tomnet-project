@@ -30,12 +30,12 @@ from queue import *
 # --------------------------------------------------------------      
 # Read suject's network
 # - param
-FNAME = 'S003b.csv'
+FNAME = 'S004b.csv'
 RANDOM_NUM_GOALS = True # If true, the number of goals will vary across mazes
-VERSION_NAME = 'S003b'
+VERSION_NAME = 'S004b'
 TARGET_ORDER = np.array(['C','D','E','F'])
-SIMULATION_TOTAL = 10000
-AGENT_NAME = "S003"
+SIMULATION_TOTAL = 20
+AGENT_NAME = "S004"
 # - dir
 DIR_ROOT = os.getcwd()
 DIR_TXT_OUTPUT = os.path.join(DIR_ROOT, '..','data','data_simulation',\
@@ -62,7 +62,7 @@ simulation_time=0
 while simulation_time <= SIMULATION_TOTAL:
     # pdb.set_trace()
     # Number of agents in the environment 
-    number_agents=len(agents_list) - 2 #exclude the header and the acting agent
+    number_agents=len(agents_list) - 1 #exclude the header
     if RANDOM_NUM_GOALS:
       if number_agents<=11:
           n_chosen_agents = random.choice(list(range(1,number_agents+1)))
@@ -93,11 +93,11 @@ while simulation_time <= SIMULATION_TOTAL:
      ]
 
     Subj_CHR = 'S'
-    Chosen_agents_label=['A','B','C','D', 'E', 'F']
+    Chosen_agents_label=['B','C','D', 'E', 'F']
     #Chosen_agents_label=['A','B','C','D','E','F','G','H', 'I', 'J','K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm']
       
     #pdb.set_trace()
-    c = list(range(0+2, number_agents+2)) 
+    c = list(range(0+1, number_agents+1)) 
     Chosen_agents_index=random.sample(c, n_chosen_agents)
     Chosen_agents_index=np.asarray(Chosen_agents_index)
     Chosen_agents=[]
@@ -178,17 +178,19 @@ while simulation_time <= SIMULATION_TOTAL:
     #GAME_FG_COLOURS.update(safety_game.GAME_FG_COLOURS)
 
     # pdb.set_trace()
-    Subj_parameter=agents_list[1]
+    #Subj_parameter=agents_list[1]
 
-    D_eff=np.zeros(n_chosen_agents)
+    #D_eff=np.zeros(n_chosen_agents)
+    social_reward=np.zeros(n_chosen_agents)
 
     for i in range (n_chosen_agents):
-        personality_weight=np.sqrt(((int(Chosen_agents[i][6])-int(Subj_parameter[6]))/45)**2+((int(Chosen_agents[i][7])-int(Subj_parameter[7]))/50)**2+((int(Chosen_agents[i][8])-int(Subj_parameter[8])/50)**2))
-        association=np.sqrt(((int(Chosen_agents[i][3]))/26)**2+((int(Chosen_agents[i][4]))/5)**2+((int(Chosen_agents[i][5]))/3)**2)
-        D_eff[i]= association/personality_weight
+        #personality_weight=np.sqrt(((int(Chosen_agents[i][6])-int(Subj_parameter[6]))/45)**2+((int(Chosen_agents[i][7])-int(Subj_parameter[7]))/50)**2+((int(Chosen_agents[i][8])-int(Subj_parameter[8])/50)**2))
+        #association=np.sqrt(((int(Chosen_agents[i][3]))/26)**2+((int(Chosen_agents[i][4]))/5)**2+((int(Chosen_agents[i][5]))/3)**2)
+        #D_eff[i]= association/personality_weight
+        social_reward[i]=Chosen_agents[i][1]
 
 
-    D_eff=D_eff/sum(D_eff)
+    #D_eff=D_eff/sum(D_eff)
 
 
 
@@ -303,8 +305,8 @@ while simulation_time <= SIMULATION_TOTAL:
         else:
             # Note that the order of agents is not sequential
             # because 'random.sample(c, n_chosen_agents)'
-            agent_order_index = Chosen_agents_index.astype(int) - 2
-            agent_order_name = np.array(Chosen_agents_label)[agent_order_index+2]
+            agent_order_index = Chosen_agents_index.astype(int) - 1
+            agent_order_name = np.array(Chosen_agents_label)[agent_order_index+1]
             # the location of C, D, E, F
             agent_CDEF_index =  agent_order_index.argsort()
             
@@ -312,7 +314,7 @@ while simulation_time <= SIMULATION_TOTAL:
             Path=Path/sum(Path)
             # pdb.set_trace()
             energy_cost=-Path*np.log2(Path)
-            social_reward=-D_eff*np.log2(D_eff)
+            
     
             subj_get=social_reward-energy_cost
             determine=np.where(subj_get==np.nanmax(subj_get))
@@ -320,21 +322,23 @@ while simulation_time <= SIMULATION_TOTAL:
             # pdb.set_trace()
             
             # Save the parameters of this maze
+            #pdb.set_trace()
             path_ordered = Path[agent_CDEF_index]
             energy_cost_ordered = energy_cost[agent_CDEF_index]
             social_reward_ordered = social_reward[agent_CDEF_index]
             total_score_ordered = subj_get[agent_CDEF_index]
             final_target_index = np.where((total_score_ordered == np.nanmax(total_score_ordered)))
-            final_target_name = TARGET_ORDER[final_target_index]
-            df_final_target_predictions = pd.DataFrame(data = {'target_name': TARGET_ORDER,\
+            final_target_name = agent_order_name[agent_CDEF_index][final_target_index]
+            df_final_target_predictions = pd.DataFrame(data = {'target_name': agent_order_name[agent_CDEF_index],\
                                                                'social_reward': social_reward_ordered,\
                                                                'path': path_ordered,\
                                                                'energy_cost': energy_cost_ordered,\
                                                                'total_score': total_score_ordered,\
-                                                               'final_target': np.repeat(final_target_name,4),\
-                                                               'simulation_index': np.repeat(str(simulation_time),4)})
+                                                               'final_target': np.repeat(final_target_name,n_chosen_agents),\
+                                                               'simulation_index': np.repeat(str(simulation_time),n_chosen_agents)
+                                                               })
             
-            # pdb.set_trace()
+            #pdb.set_trace()
             if simulation_time > 0:
               df_collect_final_target_predictions = df_collect_final_target_predictions.append(df_final_target_predictions)
               
