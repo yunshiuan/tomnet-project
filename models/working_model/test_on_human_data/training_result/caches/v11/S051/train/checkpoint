@@ -1,0 +1,3 @@
+model_checkpoint_path: "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/models/working_model/test_on_human_data/training_result/caches/v11_commit_xxx/S051/train/model.ckpt-9999"
+all_model_checkpoint_paths: "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/models/working_model/test_on_human_data/training_result/caches/v11_commit_xxx/S051/train/model.ckpt-0"
+all_model_checkpoint_paths: "/home/.bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/models/working_model/test_on_human_data/training_result/caches/v11_commit_xxx/S051/train/model.ckpt-9999"

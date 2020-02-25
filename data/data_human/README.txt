@@ -5,12 +5,13 @@ See the README file at 'models\working_model\test_on_human_data\' for
 --------------------------------------------
 raw/
 --------------------------------------------
-the raw data downloaded from the server.
+- the raw data downloaded from the server.
 
 --------------------------------------------
 processed/
 --------------------------------------------
-the processed data that is used for model training.
+- the processed data that is used for model training.
+- converted from raw data by 'scripts\convert_human_data_format\convert_human_data_format.R'
 
 --------------------------------------------
 filtered/

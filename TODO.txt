@@ -1,2 +1,9 @@
 - do the preference prediction for human data on the 'filtered' data.
-- retrain the model by augmentated data.
+- retrain:
+	- human: 
+		- retrain the model by complete human data set
+	- simulated
+		- retrain with different simulated data
+		- try to augment the data as well
+- count the total playing time for all humans
+	- require re-download all the human files (so that the modified time is intact)

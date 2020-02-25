@@ -16,19 +16,6 @@ PATH_DATA_ROOT <- file.path(PATH_ROOT, "data", "data_human")
 PATH_DATA_INPUT <- file.path(PATH_DATA_ROOT, "processed", LIST_SUBJ)
 PATH_TXT_OUTPUT <- file.path(PATH_DATA_ROOT, "filtered", LIST_SUBJ)
 # File
-# Helper functions
-parse_coordinate <- function(step_string) {
-  coordinate_x <- as.numeric(str_extract(
-    string = step_string,
-    pattern = "(?<=\\()\\d+"
-  ))
-  coordinate_y <- as.numeric(str_extract(
-    string = step_string,
-    pattern = "\\d+(?=\\))"
-  ))
-  return(list(coordinate_x = coordinate_x, coordinate_y = coordinate_y))
-}
-
 # Convert-------------------------------------------------
 for (subj_index in 1:length(PATH_DATA_INPUT)) {
   # local constants --------------------------------
