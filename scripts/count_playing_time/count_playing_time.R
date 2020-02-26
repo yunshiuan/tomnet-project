@@ -12,23 +12,41 @@
 # - Use imputation (filling by grand mean of duration) to fill in the duration of
 # first file of each segment
 # CAUTION! Currently, the script will only work under 1 condition.
-#(1) The raw data is "fresh". This is, they are just downloaded from the server so that 
+# (1) The raw data is "fresh". This is, they are just downloaded from the server so that
 # the modifed time will correctly indication the trajectory completion time. Any modification, e.g.,
 # move, rename will change the time stamp.
+# (2) The way the script decides duplication in files is not precise. It uses a shortcut
+# by applying threshold, i.e., duration shorter than it is considered as duplication of the previos file.
+# Therefore, to know the total number of the non-duplicated files, one shoulde not rely on the output of this script.
+# That said, the script still provices reasonable approximation of total playing time.
+# The precise way to decide duplication is by looking into the file content. See "convert_human_data_format.R".
 library(stringr)
 library(dplyr)
 library(tidyr)
 # Constants-----------------------------------------------
 # Parameter
-LIST_SUBJ <- paste0("S0", c(63))
-# LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 40, 50, 51, 52))
+# LIST_SUBJ <- paste0("S0", c(63))
+LIST_SUBJ <- paste0(
+  "S0",
+  c(
+    24, 26, 28,
+    30, 31, 33,
+    35, 36, 37,
+    40, 43, 45,
+    46, 50, 51,
+    52, 53, 55,
+    58, 59, 60,
+    61, 62, 63,
+    65, 66, 67
+  )
+)
 
 # the threshold that decides whether
 # - two consecutive files belong to the same playing fragment
-FRAGEMENT_INTERVAL <- 600
+FRAGEMENT_INTERVAL <- 120
 # the minimun time to complete the trajectory
 # - this is necessary when there are duplicated files as in S063
-MIN_DURATION = 1
+MIN_DURATION <- 1
 
 # Path
 PATH_ROOT <- str_extract(getwd(), pattern = ".*tomnet-project")
@@ -37,7 +55,10 @@ PATH_DATA_INPUT <- file.path(PATH_HUMAN_DATA, "raw", LIST_SUBJ)
 PATH_COUNT_TIME_OUTPUT <- file.path(PATH_HUMAN_DATA, "raw")
 
 # File
-FILE_COUNT_TIME_OUTPUT <- file.path(PATH_COUNT_TIME_OUTPUT, "playing_time.csv")
+FILE_COUNT_TIME_OUTPUT <- file.path(
+  PATH_COUNT_TIME_OUTPUT,
+  paste0("summary_playing_time_", Sys.Date(), ".csv")
+)
 
 # Helper functions
 get_modified_time <- function(file_full_path) {
@@ -123,11 +144,11 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
       next
     }
   }
-  # filter out duplicate files by thresholding 
-  df_files = 
-  df_files%>%
-    filter(duration>MIN_DURATION)
-  
+  # filter out duplicate files by thresholding
+  df_files <-
+    df_files %>%
+    filter(duration > MIN_DURATION)
+
   # impute the duration of the first file of each segment
   # - by filling the grand mean of duration
   mean_duration <- mean(df_files$duration, na.rm = T)
@@ -152,12 +173,26 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
   collect_mean_duration <- append(collect_mean_duration, mean_duration)
   collect_total_files <- append(collect_total_files, nrow(df_files))
 }
-# 
-# # write the result as csv file
-# df_playing_time <- data.frame(
-#   subj = LIST_SUBJ,
-#   total_duration = collect_total_duration,
-#   mean_duration = collect_mean_duration,
-#   total_files = collect_total_files,
-#   stringsAsFactors = F
-# )
+
+# write the result as csv file
+df_playing_time <- data.frame(
+  subj = LIST_SUBJ,
+  total_duration = collect_total_duration,
+  mean_duration = collect_mean_duration,
+  total_files = collect_total_files,
+  stringsAsFactors = F
+)
+df_playing_time <-
+  df_playing_time %>%
+  rename(
+    total_duration_sec = total_duration,
+    mean_duration_sec = mean_duration
+  ) %>%
+  mutate(
+    total_duration_min = round(total_duration_sec / 60),
+  )
+
+write.csv(
+  x = df_playing_time,
+  file = paste(FILE_COUNT_TIME_OUTPUT)
+)
