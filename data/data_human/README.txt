@@ -1,5 +1,6 @@
 See the README file at 'models\working_model\test_on_human_data\' for 
-	(1) details about where the data is on the server.
+	(1) details about where the data is on the server and how to log in.
+		- "/var/www/html/bmlab/ai-robo/game/data"
 	(2) how the raw data is converted to the processed data.
 	
 --------------------------------------------
