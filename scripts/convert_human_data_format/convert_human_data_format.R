@@ -17,8 +17,22 @@
 library(stringr)
 # Constants-----------------------------------------------
 # Parameter
-LIST_SUBJ <- paste0("S0", c(40))
-# LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
+# LIST_SUBJ <- paste0("S0", c(40))
+LIST_SUBJ <- paste0(
+  "S0",
+  c(
+    24, 26, 28,
+    30, 31, 33,
+    35, 36, 37,
+    40, 43, 45,
+    46, 50, 51,
+    52, 53, 55,
+    58, 59, 60,
+    61, 62, 63,
+    65, 66, 67
+  )
+)
+
 # MAZE_HEIGHT = 14 #including upper and lower wall
 MAZE_UPPER_WALL_ROW_INDEX <- 1
 MAZE_LOWER_WALL_ROW_INDEX <- 14

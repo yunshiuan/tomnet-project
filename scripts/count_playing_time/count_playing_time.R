@@ -20,6 +20,8 @@
 # Therefore, to know the total number of the non-duplicated files, one shoulde not rely on the output of this script.
 # That said, the script still provices reasonable approximation of total playing time.
 # The precise way to decide duplication is by looking into the file content. See "convert_human_data_format.R".
+# Therefore, to know the precise total non-duplicated files of each subject, one should count the number
+# of processed files (the output of "convert_human_data_format.R").
 library(stringr)
 library(dplyr)
 library(tidyr)
