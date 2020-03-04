@@ -42,5 +42,10 @@ models/working_model/test_on_simulation_data/training_result/caches/cache_S002a_
 
 # Ignore files too large
 data/data_simulation/S004b-S037b/
+models/working_model/test_on_simulation_data/training_result/caches/v25/**/train/*
+models/working_model/test_on_human_data/training_result/caches/v12/**/train/*
 
-models/working_model/test_on_simulation_data/training_result/caches/v25/
+# exception
+!models/working_model/test_on_simulation_data/training_result/caches/v25/**/train/*.csv
+!models/working_model/test_on_human_data/training_result/caches/v12/**/train/*.csv
+

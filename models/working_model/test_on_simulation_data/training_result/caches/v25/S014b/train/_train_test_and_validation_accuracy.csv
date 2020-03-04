@@ -1,0 +1,4 @@
+,matches,accurary,mode
+0,7885/8000,98.56%,train_proportion
+0,860/992,86.69%,vali_proportion
+0,845/992,85.18%,test_proportion
