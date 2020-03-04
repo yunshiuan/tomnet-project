@@ -21,6 +21,31 @@ data path:
 '\data\data_human'
 
 #########################################
+Finished training session (v12, commit d77824) 
+Time: 2020/03/03
+Author: Chuang, Yun-Shiuan
+Output file name: 
+/v12
+
+(1) Same as human/v11 except that 
+	(1) run on the most updated human data (more files and more subjects)
+    (2) include all subjects that have at least 500 augmented data
+    (original files >= 500/8 = 62.5)
+
+Note
+(1) 
+(2)  
+accurary	mode
+
+
+(3) 
+S024:
+ground_truth_label_count	prediction_count	accuracy_data_set
+
+
+S024_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+#########################################
 Finished training session (v11, commit c2f0ff) 
 Time: 2020/02/19
 Author: Chuang, Yun-Shiuan
