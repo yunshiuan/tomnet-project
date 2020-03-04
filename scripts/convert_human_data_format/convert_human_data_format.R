@@ -18,32 +18,33 @@ library(stringr)
 # Constants-----------------------------------------------
 # Parameter
 # LIST_SUBJ <- paste0("S0", c(40))
-# LIST_SUBJ <- paste0(
-#   "S0",
-#   c(
-#     24, 26, 28,
-#     30, 31, 33,
-#     35, 36, 37,
-#     40, 43, 45,
-#     46, 50, 51,
-#     52, 53, 55,
-#     58, 59, 60,
-#     61, 62, 63,
-#     65, 66, 67
-#   )
-# )
 LIST_SUBJ <- paste0(
   "S0",
   c(
-    24,53, 
-    58, 59, 
+    24, 26, 28,
+    30, 31, 33,
+    35, 36, 37,
+    40, 43, 45,
+    46, 50, 51,
+    52, 53, 55,
+    58, 59, 60,
     61, 62, 63,
-    67, 69
+    65, 66, 67,
+    69
   )
 )
+# LIST_SUBJ <- paste0(
+#   "S0",
+#   c(
+#     24, 53, 
+#     58, 59, 
+#     61, 62, 63,
+#     67, 69
+#   )
+# )
 
 # whether skip the subjects that already have some processed files
-SKIP_PROCESSED <- FALSE
+SKIP_PROCESSED <- TRUE
 # MAZE_HEIGHT = 14 #including upper and lower wall
 MAZE_UPPER_WALL_ROW_INDEX <- 1
 MAZE_LOWER_WALL_ROW_INDEX <- 14
