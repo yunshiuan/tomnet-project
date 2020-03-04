@@ -10,6 +10,7 @@
 # - output 2: the group-level csv that recors the avergage number of targetr for each agent
 #################
 library(stringr)
+library(dplyr)
 # Constants-----------------------------------------------
 # Parameter
 LIST_SUBJ <- paste0(
@@ -48,7 +49,7 @@ FILE_COUNT_GROUP_OUTPUT <- file.path(
 )
 # count the number of targets per agent -------------------------------------------------
 # - collect the df_count_per_agent per agent
-collect_df_count_per_agent = c()
+collect_df_count_per_agent <- c()
 
 for (subj_index in 1:length(PATH_DATA_INPUT)) {
   # local constants --------------------------------
@@ -79,16 +80,40 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
         sum(grepl(x = df_txt$V1, pattern = "F"))
       return(num_targets)
     })
-  df_count_per_agent = data.frame(
+  df_count_per_agent <- data.frame(
     file = txt_raw_files,
-    num_targets = unlist(list_num))
+    num_targets = unlist(list_num)
+  )
   # write the agent-level csv
   output_file <- FILE_COUNT_AGENT_OUTPUT[subj_index]
   write.csv(
     x = df_count_per_agent,
     file = output_file
   )
-  collect_df_count_per_agent[[subj_index]] = df_count_per_agent
+  collect_df_count_per_agent[[subj_index]] <- df_count_per_agent
 }
 
 # the group-level summary --------------------------------
+df_count_all_agents <- do.call("rbind", collect_df_count_per_agent)
+df_count_all_agents <-
+  df_count_all_agents %>%
+  mutate(subj_name = str_extract(string = file, pattern = "S\\d+(?=_\\d)")) %>%
+  select(-file) %>%
+  group_by(subj_name, num_targets) %>%
+  summarise(freq = n())
+# the average number of targets for each agent
+df_count_all_agents %>%
+  mutate(product = num_targets * freq) %>%
+  group_by(subj_name) %>%
+  summarise(
+    total_files = sum(freq),
+    total_num_targets = sum(product)
+  ) %>%
+  mutate(avg_num_targets = total_num_targets / total_files) %>%
+  # drop the intermdiate variables
+  select(-total_files, -total_num_targets) %>%
+  # add the average number of targets for each agent
+  right_join(df_count_all_agents, by = "subj_name") %>%
+  # add the random rate for each agent
+  mutate(random_rate = round(100 / avg_num_targets, 3)) %>%
+  write.csv(x = ., file = FILE_COUNT_GROUP_OUTPUT)
