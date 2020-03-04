@@ -30,12 +30,12 @@ from queue import *
 # --------------------------------------------------------------      
 # Read suject's network
 # - param
-FNAME = 'S004b.csv'
+FNAME = 'humanS024b.csv'
 RANDOM_NUM_GOALS = True # If true, the number of goals will vary across mazes
-VERSION_NAME = 'S004b'
+VERSION_NAME = 'humanS024b'
 TARGET_ORDER = np.array(['C','D','E','F'])
-SIMULATION_TOTAL = 20
-AGENT_NAME = "S004"
+SIMULATION_TOTAL = 100
+AGENT_NAME = "humanS024b"
 # - dir
 DIR_ROOT = os.getcwd()
 DIR_TXT_OUTPUT = os.path.join(DIR_ROOT, '..','data','data_simulation',\
@@ -309,11 +309,13 @@ while simulation_time <= SIMULATION_TOTAL:
             agent_order_name = np.array(Chosen_agents_label)[agent_order_index+1]
             # the location of C, D, E, F
             agent_CDEF_index =  agent_order_index.argsort()
+            #pdb.set_trace()
             
             simulation_time=simulation_time+1
-            Path=Path/sum(Path)
+            #Path=Path/sum(Path)
             # pdb.set_trace()
-            energy_cost=-Path*np.log2(Path)
+            #energy_cost=-Path*np.log2(Path)
+            energy_cost=Path
             
     
             subj_get=social_reward-energy_cost
@@ -329,6 +331,7 @@ while simulation_time <= SIMULATION_TOTAL:
             total_score_ordered = subj_get[agent_CDEF_index]
             final_target_index = np.where((total_score_ordered == np.nanmax(total_score_ordered)))
             final_target_name = agent_order_name[agent_CDEF_index][final_target_index]
+            #pdb.set_trace()
             df_final_target_predictions = pd.DataFrame(data = {'target_name': agent_order_name[agent_CDEF_index],\
                                                                'social_reward': social_reward_ordered,\
                                                                'path': path_ordered,\
@@ -338,7 +341,7 @@ while simulation_time <= SIMULATION_TOTAL:
                                                                'simulation_index': np.repeat(str(simulation_time),n_chosen_agents)
                                                                })
             
-            #pdb.set_trace()
+            pdb.set_trace()
             if simulation_time > 0:
               df_collect_final_target_predictions = df_collect_final_target_predictions.append(df_final_target_predictions)
               
