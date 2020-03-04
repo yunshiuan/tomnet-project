@@ -32,7 +32,8 @@ LIST_SUBJ <- paste0(
     65, 66, 67
   )
 )
-
+# whether skip the subjects that already have some processed files
+SKIP_PROCESSED <- FALSE
 # MAZE_HEIGHT = 14 #including upper and lower wall
 MAZE_UPPER_WALL_ROW_INDEX <- 1
 MAZE_LOWER_WALL_ROW_INDEX <- 14
@@ -95,7 +96,7 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
   ))
   txt_raw_files <- txt_raw_files[order(traj_id)]
   # skip if already processed
-  if ((length(txt_raw_files) >= length(txt_processed_files)) & (length(txt_processed_files) > 0)) {
+  if (SKIP_PROCESSED & (length(txt_raw_files) >= length(txt_processed_files)) & (length(txt_processed_files) > 0)) {
     cat(paste0(
       subj_name,
       " has already been processed.", "\n",
@@ -120,8 +121,8 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
       previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)
       previous_df_txt <- read.delim(previous_txt_full_file_name, header = F, stringsAsFactors = F)
       skip_duplicate <- FALSE
-      count_skip_duplicate = 0
-      count_processed = 0
+      count_skip_duplicate <- 0
+      count_processed <- 0
     } else if (!skip_duplicate) {
       # - get the previous non-skipped file (start updating on the second file)
       previous_txt_full_file_name <- file.path(subj_path_data_input, previous_txt_file_name)
@@ -132,16 +133,16 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
     if (txt_index != 1) {
       if (all(df_txt[1:MAZE_LOWER_WALL_ROW_INDEX + 1, ] == previous_df_txt[1:MAZE_LOWER_WALL_ROW_INDEX + 1, ])) {
         cat(paste0("Skip: ", txt_file_name, " is a duplicate of ", previous_txt_file_name), ".\n")
-        count_skip_duplicate = count_skip_duplicate+1
+        count_skip_duplicate <- count_skip_duplicate + 1
         skip_duplicate <- TRUE
         # skip this duplicated file
         next
       } else {
         # cat(paste0("Does not skip ", txt_file_name, "\n"))
         skip_duplicate <- FALSE
-        count_processed = count_processed + 1
+        count_processed <- count_processed + 1
         # save for next iteraction
-        previous_txt_file_name = txt_file_name
+        previous_txt_file_name <- txt_file_name
       }
     }
 
@@ -193,9 +194,9 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
 
       target_name <- strsplit(df_txt$V1[row_index], "")[[1]][target_col_index]
       # adjust the wall position
-      target_col_index = target_col_index-1
-      row_index = row_index-1
-      
+      target_col_index <- target_col_index - 1
+      row_index <- row_index - 1
+
       # collect the target coordinate
       collect_col_index <- append(collect_col_index, target_col_index)
       collect_row_index <- append(
@@ -208,7 +209,7 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
         collect_target_name, target_name,
       )
     }
-    
+
     df_target_coordinates <- data.frame(
       row = collect_row_index,
       col = collect_col_index,
@@ -240,22 +241,22 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
 
       # break the while loop if the agent has alreay reached one of the target (truncate the steps)
       # - this is necessary for handling the bug where the agent keep moving after reaching a target
-      this_step_col = 
-        as.numeric(str_extract(string = this_step_string,pattern = "(?<=())\\d+(?=,)"))
-      this_step_row = 
-        as.numeric(str_extract(string = this_step_string,pattern = "(?<=, )\\d+(?=\\))"))    
-      
-      if (nrow(subset(df_target_coordinates,row == this_step_row & col == this_step_col))>0){
+      this_step_col <-
+        as.numeric(str_extract(string = this_step_string, pattern = "(?<=())\\d+(?=,)"))
+      this_step_row <-
+        as.numeric(str_extract(string = this_step_string, pattern = "(?<=, )\\d+(?=\\))"))
+
+      if (nrow(subset(df_target_coordinates, row == this_step_row & col == this_step_col)) > 0) {
         # cat(
         #   paste0("Break at row:", this_step_row," col:", this_step_col," line: ",line_index,"\n")
         #   )
         break
       }
       # for the next step to use
-      previous_step_string <- this_step_string 
-      line_index <- line_index + 1      
+      previous_step_string <- this_step_string
+      line_index <- line_index + 1
     }
-    
+
     # skip the file if the starting point and the ending point is the same
     if (processed_steps[1] == processed_steps[length(processed_steps)]) {
       # Do nothing
@@ -282,7 +283,9 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
       )
     }
   }
-  cat("Finish:",subj_name,"\n",
-      "Skip = ",count_skip_duplicate,"\n",
-      "Processed =",count_processed,"\n")
+  cat(
+    "Finish:", subj_name, "\n",
+    "Skip = ", count_skip_duplicate, "\n",
+    "Processed =", count_processed, "\n"
+  )
 }
