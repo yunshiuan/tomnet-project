@@ -6,7 +6,16 @@ the script that generate the simulation trajectories in 'tomnet-project\data\dat
 --------------------------
 training_result_figures
 --------------------------
-the script that generated the training result plot, e.g., 'tomnet-project\models\working_model\test_on_simulation_data\training_result\figures'.
+visualize_each_training_result.R
+- the script that generated the training result plot for each agent, e.g., 'tomnet-project\models\working_model\test_on_simulation_data\training_result\figures\v11_S052_nTraj_704.pdf'.
+- axises:
+	- x axis: training step
+	-	y axis: error value
+	-	2 lines: training error and validation error
+	
+visualize_group_training_result.R
+- the script that generated the training result plot at the group level, e.g., 'tomnet-project\models\working_model\test_on_simulation_data\training_result\figures'.
+
 
 --------------------------
 convert_human_data_format
@@ -69,3 +78,7 @@ count_targets
 - purpose:
 	- derive the "random rate" for each human/agent. Because some trajectories have less than 4 targets, the random rate would be larger than 25%.
 	- also, in order for the function 'filter_full_targets_trajectories.R' to check if filtering has been done for an agent, it needs to know the number of trajectories that have exact 4 targets.
+- generate the csv at 
+	- 'data\data_human\processedsummary_count_targets_2020-03-03.csv'	
+	- 'data\data_human\processed\S024\count_targets_2020-03-03.csv'
+	

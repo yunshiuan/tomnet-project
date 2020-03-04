@@ -75,7 +75,8 @@ visualize_all_traning_performace <- function(path_training_result,
         pattern = "(?<=cache_).*(?=/train)"
       )
       if (!is.na(train_type)) {
-        file_name_figure_output <- paste0(train_type)
+        file_name_figure_output <- train_type
+        this_path_figure_output = path_figure_output
       }
 
       # the case for nested result structure (one version with multiple subjects)
@@ -88,7 +89,8 @@ visualize_all_traning_performace <- function(path_training_result,
           string = csv_file,
           pattern = "S\\d+(?=/train)"
         )
-        file_name_figure_output <- paste0(version, "_", subject_name)
+        this_path_figure_output = file.path(path_figure_output,version)
+        file_name_figure_output = subject_name
       }
 
       # get the number of the total trajectories in the data set
@@ -110,11 +112,11 @@ visualize_all_traning_performace <- function(path_training_result,
           total_num_files <- sum(df_count$num_files)
 
           # Make a valid file name
-          file_name_figure_output <- gsub(
-            pattern = "/",
-            x = file_name_figure_output,
-            replacement = "__"
-          )
+          # file_name_figure_output <- gsub(
+          #   pattern = "/",
+          #   x = file_name_figure_output,
+          #   replacement = "__"
+          # )
           file_name_figure_output <-
             paste0(file_name_figure_output, "_nTraj_", total_num_files, ".pdf")
         }, warning = function(msg) {
@@ -128,13 +130,17 @@ visualize_all_traning_performace <- function(path_training_result,
             paste0(file_name_figure_output, ".pdf")
           return(error_message)
         })
-
+      
+      if(!dir.exists(this_path_figure_output)){
+        dir.create(this_path_figure_output)
+      }
       visualize_one_traning_performace(
         file_error_csv = csv_file,
         file_name_figure_output = file_name_figure_output,
-        path_figure_output = path_figure_output
+        path_figure_output = this_path_figure_output
       )
-      return(paste0("Finish: ", file_name_figure_output))
+      return(paste0("Finish: ", 
+                    file.path(this_path_figure_output,file_name_figure_output)))
     }, warning = function(msg) {
       # print(paste0("Warning with ", file_name_figure_output, ": ", msg))
       warning_message <- paste0("Warning with ", file_name_figure_output, ": ", msg$message)
