@@ -61,3 +61,11 @@ count_playing_time
 # end time of each file is recorded.
 # - Use imputation (filling by grand mean of duration) to fill in the duration of 
 # first file of each segment
+
+--------------------------
+count_targets
+--------------------------
+- count the number of targets in each trajectory
+- purpose:
+	- derive the "random rate" for each human/agent. Because some trajectories have less than 4 targets, the random rate would be larger than 25%.
+	- also, in order for the function 'filter_full_targets_trajectories.R' to check if filtering has been done for an agent, it needs to know the number of trajectories that have exact 4 targets.
