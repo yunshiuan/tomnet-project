@@ -41,6 +41,9 @@ Info:
 (1) Follow v24 but train 34 models with S004b-S037b.
 
 Note:
+(1) Ignore this one because we want to use "u-d" to generate simulation data instead
+of using [u*log(u) - d*log(d)].
+(2) Plus, they are git ignored because they are too large.
 
 (2)
 accurary	mode
