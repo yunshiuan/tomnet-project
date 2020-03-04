@@ -12,7 +12,22 @@ library(dplyr)
 # Constants-----------------------------------------------
 # Parameter
 # LIST_SUBJ <- paste0("S0", c(52))
-LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
+# LIST_SUBJ <- paste0("S0", c(24, 30, 33, 35, 50, 51, 52))
+LIST_SUBJ <- paste0(
+  "S0",
+  c(
+    24, 26, 28,
+    30, 31, 33,
+    35, 36, 37,
+    40, 43, 45,
+    46, 50, 51,
+    52, 53, 55,
+    58, 59, 60,
+    61, 62, 63,
+    65, 66, 67,
+    69
+  )
+)
 MAZE_UPPER_WALL_ROW_INDEX <- 2
 MAZE_LOWER_WALL_ROW_INDEX <- 15
 MAZE_HEIGHT <- 12
@@ -134,7 +149,7 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
 
   # skip if already augmented
   if (((length(txt_raw_files) * 8) == length(txt_processed_files)) & (length(txt_processed_files) > 0)) {
-    warning(paste0(
+    cat(paste0(
       subj_name,
       " has already been processed.", "\n",
       "#input files = ", length(txt_raw_files), "\n",
