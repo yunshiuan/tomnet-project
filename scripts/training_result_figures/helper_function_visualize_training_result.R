@@ -87,7 +87,7 @@ visualize_all_traning_performace <- function(path_training_result,
         )
         subject_name <- str_extract(
           string = csv_file,
-          pattern = "S\\d+(?=/train)"
+          pattern = "S\\d+.*(?=/train)"
         )
         this_path_figure_output = file.path(path_figure_output,version)
         file_name_figure_output = subject_name
