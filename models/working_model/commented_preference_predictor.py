@@ -16,17 +16,18 @@ import os
 import tensorflow as tf
 import numpy as np
 import pandas as pd
+import re
 from sklearn.utils import shuffle
 
 #from tensorflow.python.tools import inspect_checkpoint as chkp
 
 #import numpy as np
 #from tensorflow.contrib import rnn
-import commented_main_model as mm
+# import commented_main_model as mm
 import commented_model_parameters as mp
 import commented_data_handler as dh
-import commented_charnet as cn
-import commented_prednet as pn
+# import commented_charnet as cn
+# import commented_prednet as pn
 import commented_batch_generator as bg
 # For debugging
 import pdb
@@ -41,48 +42,56 @@ class PreferencePredictor(mp.ModelParameter):
   # --------------------------------------
   # Constant: For making predictions
   # --------------------------------------
-  # param
+  # - param
+  # - for nested model result: should be set to the version name, e.g., 'v12' (human)
+  # - for non-nested model result: should be set to '.', e.g., 'human, v9', along with args.subj_name = 'cache_S030_v9_commit_78092b'
+  INPUT_VERSION = 'v12'
+  AGENT_TYPE = 'human'
+
   BATCH_SIZE_PREDICT = 16
-  SUBSET_SIZE = 96
-  BREAK_CORRESPONDENCE = True # This should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
-  VERSION = 'Traj_S003b_Query_Stest_subset96'
-  WITH_LABEL = False # whether the query state has final target label
-#  VERSION = 'Traj_S003b_Query_S003b_subset96'
-  # dir
+  SUBSET_SIZE = 96 # because only 100 files in Query_Stest
+  # the query states are the blank mazes
+  QUERY_STATE_VERSION = 'Query_Stest_subset' + str(SUBSET_SIZE)
+  # the query states are the first shot of the trajectory data
+#  QUERY_STATE_VERSION = 'Query_Straj_subset' + SUBSET_SIZE
+
+  if(re.search('Stest',QUERY_STATE_VERSION)):
+    BREAK_CORRESPONDENCE = True # Should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
+    WITH_LABEL = False # whether the query state has final target label
+  elif(re.search('Straj',QUERY_STATE_VERSION)):
+    BREAK_CORRESPONDENCE = False
+    WITH_LABEL = True
+
+  # - dir
   DIR_PREDICTION_ROOT = os.getcwd() # the script dir
 
-  # For human data----------
-#  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-#                                                'data','data_human','processed','S030')
-#  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-#                                                'data','data_preference_predictions',\
-#                                                'query_state')
-#
-#  DIR_MODEL = 'test_on_human_data/training_result/caches/cache_S030_v9_commit_78092b'
+  def __init__(self, args):
+    '''
+    The constructor for the PreferencePredictor class.
+    '''
+    # get the arguments
+    subj_name = args['subj_name']
 
-  # For simulation data-----------
-  DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-                                                 'data','data_simulation','S003b')
-#  DIR_PREDICTION_DATA_QUERY_STATE = DIR_PREDICTION_DATA_TRAJECTORY
-  DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(DIR_PREDICTION_ROOT,'..','..',\
-                                                'data','data_preference_predictions',\
-                                                'query_state')
-  DIR_MODEL = 'test_on_simulation_data/training_result/caches/cache_S003b_v24_commit_014d79'
-  # --------------------
+    # the trajectory data
+    self.DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(self.DIR_PREDICTION_ROOT,'..','..',\
+                                                 'data',('data_'+self.AGENT_TYPE),'processed',subj_name)
+    # the query state data
+    self.DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(self.DIR_PREDICTION_ROOT,'..','..',\
+                                                   'data','data_preference_predictions',\
+                                                   'query_state')
+    self.DIR_MODEL = os.path.join('test_on_human_data'+self.AGENT_TYPE,\
+      'training_result','caches',self.INPUT_VERSION,subj_name)
+    self.DIR_MODEL_PREDICTION_RESULT_ROOT = os.path.join(self.DIR_MODEL,'prediction')
 
-  DIR_MODEL_PREDICTION_RESULT_ROOT = os.path.join(DIR_MODEL,'prediction')
-  DIR_MODEL_PREDICTION_RESULT_THIS_VERSION = \
-  os.path.join( DIR_MODEL_PREDICTION_RESULT_ROOT,VERSION)
+    # output directory
+    self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION = \
+      os.path.join(self.DIR_MODEL_PREDICTION_RESULT_ROOT,self.QUERY_STATE_VERSION)
+    if not os.path.exists(self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION):
+        os.makedirs(self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION)
+    # - file
+    self.FILE_MODEL_CKPT = os.path.join(self.DIR_MODEL,'train','model.ckpt-9999')
 
-  if not os.path.exists(DIR_MODEL_PREDICTION_RESULT_THIS_VERSION):
-    os.makedirs(DIR_MODEL_PREDICTION_RESULT_THIS_VERSION)
 
-  # file
-  FILE_MODEL_CKPT = os.path.join(DIR_MODEL,'train','model.ckpt-9999')
-  #FILE_MODEL_CKPT = 'test_on_simulation_data/training_result/caches/cache_S030_v16_commit_926291_epoch80000_tuning_batch96_train_step_1K_INIT_LR_10-4/train/model.ckpt-999'
-
-  def __init__(self):
-    pass
 
   def parse_prediction_data_whole_data_set(self):
     '''
