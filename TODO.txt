@@ -1,9 +1,11 @@
 - do the preference prediction for human data on the 'filtered' data.
 - retrain:
-	- human: 
-		- retrain the model by complete human data set
+	- (V)human: 
+		- (V)retrain the model by complete human data set
 	- simulated
 		- retrain with different simulated data
 		- try to augment the data as well
-- count the total playing time for all humans
-	- require re-download all the human files (so that the modified time is intact)
+- (V)count the total playing time for all humans
+	- (V)require re-download all the human files (so that the modified time is intact)
+- 'all_training_results.pdf'
+	- use bootstrapping to construct the error bars for each data point.
