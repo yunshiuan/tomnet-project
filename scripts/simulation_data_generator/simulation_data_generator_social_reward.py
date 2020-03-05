@@ -30,12 +30,12 @@ from queue import *
 # --------------------------------------------------------------      
 # Read suject's network
 # - param
-FNAME = 'S004b.csv'
+FNAME = 'humanS024b.csv'
 RANDOM_NUM_GOALS = True # If true, the number of goals will vary across mazes
-VERSION_NAME = 'S004b'
+VERSION_NAME = 'humanS024b'
 TARGET_ORDER = np.array(['C','D','E','F'])
-SIMULATION_TOTAL = 20
-AGENT_NAME = "S004"
+SIMULATION_TOTAL = 10000
+AGENT_NAME = "humanS024b"
 # - dir
 DIR_ROOT = os.getcwd()
 DIR_TXT_OUTPUT = os.path.join(DIR_ROOT, '..','data','data_simulation',\
@@ -309,11 +309,13 @@ while simulation_time <= SIMULATION_TOTAL:
             agent_order_name = np.array(Chosen_agents_label)[agent_order_index+1]
             # the location of C, D, E, F
             agent_CDEF_index =  agent_order_index.argsort()
+            #pdb.set_trace()
             
             simulation_time=simulation_time+1
-            Path=Path/sum(Path)
+            #Path=Path/sum(Path)
             # pdb.set_trace()
-            energy_cost=-Path*np.log2(Path)
+            #energy_cost=-Path*np.log2(Path)
+            energy_cost=Path
             
     
             subj_get=social_reward-energy_cost
@@ -322,12 +324,17 @@ while simulation_time <= SIMULATION_TOTAL:
             # pdb.set_trace()
             
             # Save the parameters of this maze
+            
             #pdb.set_trace()
+            
             path_ordered = Path[agent_CDEF_index]
             energy_cost_ordered = energy_cost[agent_CDEF_index]
             social_reward_ordered = social_reward[agent_CDEF_index]
             total_score_ordered = subj_get[agent_CDEF_index]
             final_target_index = np.where((total_score_ordered == np.nanmax(total_score_ordered)))
+            #if two or more targets sharing total score max: randomly decide
+            #pdb.set_trace()
+            final_target_index = random.choice(np.array(final_target_index).flatten())
             final_target_name = agent_order_name[agent_CDEF_index][final_target_index]
             df_final_target_predictions = pd.DataFrame(data = {'target_name': agent_order_name[agent_CDEF_index],\
                                                                'social_reward': social_reward_ordered,\
