@@ -58,7 +58,7 @@ class Model(mp.ModelParameter):
   FULL_VALIDATION = False
   USE_CKPT = False
   # the version of the training
-  
+
   # for simulation data
   # TRAINING_VERSION = 'v25'
   # for human data
@@ -1016,6 +1016,7 @@ if __name__ == "__main__":
   # LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,37+1)]
   # LIST_SUBJECTS = ["S030"]
 
+  # human
   LIST_SUBJECTS = \
   ["S0" + str(i) for i in ["24","26","30",\
   "33","35","40","43","50","51","52","53","55","58","59",\
