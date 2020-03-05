@@ -15,7 +15,13 @@ visualize_each_training_result.R
 	
 visualize_group_training_result.R
 - the script that generated the training result plot at the group level, e.g., 'tomnet-project\models\working_model\test_on_simulation_data\training_result\figures'.
-
+- axises:
+	- x axis: total unique trajectories (# of processed files)
+	-	y axis: accuracy
+	-	3 lines: training, validation, and testing accuracy
+	
+helper_function_visualize_training_result.R
+- the helper functions that 'visualize_each_training_result.R' call
 
 --------------------------
 convert_human_data_format
