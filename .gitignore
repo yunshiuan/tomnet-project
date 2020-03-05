@@ -44,8 +44,10 @@ models/working_model/test_on_simulation_data/training_result/caches/cache_S002a_
 data/data_simulation/S004b-S037b/
 models/working_model/test_on_simulation_data/training_result/caches/v25/**/train/*
 models/working_model/test_on_human_data/training_result/caches/v12/**/train/*
+data/data_simulation/simulation_data_on_server/data/**/*.txt
 
 # exception
 !models/working_model/test_on_simulation_data/training_result/caches/v25/**/train/*.csv
 !models/working_model/test_on_human_data/training_result/caches/v12/**/train/*.csv
+!data/data_simulation/simulation_data_on_server/data/**/summary_simulation.csv
 
