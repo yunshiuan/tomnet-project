@@ -332,6 +332,8 @@ while simulation_time <= SIMULATION_TOTAL:
             final_target_index = np.where((total_score_ordered == np.nanmax(total_score_ordered)))
             final_target_name = agent_order_name[agent_CDEF_index][final_target_index]
             #pdb.set_trace()
+            print(n_chosen_agents) 
+            print(Path)
             df_final_target_predictions = pd.DataFrame(data = {'target_name': agent_order_name[agent_CDEF_index],\
                                                                'social_reward': social_reward_ordered,\
                                                                'path': path_ordered,\
@@ -341,7 +343,7 @@ while simulation_time <= SIMULATION_TOTAL:
                                                                'simulation_index': np.repeat(str(simulation_time),n_chosen_agents)
                                                                })
             
-            pdb.set_trace()
+            #pdb.set_trace()
             if simulation_time > 0:
               df_collect_final_target_predictions = df_collect_final_target_predictions.append(df_final_target_predictions)
               
