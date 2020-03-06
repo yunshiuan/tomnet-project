@@ -285,6 +285,7 @@ class PreferencePredictor(mp.ModelParameter):
     '''
     The encapusulated function of predict_whole_data_set_final_targets()
     '''
+    # pdb.set_trace()
     self.prediction_proportion, self.ground_truth_label_proportion,\
     self.prediction_count, self.averaged_predicted_probability,\
     self.ground_truth_label_count,\
@@ -455,7 +456,11 @@ class PreferencePredictor(mp.ModelParameter):
     # --------------------------------------------------------------
     # pdb.set_trace()
     if with_label:
-      ground_truth_label_count = np.unique(data_set_ground_truth_labels,return_counts=True)[1]
+      ground_truth_label_count = []
+      for label_index in range(self.NUM_CLASS):
+        count = np.sum(data_set_ground_truth_labels==label_index)
+        ground_truth_label_count.append(count)
+      # ground_truth_label_count = np.unique(data_set_ground_truth_labels,return_counts=True)[1]
       ground_truth_label_proportion = np.round(ground_truth_label_count/np.sum(ground_truth_label_count), 2)
     else:
       ground_truth_label_count = np.zeros((self.NUM_CLASS))
@@ -550,7 +555,7 @@ class PreferencePredictor(mp.ModelParameter):
                                                        'final_target_predicted_labels': self.data_set_predicted_labels,\
                                                        'correctness': correctness.astype(int)})
     # the frequncey of predictions the ground truth labels for each target
-    # pdb.set_trace()
+    #pdb.set_trace()
     df_proportion_prediction_and_ground_truth_labels = pd.DataFrame(data = {'targets': range(0,4),\
                                                                            'ground_truth_label_proportion': self.ground_truth_label_proportion,\
                                                                            'prediction_proportion': self.prediction_proportion,\
@@ -587,6 +592,7 @@ if __name__ == "__main__":
                                 "33","35","40","43","50","51","52","53","55","58","59",\
                                 "61","62","63","65","66","67"]]
     # query state list
+    # LIST_QUERY_STATE = ["Query_Straj"]
     LIST_QUERY_STATE = ["Query_Stest","Query_Straj"]
 
     # --------------------------------------------------------
