@@ -34,19 +34,12 @@ Output file name:
         - list "24","26","30","33","35","40","43","50","51","52","53","55","58","59",\
                "61","62","63","65","66","67"
 
+Preference prediction (commit acc27b)
 Note
-(1) 
-(2)  
-accurary	mode
+(1) Test accuracy
+ See: \models\working_model\test_on_human_data\training_result\figures\v*\all_training_results.pdf
+(2) Preference prediction
 
-
-(3) 
-S024:
-ground_truth_label_count	prediction_count	accuracy_data_set
-
-
-S024_Stest_subset96:
-prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
 #########################################
 Finished training session (v11, commit c2f0ff) 
 Time: 2020/02/19
