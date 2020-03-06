@@ -60,24 +60,25 @@ class Model(mp.ModelParameter):
   # the version of the training
 
   # for simulation data
-  # TRAINING_VERSION = 'v25'
+  # TRAINING_VERSION = 'v26'
   # for human data
-  TRAINING_VERSION = 'v12'
+  #TRAINING_VERSION = 'v12'
 
   # --------------------------------------
   # Variable: Training parameters
   # --------------------------------------
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  #path_ckpt = os.path.join('test_on_simulation_data','training_result','caches')
-  #path_train = os.path.join('test_on_simulation_data','training_result','caches')
+  path_ckpt = os.path.join('test_on_simulation_data','training_result','caches')
+  path_train = os.path.join('test_on_simulation_data','training_result','caches')
   #path_txt_data = os.path.join('..','..','data','data_simulation','S004b-S037b')
+  path_txt_data = os.path.join('..','..','data_simulation','simulation_data_on_server','36agents')
 
   # for human data
   #use panda df to store these values
-  path_ckpt = os.path.join('test_on_human_data','training_result','caches')
-  path_train = os.path.join('test_on_human_data','training_result','caches')
-  path_txt_data = os.path.join('..','..','data','data_human','augmented')
+  #path_ckpt = os.path.join('test_on_human_data','training_result','caches')
+  #path_train = os.path.join('test_on_human_data','training_result','caches')
+  #path_txt_data = os.path.join('..','..','data','data_human','augmented')
 
   path_ckpt = os.path.join(path_mode,path_ckpt)
   path_train = os.path.join(path_mode,path_train)
@@ -1013,14 +1014,14 @@ if __name__ == "__main__":
   # Constants
   # --------------------------------------------------------
   # for S004b-S037b
-  # LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,37+1)]
+  LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,33)]
   # LIST_SUBJECTS = ["S030"]
 
   # human
-  LIST_SUBJECTS = \
-  ["S0" + str(i) for i in ["24","26","30",\
-  "33","35","40","43","50","51","52","53","55","58","59",\
-  "61","62","63","65","66","67"]]
+  #LIST_SUBJECTS = \
+  #["S0" + str(i) for i in ["24","26","30",\
+  #"33","35","40","43","50","51","52","53","55","58","59",\
+  #"61","62","63","65","66","67"]]
 
   # --------------------------------------------------------
   # Iterate through the subject list
