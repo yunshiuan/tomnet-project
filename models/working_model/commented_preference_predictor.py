@@ -50,17 +50,6 @@ class PreferencePredictor(mp.ModelParameter):
 
   BATCH_SIZE_PREDICT = 16
   SUBSET_SIZE = 96 # because only 100 files in Query_Stest
-  # the query states are the blank mazes
-  QUERY_STATE_VERSION = 'Query_Stest_subset' + str(SUBSET_SIZE)
-  # the query states are the first shot of the trajectory data
-#  QUERY_STATE_VERSION = 'Query_Straj_subset' + SUBSET_SIZE
-
-  if(re.search('Stest',QUERY_STATE_VERSION)):
-    BREAK_CORRESPONDENCE = True # Should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
-    WITH_LABEL = False # whether the query state has final target label
-  elif(re.search('Straj',QUERY_STATE_VERSION)):
-    BREAK_CORRESPONDENCE = False
-    WITH_LABEL = True
 
   # - dir
   DIR_PREDICTION_ROOT = os.getcwd() # the script dir
@@ -69,29 +58,55 @@ class PreferencePredictor(mp.ModelParameter):
     '''
     The constructor for the PreferencePredictor class.
     '''
+    # --------------------------------------------------------------
     # get the arguments
+    # --------------------------------------------------------------
     subj_name = args['subj_name']
+    # the query states
+    # - 'Query_Stest': the blank mazes with 4 targets
+    # - 'Query_Straj': the first shot of the trajectory data in the data set
+    query_state = args['query_state']
 
-    # the trajectory data
+
+    self.QUERY_STATE_VERSION = query_state +'_subset' + str(self.SUBSET_SIZE)
+
+    # the trajectory data (which are the filtered ones with exact 4 targets)
     self.DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(self.DIR_PREDICTION_ROOT,'..','..',\
-                                                 'data',('data_'+self.AGENT_TYPE),'processed',subj_name)
+                                                 'data',('data_'+self.AGENT_TYPE),'filtered',subj_name)
+    # --------------------------------------------------------------
     # the query state data
-    self.DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(self.DIR_PREDICTION_ROOT,'..','..',\
-                                                   'data','data_preference_predictions',\
-                                                   'query_state')
-    self.DIR_MODEL = os.path.join('test_on_human_data'+self.AGENT_TYPE,\
+    # --------------------------------------------------------------
+    # - 'Query_Stest': the blank mazes with 4 targets
+    if(re.search('Stest',self.QUERY_STATE_VERSION)):
+      self.BREAK_CORRESPONDENCE = True # Should be True when using the same set of files for both trajectory and query state data to avoid overestimating the accuracy.
+      self.WITH_LABEL = False # whether the query state has final target label
+      # the query state data directory
+      self.DIR_PREDICTION_DATA_QUERY_STATE = os.path.join(self.DIR_PREDICTION_ROOT,'..','..',\
+                                                          'data','data_preference_predictions',\
+                                                          'query_state')
+    # - 'Query_Straj': the first shot of the trajectory data in the data set
+    elif(re.search('Straj',self.QUERY_STATE_VERSION)):
+      self.BREAK_CORRESPONDENCE = True # not necessary but better
+      self.WITH_LABEL = True
+      # the query state data directory
+      self.DIR_PREDICTION_DATA_QUERY_STATE = self.DIR_PREDICTION_DATA_TRAJECTORY
+
+    # --------------------------------------------------------------
+    # the trained model
+    # --------------------------------------------------------------
+    self.DIR_MODEL = os.path.join(('test_on_'+self.AGENT_TYPE+'_data'),\
       'training_result','caches',self.INPUT_VERSION,subj_name)
     self.DIR_MODEL_PREDICTION_RESULT_ROOT = os.path.join(self.DIR_MODEL,'prediction')
 
+    # --------------------------------------------------------------
     # output directory
+    # --------------------------------------------------------------
     self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION = \
       os.path.join(self.DIR_MODEL_PREDICTION_RESULT_ROOT,self.QUERY_STATE_VERSION)
     if not os.path.exists(self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION):
         os.makedirs(self.DIR_MODEL_PREDICTION_RESULT_THIS_VERSION)
     # - file
     self.FILE_MODEL_CKPT = os.path.join(self.DIR_MODEL,'train','model.ckpt-9999')
-
-
 
   def parse_prediction_data_whole_data_set(self):
     '''
@@ -378,7 +393,9 @@ class PreferencePredictor(mp.ModelParameter):
     # pdb.set_trace()
     for step in range(num_batches):
       if step % 10 == 0:
-          print('%i batches finished!' %step)
+        print('%i batches finished!' % (step+1))
+      if (step == num_batches-1):
+        print('all %i batches finished!' % (step+1))
       # pdb.set_trace()
       file_index = step * batch_size
       batch_data_traj, _,\
@@ -562,31 +579,55 @@ if __name__ == "__main__":
     # ipython intepreter
     # pdb.set_trace()
 
-    tf.reset_default_graph()
+    # human subject list
+    # LIST_SUBJECTS = \
+    #   ["S0" + str(i) for i in ["24"]]
+    LIST_SUBJECTS = \
+      ["S0" + str(i) for i in ["24","26","30",\
+                                "33","35","40","43","50","51","52","53","55","58","59",\
+                                "61","62","63","65","66","67"]]
+    # query state list
+    LIST_QUERY_STATE = ["Query_Stest","Query_Straj"]
 
-    preference_predictor = PreferencePredictor()
-    # pdb.set_trace()
-    # --------------------------------------------------------------
-    # parse data and files
-    # --------------------------------------------------------------
-    preference_predictor.parse_prediction_data_whole_data_set()
+    # --------------------------------------------------------
+    # Iterate through the subject list
+    # --------------------------------------------------------
+    for subj_index, subj_name in enumerate(LIST_SUBJECTS):
+      for query_state_index, query_state in enumerate(LIST_QUERY_STATE):
+        print("\n================================= \n"+
+              "Start working on "+ subj_name + " " + query_state +'\n'+
+              "================================= \n")
+        # --------------------------------------------------------------
+        # set the input parameters
+        # --------------------------------------------------------------
+        args = {"subj_name":subj_name,\
+                "query_state":query_state}
 
-    # --------------------------------------------------------------
-    # make predictions
-    # prediction_proportion = (num_classes, 1)
-    # data_set_predicted_labels = (num_files, 1)
-    # data_set_ground_truth_labels = (num_files, 1)
-    # --------------------------------------------------------------
-    # pdb.set_trace()
-    preference_predictor.predict_preferences()
+        tf.reset_default_graph()
 
-    # pdb.set_trace()
+        preference_predictor = PreferencePredictor(args)
+        # pdb.set_trace()
+        # --------------------------------------------------------------
+        # parse data and files
+        # --------------------------------------------------------------
+        preference_predictor.parse_prediction_data_whole_data_set()
 
-    # --------------------------------------------------------------
-    # Save predictions
-    # --------------------------------------------------------------
-    preference_predictor.save_predictions()
-    # pdb.set_trace()
+        # --------------------------------------------------------------
+        # make predictions
+        # prediction_proportion = (num_classes, 1)
+        # data_set_predicted_labels = (num_files, 1)
+        # data_set_ground_truth_labels = (num_files, 1)
+        # --------------------------------------------------------------
+        # pdb.set_trace()
+        preference_predictor.predict_preferences()
+
+        # pdb.set_trace()
+
+        # --------------------------------------------------------------
+        # Save predictions
+        # --------------------------------------------------------------
+        preference_predictor.save_predictions()
+        # pdb.set_trace()
 
 
 
