@@ -30,6 +30,33 @@ https://danijar.com/variable-sequence-lengths-in-tensorflow/
 (2) Don't use dropout for preference inference.
 (3) Reconsider the data format of 'data_preference_predictions'. Maybe I should try more combination?
 (4)
+
+########################################
+
+Finished training session (v26, previous commit 8fc900) [At working_model]
+Time: 2020/03/05
+Author: Chuang, Yun-Shiuan
+Output file name: /v26
+Info: 
+
+(1) Follow v25 but train 30 models with /simulation_data_on_server/data/data_simulation/S004-S033/
+
+Note:
+(1) The key difference from the previous version is that we used "u-d" to generate simulation data instead
+of using [u*log(u) - d*log(d)].
+(2) They are git ignored because they are too large.
+
+(2)
+accurary	mode
+
+(3)
+Traj_S003b_Query_S003b_subset96
+avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_data_set
+
+
+Traj_S003b_Query_Stest_subset96:
+prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
+
 ########################################
 
 Finished training session (v25, previous commit 9bb027)[At working_model]
@@ -55,7 +82,6 @@ avg_prediction_probability	ground_truth_label_count	prediction_count	accuracy_da
 
 Traj_S003b_Query_Stest_subset96:
 prediction_proportion	avg_prediction_probability	ground_truth_label_count	prediction_count
-
 
 ########################################
 
