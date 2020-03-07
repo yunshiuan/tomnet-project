@@ -60,7 +60,7 @@ class Model(mp.ModelParameter):
   # the version of the training
 
   # for simulation data
-  TRAINING_VERSION = 'v26'
+  # TRAINING_VERSION = 'v26'
   # for human data
   #TRAINING_VERSION = 'v12'
 
