@@ -165,4 +165,39 @@ df_all <-
     ,
   by = c("subj_name", "target_id"))
 
+df_all =
+  df_all%>%
+    pivot_longer(cols = LIST_INFERENCE_TYPES,
+                 values_to = "predicted_u",
+                 names_to = "inference_type")%>%
+    as.data.frame()
+# Rank Transform the preference score --------------------------
+df_all = 
+  df_all%>%
+    group_by(subj_name,query_type,inference_type)%>%
+    mutate(
+      true_u_rank = rank(true_u,ties.method = "average"),
+      predicted_u_rank = rank(predicted_u,ties.method = "average"),
+      sd_true_u_rank = sd(true_u_rank),
+      sd_predicted_u_rank = sd*predicted_u_rank
+    )%>%
+    as.data.frame()
+# Sort the subject by the SD of the transformed score-----------
+num_rep = 16
+num_subj = length(unique(df_all$subj_name))
+df_all = 
+df_all%>%
+  arrange(desc(sd_true_u_rank))%>%
+  mutate(subj_rank = rep(1:num_subj,each = num_rep))
 # Visualize the preference matrix ------------------------------
+# the predicted preference matrix
+df_all%>%
+  # filter(query_type == names(LIST_QUERY_TYPES)[1])%>%
+  ggplot(aes(x = target_id, y = -subj_rank))+
+  geom_raster(aes(fill = predicted_u_rank))+
+  facet_grid(inference_type~query_type)
+
+# the true preference matrix
+df_all%>%
+  ggplot(aes(x = target_id, y = -subj_rank))+
+  geom_raster(aes(fill = true_u_rank))
