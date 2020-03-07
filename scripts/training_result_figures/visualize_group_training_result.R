@@ -15,6 +15,8 @@ library(stringr)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(ggrepel)
+
 # Constants -----------------------------------------------
 # - parameter
 # TYPE = "test_on_simulation_data"
@@ -27,6 +29,16 @@ NUM_AUGMENTATION <- 8
 PATH_ROOT <- str_extract(
   string = getwd(),
   pattern = ".*tomnet-project"
+)
+EXCLUSION_SUBJ <- paste0(
+  "S0",
+  c( # does not have ground-truth score
+    "52",
+    # less than 100 trajectories
+    "26", "35", "43", "52", "55", "58",
+    # does not act according to the score
+    "69"
+  )
 )
 # the least training files the subject should have for the "thresholded version"
 # - thresholding ensure the estimate of accuracy is precise enough
@@ -91,8 +103,8 @@ list_df_error <-
       str_extract(string = error_csv, pattern = "(?<=/)S\\d+.*(?=/train)")
     df_error <-
       df_error %>%
-      mutate(subj_name = this_subj_name)%>%
-      rename(accuracy = accurary )
+      mutate(subj_name = this_subj_name) %>%
+      rename(accuracy = accurary)
   })
 # - merge all error dfs into one error df
 df_error_all <- bind_rows(list_df_error)
@@ -147,10 +159,12 @@ df_error_all <-
     names_to = "mode",
     values_to = "accuracy"
   )
-
+df_error_all <-
+  df_error_all %>%
+  filter(!subj_name %in% EXCLUSION_SUBJ)
 # Plot ------------------------------------------------------------
 
-for (threshold in c("no_threshold", "with_threshold")) {
+for (threshold in c("with_threshold")) {
   if (threshold == "with_threshold") {
     # filter out those below the threshold
     df_plot <-
@@ -165,23 +179,33 @@ for (threshold in c("no_threshold", "with_threshold")) {
     x_scale_minor_breaks <- seq(0, 4000, 100)
     x_scale_breaks <- c(100, 500, 1000, 2000, 3000, 4000)
   }
+  df_plot = 
+    df_plot %>%
+      # log transform the scale to make the dots more visible
+      # mutate(log_total_processed_training_files = log10(total_processed_training_files)) %>%
+      filter(mode %in% c("random_rate", "test")) %>%
+      mutate(
+        mode = factor(mode,
+          levels = c("test", "random_rate"),
+          labels = c("Test", "Random Rate")
+        ),
+        subj_label = paste0("S",
+                            str_extract(string = subj_name, pattern = "(?<=S0)\\d+$"))
+      ) 
   df_plot %>%
-    # log transform the scale to make the dots more visible
-    # mutate(log_total_processed_training_files = log10(total_processed_training_files)) %>%
-    filter(mode %in% c("random_rate", "test")) %>%
-    mutate(mode = factor(mode,
-      levels = c("test", "random_rate"),
-      labels = c("Test", "Random Rate")
-    )) %>%
-    ggplot(aes(x = total_processed_training_files, y = accuracy, color = mode, group = mode)) +
-    geom_point(aes(shape = mode)) +
-    geom_line(aes(linetype = mode)) +
+    ggplot(aes(x = total_processed_training_files, y = accuracy, group = mode)) +
+    geom_point(aes(shape = mode,color = mode)) +
+    geom_line(aes(linetype = mode,color = mode)) +
+    geom_text_repel(data = df_plot%>%
+                      filter(mode =="Test"),
+                    aes(label = subj_label),
+                    size = 2) +
     coord_trans(x = "log10") +
     scale_x_continuous(
       minor_breaks = x_scale_minor_breaks,
       breaks = x_scale_breaks
     ) +
-    scale_y_continuous(breaks = seq(30,80,by = 10),limits = c(30,85))+
+    scale_y_continuous(breaks = seq(30, 80, by = 10), limits = c(30, 85)) +
     scale_color_discrete(NULL) +
     scale_shape_discrete(NULL) +
     scale_linetype_discrete(NULL) +
