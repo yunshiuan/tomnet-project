@@ -585,12 +585,12 @@ if __name__ == "__main__":
     # pdb.set_trace()
 
     # human subject list
-    # LIST_SUBJECTS = \
-    #   ["S0" + str(i) for i in ["24"]]
     LIST_SUBJECTS = \
-      ["S0" + str(i) for i in ["24","26","30",\
-                                "33","35","40","43","50","51","52","53","55","58","59",\
-                                "61","62","63","65","66","67"]]
+       ["S0" + str(i) for i in ["69"]]
+    #LIST_SUBJECTS = \
+    #  ["S0" + str(i) for i in ["24","26","30",\
+    #                            "33","35","40","43","50","51","52","53","55","58","59",\
+    #                            "61","62","63","65","66","67","69"]]
     # query state list
     # LIST_QUERY_STATE = ["Query_Straj"]
     LIST_QUERY_STATE = ["Query_Stest","Query_Straj"]
