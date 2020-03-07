@@ -1,0 +1,5 @@
+,targets,ground_truth_label_proportion,prediction_proportion,avg_prediction_probability,ground_truth_label_count,prediction_count,accuracy_data_set
+0,0,0.32,0.28,0.27,31,27.0,83.33
+1,1,0.34,0.38,0.38,33,36.0,83.33
+2,2,0.27,0.28,0.29,26,27.0,83.33
+3,3,0.06,0.06,0.06,6,6.0,83.33
