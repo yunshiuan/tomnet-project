@@ -32,7 +32,7 @@ Output file name:
     (2) include all subjects that have at least 500 augmented data
     (original files >= 500/8 = 62.5)
         - list "24","26","30","33","35","40","43","50","51","52","53","55","58","59",\
-               "61","62","63","65","66","67"
+               "61","62","63","65","66","67","69"
 
 Preference prediction (commit acc27b)
 Note
