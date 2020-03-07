@@ -2,7 +2,21 @@ See the README file at 'models\working_model\test_on_human_data\' for
 	(1) details about where the data is on the server and how to log in.
 		- "/var/www/html/bmlab/ai-robo/game/data"
 	(2) how the raw data is converted to the processed data.
-	
+	Data source:
+	(1) Sign in to server: ssh gibmsadmin@140.112.122.160 (pw: See https://gitlab.com/brain-and-mind-lab/notes-for-bml/bmlab-wiki-home/wikis/server#gibms_server%E6%95%99%E5%AD%B8%E6%96%87%E4%BB%B6)
+	(2) Data path: '/var/www/html/bmlab/ai-robo/game/data'
+	(3) Note that the txt file is very similar to the simulated txt, except for
+		- This is handled by '/scripts/convert_human_data_format/convert_human_data_format.R' to ensure the format of human data to be the same as the simulated data. See README there for details.
+	(4) Use FileZilla SFTP to log in and download files
+
+	Note:
+	To derive the scores that participants see:
+	(1) http://gibms.mc.ntu.edu.tw/phpmyadmin
+	(2) See this for account name and password: https://gitlab.com/brain-and-mind-lab/notes-for-bml/bmlab-wiki-home/wikis/server#gibms_server%E6%95%99%E5%AD%B8%E6%96%87%E4%BB%B6
+	(3) bmlab/ai_social_game
+	(4) Note that the scores that participants see = round(averaged score * (23/9)). The column 'agent1_value' shown is rounded, but the original value to derive the score is not rounded. Rounding occurs after *(23/9).
+	data path:
+	'\data\data_human'
 --------------------------------------------
 raw/
 --------------------------------------------
