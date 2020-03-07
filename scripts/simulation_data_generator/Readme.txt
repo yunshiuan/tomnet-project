@@ -18,7 +18,7 @@ generates the social reward factor needed in simulation_data_generator script
 -Elaine added this file on 2/20/2020
 
 -------------------------------------
-34agents/
+34agents/ (used for simulation, v25)
 ------------------------------------
 - 34 agents folder
 - So far has 34 agents generated from simulation_social_reward_generator.r
