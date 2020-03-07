@@ -88,3 +88,11 @@ count_targets
 	- 'data\data_human\processedsummary_count_targets_2020-03-03.csv'	
 	- 'data\data_human\processed\S024\count_targets_2020-03-03.csv'
 	
+--------------------------	
+pad_filtered_trajectories
+--------------------------	
+# This script is for padding the filtered data 
+# (output of 'filter_full_targets_trajectories') to be equal to or above a specific number. 
+# This is necessary for the human who has too less filtered data, e.g., 
+# S026 only has 19 filtered data, but the commented_preference_predictor.py 
+# needs at least 96.
