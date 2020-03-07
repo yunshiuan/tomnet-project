@@ -81,7 +81,7 @@ FILE_OUTPUT <- list(
   no_threshold = file.path(PATH_FIGURE_OUTPUT, "all_training_results.pdf"),
   with_threshold = file.path(
     PATH_FIGURE_OUTPUT,
-    paste0("all_training_results_traj", THRESHOLD_NUM_FILES, ".pdf")
+    paste0("all_training_results_traj", THRESHOLD_NUM_FILES)
   )
 )
 # Processing data -----------------------------------------------
@@ -163,7 +163,8 @@ df_error_all <-
   df_error_all %>%
   filter(!subj_name %in% EXCLUSION_SUBJ)
 # Plot ------------------------------------------------------------
-
+for (file_type in c(".png", ".pdf")) {
+  
 for (threshold in c("with_threshold")) {
   if (threshold == "with_threshold") {
     # filter out those below the threshold
@@ -215,8 +216,9 @@ for (threshold in c("with_threshold")) {
       y = "Accuracy"
     ) +
     ggsave(
-      filename = FILE_OUTPUT[[threshold]],
+      filename = paste0(FILE_OUTPUT[[threshold]],file_type),
       width = IMG_WIDTH,
       height = IMG_HEIGHT
     )
+}
 }
