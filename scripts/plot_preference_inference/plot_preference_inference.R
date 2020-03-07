@@ -35,7 +35,22 @@ LIST_QUERY_TYPES <- list(
   qtraj = "Query_Straj_subset96"
 )
 LIST_INFERENCE_TYPES <- c("prediction_proportion", "avg_prediction_probability")
-EXCLUSION_SUBJ <- "S052"
+EXCLUSION_SUBJ <- paste0("S0",
+                         c(# does not have ground-truth score
+                           "52",
+                           # less than 100 trajectories
+                           "26","35","43","52","55","58",
+                           # does not act according to the score
+                           "69"
+                           ))
+IMG_SIZE_RATIO <- 0.8
+IMG_WIDTH <- 8 * IMG_SIZE_RATIO
+IMG_HEIGHT <- 11 * IMG_SIZE_RATIO
+SCALE_MIN=1
+SCALE_MAX=4
+#The color bar for bright blue to dark blue
+COLOR_LOW="#132B43"
+COLOR_HIGH="#56B1F7"
 # - path
 # the root path of the project
 PATH_ROOT <- str_extract(
@@ -56,13 +71,19 @@ if (AGENT_TYPE == "simulation") {
     "agents_from_human"
   )
 }
-PATH_PREFERENCE_PREDICTION <- file.path(
+PATH_RESULT_ROOT = file.path(
   PATH_ROOT, "models",
   "working_model",
   paste0("test_on_", AGENT_TYPE, "_data"),
-  "training_result",
+  "training_result"
+)
+PATH_PREFERENCE_PREDICTION <- file.path(
+  PATH_RESULT_ROOT,
   "caches", VERSION
 )
+PATH_FIGURE_OUTPUT <- 
+  file.path(PATH_RESULT_ROOT, "figures", VERSION)
+
 # - file
 # Processing data -----------------------------------------------
 # Get the predicted preference of simulation data ---------------
@@ -155,7 +176,7 @@ df_all_true_u <- bind_rows(list_df_true_u)
 df_all <-
   df_all_predicted_u %>%
   select(subj_name, target_id, query_type, !!(LIST_INFERENCE_TYPES)) %>%
-  filter(subj_name != EXCLUSION_SUBJ) %>%
+  filter(!subj_name %in% EXCLUSION_SUBJ) %>%
   # rename(type = query_type) %>%
   left_join(df_all_true_u %>%
     select(subj_name, target_id, true_u, mu, sd, sk)
@@ -176,28 +197,77 @@ df_all =
   df_all%>%
     group_by(subj_name,query_type,inference_type)%>%
     mutate(
-      true_u_rank = rank(true_u,ties.method = "average"),
-      predicted_u_rank = rank(predicted_u,ties.method = "average"),
+      true_u_rank = rank(-true_u,ties.method = "min"),
+      predicted_u_rank = rank(-predicted_u,ties.method = "min"),
       sd_true_u_rank = sd(true_u_rank),
-      sd_predicted_u_rank = sd*predicted_u_rank
+      sd_predicted_u_rank = sd(predicted_u_rank)
     )%>%
     as.data.frame()
 # Sort the subject by the SD of the transformed score-----------
-num_rep = 16
+num_rep = length(LIST_QUERY_TYPES)*length(LIST_INFERENCE_TYPES)
+num_target = length(unique(df_all$target_id))
 num_subj = length(unique(df_all$subj_name))
-df_all = 
+df_all_plot = 
 df_all%>%
-  arrange(desc(sd_true_u_rank))%>%
-  mutate(subj_rank = rep(1:num_subj,each = num_rep))
+  arrange(desc(sd))%>%
+  mutate(
+    # order the levels of subject name by the current rank order of 'sd_true_u_rank'
+    subj_name_labeled = paste0("S",str_extract(string = subj_name, pattern = "(?<=S0)\\d+$"),
+                               "\n(",round(sd,2),")"),
+    subj_name_labeled = factor(subj_name_labeled,levels = rev(unique(subj_name_labeled))),
+    # # for the arrange below to break ties in 'true_u_rank'
+    # query_type = as.factor(query_type),
+    # inference_type = as.factor(inference_type)
+    )%>%
+  arrange(desc(subj_name_labeled),true_u_rank,desc(target_id))%>%
+  mutate(
+    # order the levels of targte id by the rank order of 'true_u_rank'
+    target_id_reordered = rep(
+      rep(1:num_rep,each = num_target),
+      time = num_subj)
+    )
+
+
 # Visualize the preference matrix ------------------------------
 # the predicted preference matrix
-df_all%>%
-  # filter(query_type == names(LIST_QUERY_TYPES)[1])%>%
-  ggplot(aes(x = target_id, y = -subj_rank))+
-  geom_raster(aes(fill = predicted_u_rank))+
-  facet_grid(inference_type~query_type)
+df_all_plot%>%
+  filter(inference_type == "avg_prediction_probability",query_type == "qtest")%>%
+  ggplot(aes(x = target_id_reordered, y = subj_name_labeled))+
+  # geom_raster(aes(fill = predicted_u_rank))+
+  geom_tile(aes(fill = predicted_u_rank))+
+  scale_fill_gradient(name="Rank by \nPredicted Preference",
+                      limits=c(SCALE_MIN,SCALE_MAX),# Set the limits of the color bar
+                      low=COLOR_LOW,high=COLOR_HIGH,
+                      guide = guide_colourbar(reverse = T))+# Set the color of the color bar
+  # coord_fixed(ratio = 1, xlim = NULL, ylim = NULL, expand = TRUE)+
+  # facet_grid(inference_type~query_type)+
+  # scale_fill_continuous("Rank-Transformed \nPredicted Preference")+
+  labs(x = "Target",
+       y = "Subject ID")+
+  ggsave(
+    filename = file.path(PATH_FIGURE_OUTPUT,"Predicted Preference Matrix.pdf"),
+    width = IMG_WIDTH,
+    height = IMG_HEIGHT
+  )
+
+  # facet_grid(inference_type~query_type)
 
 # the true preference matrix
-df_all%>%
-  ggplot(aes(x = target_id, y = -subj_rank))+
-  geom_raster(aes(fill = true_u_rank))
+df_all_plot%>%
+  ggplot(aes(x = target_id_reordered, y = subj_name_labeled))+
+  # geom_raster(aes(fill = true_u_rank))+
+  geom_tile(aes(fill = true_u_rank))+
+  scale_fill_gradient(name="Rank by \nGround-Truth Preference",
+                      limits=c(SCALE_MIN,SCALE_MAX),# Set the limits of the color bar
+                      low=COLOR_LOW,high=COLOR_HIGH,
+                      guide = guide_colourbar(reverse = T))+# Set the color of the color bar
+  # coord_fixed(ratio = 1, xlim = NULL, ylim = NULL, expand = TRUE)+
+  # guides(guide_colourbar(reverse = T))+
+  # scale_fill_continuous("Rank-Transformed \nPredicted Preference")+
+  labs(x = "Target ID",
+       y = "Subject ID")+
+  ggsave(
+    filename = file.path(PATH_FIGURE_OUTPUT,"Ground-Truth Preference Matrix.pdf"),
+    width = IMG_WIDTH,
+    height = IMG_HEIGHT
+  )
