@@ -100,20 +100,24 @@ pad_filtered_trajectories
 --------------------------	
 plot_preference_inference
 --------------------------	
-- plot the preference inference result at the group level
-- data matrix 
-	- (number of agents/models x number of target). Cell_ij is the true preference of agent_i towards target_j.
-	- the true preference value
-		- for simulation data: the 'u' value
-		- for human: the score of each target that human players see on the screen, which is the score of the social support questionnaire * 23/9. The score of the social support questionnaire is stored on the server http://gibms.mc.ntu.edu.tw/phpmyadmin. See 'models\working_model\test_on_human_data\README.txt' for access details.) 
-		
-- inferred matrix
-	- (number of agents/models x number of target). Cell_ij is the true preference of agent_i towards target_j.
-	- the inferred preference value
-		- the inferred value in "proportion_prediction_and_ground_truth_labels.csv" at  		
-			- Two versions of query states
-				- 'Sxxx\prediction\Query_Stest_subset96\' (blank query state)
-				- 'Sxxx\prediction\Query_Straj_subset96\' (the first shot of trajectories that have 4 targtes)
-			- Two versions of preference measure (the column of the csv file)
-				- prediction_proportion: the proportion of the predicted targets
-				- avg_prediction_probability: the average softmax probability 
+plot_preference_inference_human.R
+	- plot the preference inference result at the group level for human data
+	- data matrix 
+		- (number of agents/models x number of target). Cell_ij is the true preference of agent_i towards target_j.
+		- the true preference value
+			- for simulation data: the 'u' value
+			- for human: the score of each target that human players see on the screen, which is the score of the social support questionnaire * 23/9. The score of the social support questionnaire is stored on the server http://gibms.mc.ntu.edu.tw/phpmyadmin. See 'models\working_model\test_on_human_data\README.txt' for access details.) 
+			
+	- inferred matrix
+		- (number of agents/models x number of target). Cell_ij is the true preference of agent_i towards target_j.
+		- the inferred preference value
+			- the inferred value in "proportion_prediction_and_ground_truth_labels.csv" at  		
+				- Two versions of query states
+					- 'Sxxx\prediction\Query_Stest_subset96\' (blank query state)
+					- 'Sxxx\prediction\Query_Straj_subset96\' (the first shot of trajectories that have 4 targtes)
+				- Two versions of preference measure (the column of the csv file)
+					- prediction_proportion: the proportion of the predicted targets
+					- avg_prediction_probability: the average softmax probability 
+
+plot_preference_inference_simulation.R					
+- Based on plot_preference_inference_human.R.

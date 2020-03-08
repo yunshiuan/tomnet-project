@@ -1,7 +1,7 @@
 ##################
 # Authour: Chuang, Yun-Shiuan
 # Date: 2020/03/06
-# - plot the preference inference result at the group level
+# - plot the preference inference result at the group level for human data.
 # Note:
 # - data matrix
 # - (number of agents/models x number of target). Cell_ij is the true preference of agent_i towards target_j.
@@ -26,7 +26,6 @@ library(tidyr)
 library(ggplot2)
 # Constants -----------------------------------------------
 # - parameter
-# AGENT_TYPE = "test_on_simulation_data"
 AGENT_TYPE <- "human"
 VERSION <- "v12"
 PATTERN_PREFERENCE <- "proportion_prediction_and_ground_truth_labels.csv"
