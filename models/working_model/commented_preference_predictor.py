@@ -75,8 +75,15 @@ class PreferencePredictor(mp.ModelParameter):
     self.QUERY_STATE_VERSION = query_state +'_subset' + str(self.SUBSET_SIZE)
 
     # the trajectory data (which are the filtered ones with exact 4 targets)
+    # - human
+    #self.DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(self.DIR_PREDICTION_ROOT,'..','..',\
+    #                                             'data',('data_'+self.AGENT_TYPE),'filtered',subj_name)
+    
+    # - simulation
     self.DIR_PREDICTION_DATA_TRAJECTORY = os.path.join(self.DIR_PREDICTION_ROOT,'..','..',\
-                                                 'data',('data_'+self.AGENT_TYPE),'filtered',subj_name)
+    'data',"data_simulation","simulation_data_on_server","data","data_simulation","S004-S033",'filtered',subj_name)    
+
+
     # --------------------------------------------------------------
     # the query state data
     # --------------------------------------------------------------
@@ -588,9 +595,12 @@ if __name__ == "__main__":
     # ipython intepreter
     # pdb.set_trace()
 
+    # simulation data list
+    LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,33)]
+
     # human subject list
-    LIST_SUBJECTS = \
-       ["S0" + str(i) for i in ["69"]]
+    #LIST_SUBJECTS = \
+    #   ["S0" + str(i) for i in ["69"]]
     #LIST_SUBJECTS = \
     #  ["S0" + str(i) for i in ["24","26","30",\
     #                            "33","35","40","43","50","51","52","53","55","58","59",\
