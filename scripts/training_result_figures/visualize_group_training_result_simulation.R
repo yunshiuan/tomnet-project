@@ -1,15 +1,15 @@
 ##################
 # Authour: Chuang, Yun-Shiuan
-# Date: 2020/03/04
+# Date: 2020/03/07
 # This script is for visualizing the model accuracy
 # across all subjects in one line plot.
 # Note:
-# - (1) axises:
-#   - x axis: total unique trajectories (# of processed files)
-#   - y axis: accuracy
-#   - 3 lines: training, validation, and testing accuracy
-# - (2) This only works for the traing version which have multiple models trained on
-#       multiple agents, e.g., human, v12.
+# - based on visualize_group_training_result_human.R
+# - axises:
+#   - x axis: SD of the social rewards
+#   -	y axis: accuracy
+#   -	2 bars: testing accuracy and random rates
+
 #################
 library(stringr)
 library(dplyr)
@@ -20,29 +20,34 @@ library(ggrepel)
 # Constants -----------------------------------------------
 # - parameter
 # TYPE = "test_on_simulation_data"
-TYPE <- "human"
-VERSION <- "v12"
+TYPE <- "simulation"
+VERSION <- "v26"
 PATTERN_ACCURACY <- "_train_test_and_validation_accuracy.csv"
-NUM_AUGMENTATION <- 8
+NUM_AUGMENTATION <- 1 # no augmentation for simulation data
 # - path
 # the root path of the project
 PATH_ROOT <- str_extract(
   string = getwd(),
   pattern = ".*tomnet-project"
 )
-EXCLUSION_SUBJ <- paste0(
-  "S0",
-  c( # does not have ground-truth score
-    "52",
-    # less than 100 trajectories
-    "26", "35", "43", "52", "55", "58",
-    # does not act according to the score
-    "69"
-  )
-)
+EXCLUSION_SUBJ <- c("")
+PATTENR_SUBJ = "S\\d+b"
+VAR_TRUE_U = "candidate"
+VAR_MEAN = "mean"
+VAR_SD = "SD"
+VAR_SK = "skewness"
+# EXCLUSION_SUBJ <- paste0(
+#   "S0",
+#   c( # does not have ground-truth score
+#     "52",
+#     # less than 100 trajectories
+#     "26", "35", "43", "52", "55", "58",
+#     # does not act according to the score
+#     "69"
+#   )
+# )
 # the least training files the subject should have for the "thresholded version"
 # - thresholding ensure the estimate of accuracy is precise enough
-THRESHOLD_NUM_FILES <- 100
 IMG_SIZE_RATIO <- 0.8
 IMG_WIDTH <- 8 * IMG_SIZE_RATIO
 IMG_HEIGHT <- 6 * IMG_SIZE_RATIO
@@ -69,21 +74,23 @@ if (!interactive()) {
 }
 PATH_TRAINING_RESULT <- file.path(PATH_RESULT_ROOT, "training_result", "caches", VERSION)
 PATH_FIGURE_OUTPUT <- file.path(PATH_RESULT_ROOT, "training_result", "figures", VERSION)
-
+PATH_VALUE_U <- file.path(
+  PATH_ROOT, "data",
+  "data_simulation", "simulation_data_on_server",
+  "36agents")
 # - file
 # the file that contain the random rate for each subject
 FILE_RANDOM_RATE <- file.path(
   PATH_ROOT, "data",
-  paste0("data_", TYPE), "processed",
-  "summary_count_targets_2020-03-03.csv"
+  paste0("data_", TYPE), "simulation_data_on_server", "data",
+  paste0("data_", TYPE), "S004-S033",
+  "processed",
+  "summary_count_targets_2020-03-08.csv"
 )
-FILE_OUTPUT <- list(
-  no_threshold = file.path(PATH_FIGURE_OUTPUT, "all_training_results.pdf"),
-  with_threshold = file.path(
-    PATH_FIGURE_OUTPUT,
-    paste0("all_training_results_traj", THRESHOLD_NUM_FILES)
+FILE_OUTPUT <- file.path(
+  PATH_FIGURE_OUTPUT,"all_training_results"
   )
-)
+
 # Processing data -----------------------------------------------
 # - get the random rate of accuracy for each agent
 df_random_rate <- read.csv(FILE_RANDOM_RATE, header = T, stringsAsFactors = F)
@@ -112,6 +119,7 @@ df_error_all <- bind_rows(list_df_error)
 # - joint 'df_error_all' and 'df_random_rate'
 df_error_all <-
   df_random_rate %>%
+  select(-X)%>%
   group_by(subj_name) %>%
   summarise(
     # get the random rate for each agent
@@ -162,66 +170,107 @@ df_error_all <-
 df_error_all <-
   df_error_all %>%
   filter(!subj_name %in% EXCLUSION_SUBJ)
+# Get the true preference of simulation data ---------------
+df_files_true_u <- data.frame(
+  file =
+    list.files(
+      path = PATH_VALUE_U,
+      pattern = paste0(PATTENR_SUBJ,".*.csv"),
+      full.names = T
+    ),
+  stringsAsFactors = F
+)
+
+df_files_true_u <-
+  df_files_true_u %>%
+  mutate(
+    subj_name =
+      str_extract(
+        string = file,
+        pattern = PATTENR_SUBJ
+      )
+  )
+# get the distribution of the true u ----------------------------
+# - read in all the preference files
+list_df_true_u <- c()
+for (file_index in 1:nrow(df_files_true_u)) {
+  csv <- df_files_true_u$file[file_index]
+  subj_name <- df_files_true_u$subj_name[file_index]
+  df_preference <- read.csv(csv, header = T, stringsAsFactors = F)
+  df_preference <-
+    df_preference %>%
+    rename(true_u =!!(VAR_TRUE_U))%>%
+    mutate(
+      target_id = as.numeric(str_extract(string = X, pattern = "\\d$")),
+      subj_name = subj_name
+    )
+  list_df_true_u[[file_index]] <- df_preference
+}
+df_all_true_u <- bind_rows(list_df_true_u)
+
+# Merge df_error_all with list_df_true_u--------------------------
+df_all = 
+  df_all_true_u%>%
+    group_by(subj_name)%>%
+    summarise(
+      mean = unique(mean),
+      sd = unique(SD),
+      sk = unique(skewness)
+      )%>%
+    as.data.frame()%>%
+    right_join(df_error_all,by = "subj_name")
 # Plot ------------------------------------------------------------
 for (file_type in c(".png", ".pdf")) {
-  for (threshold in c("with_threshold")) {
-    if (threshold == "with_threshold") {
-      # filter out those below the threshold
-      df_plot <-
-        df_error_all %>%
-        filter(total_processed_training_files >= THRESHOLD_NUM_FILES)
-      # set the scale
-      x_scale_minor_breaks <- seq(0, 4000, 100)
-      x_scale_breaks <- c(200, 500, 1000, 2000, 3000, 4000)
-    } else {
-      df_plot <- df_error_all
-      # set the scale
-      x_scale_minor_breaks <- seq(0, 4000, 100)
-      x_scale_breaks <- c(100, 500, 1000, 2000, 3000, 4000)
-    }
-    df_plot <-
-      df_plot %>%
-      # log transform the scale to make the dots more visible
-      # mutate(log_total_processed_training_files = log10(total_processed_training_files)) %>%
-      filter(mode %in% c("random_rate", "test")) %>%
-      mutate(
-        mode = factor(mode,
-          levels = c("test", "random_rate"),
-          labels = c("Test", "Random Rate")
-        ),
-        subj_label = paste0(
-          "S",
-          str_extract(string = subj_name, pattern = "(?<=S0)\\d+$")
-        )
-      )
+  df_plot <- df_all 
+  # set the scale
+  x_scale_minor_breaks <- seq(0, 4000, 100)
+  x_scale_breaks <- c(100, 500, 1000, 2000, 3000, 4000)
+
+  df_plot <-
     df_plot %>%
-      ggplot(aes(x = total_processed_training_files, y = accuracy, group = mode)) +
-      geom_point(aes(shape = mode, color = mode)) +
-      geom_line(aes(linetype = mode, color = mode)) +
-      geom_text_repel(
-        data = df_plot %>%
-          filter(mode == "Test"),
-        aes(label = subj_label),
-        size = 2
-      ) +
-      coord_trans(x = "log10") +
-      scale_x_continuous(
-        minor_breaks = x_scale_minor_breaks,
-        breaks = x_scale_breaks
-      ) +
-      scale_y_continuous(breaks = seq(30, 80, by = 10), limits = c(30, 85)) +
-      scale_color_discrete(NULL) +
-      scale_shape_discrete(NULL) +
-      scale_linetype_discrete(NULL) +
-      theme_bw() +
-      labs(
-        x = "Trajectories in the Training Set",
-        y = "Accuracy"
-      ) +
-      ggsave(
-        filename = paste0(FILE_OUTPUT[[threshold]], file_type),
-        width = IMG_WIDTH,
-        height = IMG_HEIGHT
+    # log transform the scale to make the dots more visible
+    # mutate(log_total_processed_training_files = log10(total_processed_training_files)) %>%
+    filter(mode %in% c("random_rate", "test")) %>%
+    mutate(
+      mode = factor(mode,
+        levels = c("test", "random_rate"),
+        labels = c("Test", "Random Rate")
       )
-  }
+      # subj_label = paste0(
+      #   "A",
+      #   as.numeric(str_extract(string = subj_name, pattern = "(?<=S0)\\d+"))-3
+      # )
+    )
+  # convert to bar plot
+  df_plot = 
+    df_plot%>%
+      group_by(sd,mode)%>%
+      summarise(
+        mean_accuracy = mean(accuracy),
+        sd_accuracy = sd(accuracy),
+        n = n(),
+        se = sd_accuracy/sqrt(n)
+      )%>%
+    mutate(
+      sd_level = factor(sd,
+                        levels = c(0.1,1.1,2.1))
+    )
+  df_plot %>%
+    ggplot(aes(x = sd_level, y = mean_accuracy, group = mode)) +
+    geom_errorbar(aes(ymax = mean_accuracy+se,
+                      ymin = mean_accuracy-se),
+                  width = 0.1)+    
+    geom_point(aes(color = mode,shape = mode),size = 3)+
+    scale_shape_discrete(NULL) +
+    scale_color_discrete(NULL) +
+    theme_bw() +
+    labs(
+      x = "SD of Social Support Values Across 4 Targets",
+      y = "Accuracy"
+    ) +
+    ggsave(
+      filename = paste0(FILE_OUTPUT, file_type),
+      width = IMG_WIDTH,
+      height = IMG_HEIGHT
+    )
 }
