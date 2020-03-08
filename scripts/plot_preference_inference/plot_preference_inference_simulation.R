@@ -29,6 +29,20 @@ EXCLUSION_SUBJ <- paste0(
     "69"
   )
 )
+if (AGENT_TYPE == "simulation") {
+  PATTENR_SUBJ = "S\\d+b"
+  VAR_TRUE_U = "candidate"
+  VAR_MEAN = "mean"
+  VAR_SD = "SD"
+  VAR_SK = "skewness"
+  } else if (AGENT_TYPE == "human") {
+  PATTENR_SUBJ = "S\\d+"
+  VAR_TRUE_U = "V1"
+  VAR_MEAN = "mu"
+  VAR_SD = "sd"
+  VAR_SK = "sk"
+}
+
 IMG_SIZE_RATIO <- 0.8
 IMG_WIDTH <- 8 * IMG_SIZE_RATIO
 IMG_HEIGHT <- 11 * IMG_SIZE_RATIO
@@ -100,7 +114,7 @@ df_files_predicted_u <-
     subj_name =
       str_extract(
         string = file,
-        pattern = "S\\d+(?=/prediction)"
+        pattern = paste0(PATTENR_SUBJ,"(?=/prediction)")
       )
   )
 # - read in all the preference files
@@ -126,7 +140,7 @@ df_files_true_u <- data.frame(
   file =
     list.files(
       path = PATH_VALUE_U,
-      pattern = "S\\d+.*.csv",
+      pattern = paste0(PATTENR_SUBJ,".*.csv"),
       full.names = T
     ),
   stringsAsFactors = F
@@ -138,7 +152,7 @@ df_files_true_u <-
     subj_name =
       str_extract(
         string = file,
-        pattern = "S\\d+"
+        pattern = PATTENR_SUBJ
       )
   )
 
@@ -150,9 +164,9 @@ for (file_index in 1:nrow(df_files_true_u)) {
   df_preference <- read.csv(csv, header = T, stringsAsFactors = F)
   df_preference <-
     df_preference %>%
+    rename(true_u =!!(VAR_TRUE_U))%>%
     mutate(
       target_id = as.numeric(str_extract(string = X, pattern = "\\d$")),
-      true_u = V1,
       subj_name = subj_name
     )
   list_df_true_u[[file_index]] <- df_preference
@@ -165,7 +179,10 @@ df_all <-
   filter(!subj_name %in% EXCLUSION_SUBJ) %>%
   # rename(type = query_type) %>%
   left_join(df_all_true_u %>%
-    select(subj_name, target_id, true_u, mu, sd, sk)
+              rename(mu = !!(VAR_MEAN),
+                     sd = !!(VAR_SD),
+                     sk = !!(VAR_SK))%>%
+              select(subj_name, target_id, true_u, mu, sd, sk)
   # mutate(
   #   type = "ground_truth"
   # )
@@ -202,8 +219,11 @@ df_all_plot <-
   mutate(
     # order the levels of subject name by the current rank order of 'sd_true_u_rank'
     subj_name_labeled = paste0(
-      "S", str_extract(string = subj_name, pattern = "(?<=S0)\\d+$"),
-      "\n(", round(sd, 2), ")"
+     "A", as.numeric(str_extract(string = subj_name, pattern = "(?<=S0)\\d+"))-3,
+      "\n(", 
+      sprintf("%0.1f",round(sd, 2)),")"
+      # sprintf("%0.1f",round(sk, 2)),"; ",
+      # sprintf("%0.1f",round(mu, 2)), ")"
     ),
     subj_name_labeled = factor(subj_name_labeled, levels = rev(unique(subj_name_labeled))),
     # # for the arrange below to break ties in 'true_u_rank'
@@ -239,7 +259,7 @@ for (file_type in c(".png", ".pdf")) {
     # scale_fill_continuous("Rank-Transformed \nPredicted Preference")+
     labs(
       x = "Target ID",
-      y = "Subject ID"
+      y = "Agent ID"
     ) +
     ggsave(
       filename = file.path(
@@ -268,7 +288,7 @@ for (file_type in c(".png", ".pdf")) {
     # scale_fill_continuous("Rank-Transformed \nPredicted Preference")+
     labs(
       x = "Target ID",
-      y = "Subject ID"
+      y = "Agent ID"
     ) +
     ggsave(
       filename = file.path(
