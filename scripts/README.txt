@@ -13,12 +13,19 @@ visualize_each_training_result.R
 	-	y axis: error value
 	-	2 lines: training error and validation error
 	
-visualize_group_training_result.R
-- the script that generated the training result plot at the group level, e.g., 'tomnet-project\models\working_model\test_on_simulation_data\training_result\figures'.
+visualize_group_training_result_human.R
+- the script that generated the training result plot at the group level, e.g., 'tomnet-project\models\working_model\test_on_human_data\training_result\figures'.
 - axises:
 	- x axis: total unique trajectories (# of processed files)
 	-	y axis: accuracy
-	-	3 lines: training, validation, and testing accuracy
+	-	2 lines: testing accuracy and random rates
+
+visualize_group_training_result_simulation.R
+- based on visualize_group_training_result_human.R
+- axises:
+	- x axis: SD of the social rewards
+	-	y axis: accuracy
+	-	2 bars: testing accuracy and random rates
 	
 helper_function_visualize_training_result.R
 - the helper functions that 'visualize_each_training_result.R' call
