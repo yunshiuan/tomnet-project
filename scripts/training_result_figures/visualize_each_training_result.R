@@ -6,8 +6,8 @@
 library(stringr)
 # Constants
 #parameter
-# TYPE = "test_on_simulation_data"
-TYPE = "test_on_human_data"
+TYPE = "test_on_simulation_data"
+# TYPE = "test_on_human_data"
 
 #path
 # the root path of the project
@@ -19,6 +19,7 @@ PATH_ROOT = str_extract(string = getwd(),
 if(interactive()){
   # Should be manually adjusted to correspond to either 'test_on_human_data' or 'test_on_simulated_data'
   PATH_RESULT_ROOT = file.path(PATH_ROOT,"models","working_model",TYPE)
+  
 }else{
   cat(paste0("Please enter the path of where the training_result is located in (without quotation mark), \n",
              "e.g., /Users/tomnet-project/models/working_model/test_on_simulation_data \n"))
