@@ -7,31 +7,42 @@
 # - also, in order for the function 'filter_full_targets_trajectories.R' to check if filtering has been done for an agent, it needs to know the number of trajectories that have exact 4 targets.
 #- note:
 # - output 1: the agent-level csv that records the number of targets in each trajectories.
-# - output 2: the group-level csv that recors the avergage number of targetr for each agent
+# - output 2: the group-level csv that recors the avergage number of target for each agent
 #################
 library(stringr)
 library(dplyr)
 # Constants-----------------------------------------------
 # Parameter
-LIST_SUBJ <- paste0(
-  "S0",
-  c(
-    24, 26, 28,
-    30, 31, 33,
-    35, 36, 37,
-    40, 43, 45,
-    46, 50, 51,
-    52, 53, 55,
-    58, 59, 60,
-    61, 62, 63,
-    65, 66, 67,
-    69
-  )
-)
-
+# - human
+#LIST_SUBJ <- paste0(
+#  "S0",
+#  c(
+#    24, 26, 28,
+#    30, 31, 33,
+#    35, 36, 37,
+#    40, 43, 45,
+#    46, 50, 51,
+#    52, 53, 55,
+#    58, 59, 60,
+#    61, 62, 63,
+#    65, 66, 67,
+#    69
+#  )
+#)
+# - simulation
+LIST_SUBJ = paste0("S",
+                    str_pad(4:33,width = 3, side = "left",pad = "0"),"b")
+# - human
+# PATTERN_SUBJ = "S\\d+(?=_\\d)"
+# - simulation
+PATTERN_SUBJ = "S\\d+b(?=_\\d)"
 # Path
 PATH_ROOT <- str_extract(getwd(), pattern = ".*tomnet-project")
-PATH_DATA_ROOT <- file.path(PATH_ROOT, "data", "data_human")
+# - human
+#PATH_DATA_ROOT <- file.path(PATH_ROOT, "data", "data_human")
+# - simulation
+PATH_DATA_ROOT <- file.path(PATH_ROOT, "data", "data_simulation","simulation_data_on_server","data","data_simulation","S004-S033")
+
 PATH_DATA_INPUT <- file.path(PATH_DATA_ROOT, "processed", LIST_SUBJ)
 
 PATH_OUTPUT <- file.path(PATH_DATA_ROOT, "processed")
@@ -97,7 +108,7 @@ for (subj_index in 1:length(PATH_DATA_INPUT)) {
 df_count_all_agents <- do.call("rbind", collect_df_count_per_agent)
 df_count_all_agents <-
   df_count_all_agents %>%
-  mutate(subj_name = str_extract(string = file, pattern = "S\\d+(?=_\\d)")) %>%
+  mutate(subj_name = str_extract(string = file, pattern = PATTERN_SUBJ)) %>%
   select(-file) %>%
   group_by(subj_name, num_targets) %>%
   summarise(freq = n())

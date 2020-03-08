@@ -7,26 +7,34 @@
 library(stringr)
 # Constants-----------------------------------------------
 # Parameter
-LIST_SUBJ <- paste0(
-  "S0",
-  c(
-    24, 26, 28,
-    30, 31, 33,
-    35, 36, 37,
-    40, 43, 45,
-    46, 50, 51,
-    52, 53, 55,
-    58, 59, 60,
-    61, 62, 63,
-    65, 66, 67,
-    69
-  )
-)
+# - human
+#LIST_SUBJ <- paste0(
+#  "S0",
+#  c(
+#    24, 26, 28,
+#    30, 31, 33,
+#    35, 36, 37,
+#    40, 43, 45,
+#    46, 50, 51,
+#    52, 53, 55,
+#    58, 59, 60,
+#    61, 62, 63,
+#    65, 66, 67,
+#    69
+#  )
+#)
+# - simulation
+LIST_SUBJ = paste0("S",
+                    str_pad(4:33,width = 3, side = "left",pad = "0"),"b")
 MAX_TARGETS <- 4
 
 # Path
 PATH_ROOT <- str_extract(getwd(), pattern = ".*tomnet-project")
-PATH_DATA_ROOT <- file.path(PATH_ROOT, "data", "data_human")
+# - human
+#PATH_DATA_ROOT <- file.path(PATH_ROOT, "data", "data_human")
+# - simulation
+PATH_DATA_ROOT <- file.path(PATH_ROOT, "data", "data_simulation","simulation_data_on_server","data","data_simulation","S004-S033")
+
 PATH_DATA_INPUT <- file.path(PATH_DATA_ROOT, "processed", LIST_SUBJ)
 PATH_TXT_OUTPUT <- file.path(PATH_DATA_ROOT, "filtered", LIST_SUBJ)
 
@@ -34,7 +42,7 @@ PATH_TXT_OUTPUT <- file.path(PATH_DATA_ROOT, "filtered", LIST_SUBJ)
 # - for checking if the subject has been fully filtered
 FILE_COUNT_SUMMARY = file.path(PATH_DATA_ROOT,
                                "processed",
-                               "summary_count_targets_2020-03-03.csv")
+                               "summary_count_targets_2020-03-08.csv")
 df_count_summary = 
   read.csv(FILE_COUNT_SUMMARY,header = T,stringsAsFactors = F)
 # Convert-------------------------------------------------

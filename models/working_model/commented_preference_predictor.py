@@ -43,10 +43,14 @@ class PreferencePredictor(mp.ModelParameter):
   # Constant: For making predictions
   # --------------------------------------
   # - param
+  # human ---------------------
   # - for nested model result: should be set to the version name, e.g., 'v12' (human)
   # - for non-nested model result: should be set to '.', e.g., 'human, v9', along with args.subj_name = 'cache_S030_v9_commit_78092b'
-  INPUT_VERSION = 'v12'
-  AGENT_TYPE = 'human'
+  #INPUT_VERSION = 'v12'
+  #AGENT_TYPE = 'human'
+  # simulation ---------------------
+  INPUT_VERSION = 'v26'
+  AGENT_TYPE = 'simulation'
 
   BATCH_SIZE_PREDICT = 16
   SUBSET_SIZE = 96 # because only 100 files in Query_Stest
