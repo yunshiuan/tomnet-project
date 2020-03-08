@@ -164,24 +164,23 @@ df_error_all <-
   filter(!subj_name %in% EXCLUSION_SUBJ)
 # Plot ------------------------------------------------------------
 for (file_type in c(".png", ".pdf")) {
-  
-for (threshold in c("with_threshold")) {
-  if (threshold == "with_threshold") {
-    # filter out those below the threshold
+  for (threshold in c("with_threshold")) {
+    if (threshold == "with_threshold") {
+      # filter out those below the threshold
+      df_plot <-
+        df_error_all %>%
+        filter(total_processed_training_files >= THRESHOLD_NUM_FILES)
+      # set the scale
+      x_scale_minor_breaks <- seq(0, 4000, 100)
+      x_scale_breaks <- c(200, 500, 1000, 2000, 3000, 4000)
+    } else {
+      df_plot <- df_error_all
+      # set the scale
+      x_scale_minor_breaks <- seq(0, 4000, 100)
+      x_scale_breaks <- c(100, 500, 1000, 2000, 3000, 4000)
+    }
     df_plot <-
-      df_error_all %>%
-      filter(total_processed_training_files >= THRESHOLD_NUM_FILES)
-    # set the scale
-    x_scale_minor_breaks <- seq(0, 4000, 100)
-    x_scale_breaks <- c(200, 500, 1000, 2000, 3000, 4000)
-  } else {
-    df_plot <- df_error_all
-    # set the scale
-    x_scale_minor_breaks <- seq(0, 4000, 100)
-    x_scale_breaks <- c(100, 500, 1000, 2000, 3000, 4000)
-  }
-  df_plot = 
-    df_plot %>%
+      df_plot %>%
       # log transform the scale to make the dots more visible
       # mutate(log_total_processed_training_files = log10(total_processed_training_files)) %>%
       filter(mode %in% c("random_rate", "test")) %>%
@@ -190,35 +189,39 @@ for (threshold in c("with_threshold")) {
           levels = c("test", "random_rate"),
           labels = c("Test", "Random Rate")
         ),
-        subj_label = paste0("S",
-                            str_extract(string = subj_name, pattern = "(?<=S0)\\d+$"))
-      ) 
-  df_plot %>%
-    ggplot(aes(x = total_processed_training_files, y = accuracy, group = mode)) +
-    geom_point(aes(shape = mode,color = mode)) +
-    geom_line(aes(linetype = mode,color = mode)) +
-    geom_text_repel(data = df_plot%>%
-                      filter(mode =="Test"),
-                    aes(label = subj_label),
-                    size = 2) +
-    coord_trans(x = "log10") +
-    scale_x_continuous(
-      minor_breaks = x_scale_minor_breaks,
-      breaks = x_scale_breaks
-    ) +
-    scale_y_continuous(breaks = seq(30, 80, by = 10), limits = c(30, 85)) +
-    scale_color_discrete(NULL) +
-    scale_shape_discrete(NULL) +
-    scale_linetype_discrete(NULL) +
-    theme_bw() +
-    labs(
-      x = "Trajectories in the Training Set",
-      y = "Accuracy"
-    ) +
-    ggsave(
-      filename = paste0(FILE_OUTPUT[[threshold]],file_type),
-      width = IMG_WIDTH,
-      height = IMG_HEIGHT
-    )
-}
+        subj_label = paste0(
+          "S",
+          str_extract(string = subj_name, pattern = "(?<=S0)\\d+$")
+        )
+      )
+    df_plot %>%
+      ggplot(aes(x = total_processed_training_files, y = accuracy, group = mode)) +
+      geom_point(aes(shape = mode, color = mode)) +
+      geom_line(aes(linetype = mode, color = mode)) +
+      geom_text_repel(
+        data = df_plot %>%
+          filter(mode == "Test"),
+        aes(label = subj_label),
+        size = 2
+      ) +
+      coord_trans(x = "log10") +
+      scale_x_continuous(
+        minor_breaks = x_scale_minor_breaks,
+        breaks = x_scale_breaks
+      ) +
+      scale_y_continuous(breaks = seq(30, 80, by = 10), limits = c(30, 85)) +
+      scale_color_discrete(NULL) +
+      scale_shape_discrete(NULL) +
+      scale_linetype_discrete(NULL) +
+      theme_bw() +
+      labs(
+        x = "Trajectories in the Training Set",
+        y = "Accuracy"
+      ) +
+      ggsave(
+        filename = paste0(FILE_OUTPUT[[threshold]], file_type),
+        width = IMG_WIDTH,
+        height = IMG_HEIGHT
+      )
+  }
 }

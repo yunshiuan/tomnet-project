@@ -254,7 +254,7 @@ for (file_type in c(".png", ".pdf")) {
     # facet_grid(inference_type~query_type)+
     # scale_fill_continuous("Rank-Transformed \nPredicted Preference")+
     labs(
-      x = "Target",
+      x = "Target ID",
       y = "Subject ID"
     ) +
     ggsave(

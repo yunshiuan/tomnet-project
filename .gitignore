@@ -53,3 +53,5 @@ data/data_simulation/simulation_data_on_server/data/**/*.txt
 !models/working_model/test_on_human_data/training_result/caches/v12/**/train/*.csv
 !data/data_simulation/simulation_data_on_server/data/**/summary_simulation.csv
 
+
+report/~$ROMAN-figures.pptx
