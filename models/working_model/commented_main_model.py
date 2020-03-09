@@ -69,16 +69,17 @@ class Model(mp.ModelParameter):
   # --------------------------------------
   path_mode =  os.getcwd()  # Necessary when the output dir and script dir is different
   # for simulation data
-  #path_ckpt = os.path.join('test_on_simulation_data','training_result','caches')
-  #path_train = os.path.join('test_on_simulation_data','training_result','caches')
+  path_ckpt = os.path.join('test_on_simulation_data','training_result','caches')
+  path_train = os.path.join('test_on_simulation_data','training_result','caches')
   #path_txt_data = os.path.join('..','..','data','data_simulation','S004b-S037b')
-  #path_txt_data = os.path.join('..','..','data','data_simulation','simulation_data_on_server','data','data_simulation','S004-S033')
+  path_txt_data = os.path.join('..','..','data','data_simulation',\
+  'simulation_data_on_server','data','data_simulation','S004-S033','processed')
 
   # for human data
   #use panda df to store these values
-  path_ckpt = os.path.join('test_on_human_data','training_result','caches')
-  path_train = os.path.join('test_on_human_data','training_result','caches')
-  path_txt_data = os.path.join('..','..','data','data_human','augmented')
+  #path_ckpt = os.path.join('test_on_human_data','training_result','caches')
+  #path_train = os.path.join('test_on_human_data','training_result','caches')
+  #path_txt_data = os.path.join('..','..','data','data_human','augmented')
 
   path_ckpt = os.path.join(path_mode,path_ckpt)
   path_train = os.path.join(path_mode,path_train)
@@ -1014,8 +1015,8 @@ if __name__ == "__main__":
   # Constants
   # --------------------------------------------------------
   # for S004b-S037b
-  LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,33)]
-  # LIST_SUBJECTS = ["S030"]
+  # LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,34)]
+  LIST_SUBJECTS = ["S033b"]
 
   # human
   #LIST_SUBJECTS = \

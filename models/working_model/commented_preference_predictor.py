@@ -596,7 +596,8 @@ if __name__ == "__main__":
     # pdb.set_trace()
 
     # simulation data list
-    LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,33)]
+    LIST_SUBJECTS = ["S033b"]
+    #LIST_SUBJECTS = ["S" + str(i).rjust(3,'0') + "b" for i in range(4,33)]
 
     # human subject list
     #LIST_SUBJECTS = \
