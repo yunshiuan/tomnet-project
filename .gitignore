@@ -17,7 +17,7 @@ nohup.out
 *.MBP15-3
 *.BMLabGPU
 *.Rhistory
-
+~$*
 # Ignore specific dirs
 benchmark/cache_S002a_10000files/train/
 benchmark/S002a/
