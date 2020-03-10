@@ -154,14 +154,14 @@ class CharNet(nnl.NeuralNetLayers):
 
           # lstm_input = (16, 10, 32)
           lstm = self.lstm_layer(lstm_input, train, num_classes)
-          # lstm = (16, 4)
+          # lstm = (16, 64)
 
           layers.append(lstm)
 
       # --------------------------------------------------------------
       #Fully connected layer
       # Paper codes
-      # (16, 4) -> (16, 4)
+      # (16, 64) -> (16, 4)
       # def output_layer(self,input_layer, num_labels):
       #   '''
       #   A linear layer.

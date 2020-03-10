@@ -58,3 +58,5 @@ data/data_simulation/simulation_data_on_server/data/**/*.txt
 report/~$ROMAN-figures.pptx
 
 report/~$ToMNET.pptx
+
+*.tmp

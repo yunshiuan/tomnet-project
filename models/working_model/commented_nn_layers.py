@@ -273,7 +273,7 @@ class NeuralNetLayers:
       # (3) lstm_input.shape = (16, 10, 32)
       # tf.nn.dynamic_rnn()
       # - param lstm_input = (batch_size, time_steps, input_filters) 
-      # - param seq_len: shape = (16, )??Why did I set it to batch_size instead of num_time_steps? 
+      # - param seq_len: 10 (the length of the sequence)
       # An int32/int64 vector sized [batch_size].  
       # Used to copy-through state and zero-out outputs when  
       # past a batch element's sequence length.  
@@ -313,7 +313,7 @@ class NeuralNetLayers:
       # ==============================================================
       # --------------------------------------------------------------
       # Paper: modified - v13
-      # (16, 4) 
+      # (16, 64) 
       # 1. No need to resize. It is already with the correct size.
       # --------------------------------------------------------------
       final_state = final_state[1]  
