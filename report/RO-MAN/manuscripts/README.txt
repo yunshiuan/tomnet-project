@@ -22,3 +22,16 @@ ROMAN20_PreferenceLearning_0309_YunShiuan_v2.docx
 - I added
 	- the ToMnet+ architecture
 	- training and testing details
+
+ROMAN20_PreferenceLearning_0309_YunShiuan_v2_hy.docx	
+- Hsin-Yi's revision based on my 'ROMAN20_PreferenceLearning_0309_YunShiuan_v2.docx'
+- received from Hsin-Yi on 20200310.
+- She added the details for 'The Social Game Design for Humans' and 'Social Support Questionnaire'.
+	
+ROMAN20_PreferenceLearning_0311_YunShiuan_v3.docx
+- based on ROMAN20_PreferenceLearning_0309_YunShiuan_v2_hy.docx	
+- I
+	- added the result section
+	- updated the figures
+	- included formal statistical tests
+	
