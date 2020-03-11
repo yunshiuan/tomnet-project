@@ -18,6 +18,7 @@ nohup.out
 *.BMLabGPU
 *.Rhistory
 ~$*
+備份*
 # Ignore specific dirs
 benchmark/cache_S002a_10000files/train/
 benchmark/S002a/
