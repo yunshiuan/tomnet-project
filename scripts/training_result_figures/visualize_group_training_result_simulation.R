@@ -48,7 +48,7 @@ VAR_SK = "skewness"
 # )
 # the least training files the subject should have for the "thresholded version"
 # - thresholding ensure the estimate of accuracy is precise enough
-IMG_SIZE_RATIO <- 0.8
+IMG_SIZE_RATIO <- 0.55
 IMG_WIDTH <- 8 * IMG_SIZE_RATIO
 IMG_HEIGHT <- 6 * IMG_SIZE_RATIO
 # Manually set the root path of the repo if running the script via RStudio
@@ -256,13 +256,20 @@ for (file_type in c(".png", ".pdf")) {
                         levels = c(0.1,1.1,2.1))
     )
   df_plot %>%
-    ggplot(aes(x = sd_level, y = mean_accuracy, group = mode)) +
+    ggplot(aes(x = sd_level, y = mean_accuracy, group = mode,fill = mode)) +
+    geom_col(position = "dodge")+
     geom_errorbar(aes(ymax = mean_accuracy+se,
-                      ymin = mean_accuracy-se),
-                  width = 0.1)+    
-    geom_point(aes(color = mode,shape = mode),size = 3)+
-    scale_shape_discrete(NULL) +
-    scale_color_discrete(NULL) +
+                      ymin = mean_accuracy-se),  
+                  width = 0.3,
+                  position = position_dodge(width = 0.9))+
+    scale_fill_discrete(NULL) +
+    coord_cartesian(ylim=c(30,85))+
+    # geom_errorbar(aes(ymax = mean_accuracy+se,
+    #                   ymin = mean_accuracy-se),
+    #               width = 0.1)+    
+    # geom_point(aes(color = mode,shape = mode),size = 3)+
+    # scale_shape_discrete(NULL) +
+    # scale_color_discrete(NULL) +
     theme_bw() +
     labs(
       x = "SD of Social Support Values Across 4 Targets",

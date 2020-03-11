@@ -43,7 +43,7 @@ EXCLUSION_SUBJ <- paste0(
 # the least training files the subject should have for the "thresholded version"
 # - thresholding ensure the estimate of accuracy is precise enough
 THRESHOLD_NUM_FILES <- 100
-IMG_SIZE_RATIO <- 0.8
+IMG_SIZE_RATIO <- 0.55
 IMG_WIDTH <- 8 * IMG_SIZE_RATIO
 IMG_HEIGHT <- 6 * IMG_SIZE_RATIO
 # Manually set the root path of the repo if running the script via RStudio
