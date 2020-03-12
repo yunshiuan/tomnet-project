@@ -61,3 +61,5 @@ report/~$ROMAN-figures.pptx
 report/~$ToMNET.pptx
 
 *.tmp
+
+report/.tmp.drivedownload/
