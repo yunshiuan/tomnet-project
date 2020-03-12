@@ -49,6 +49,8 @@ IMG_WIDTH <- 8 * IMG_SIZE_RATIO
 IMG_HEIGHT <- 11 * IMG_SIZE_RATIO
 SCALE_MIN <- 1
 SCALE_MAX <- 4
+RESULT_INFERENCE_TYPE = "avg_prediction_probability"
+RESULT_QUERY_TEST = "qtest"
 # The color bar for bright blue to dark blue
 COLOR_LOW <- "#132B43"
 COLOR_HIGH <- "#56B1F7"
@@ -86,6 +88,9 @@ PATH_FIGURE_OUTPUT <-
   file.path(PATH_RESULT_ROOT, "figures", VERSION)
 
 # - file
+FILE_CSV_OUTPUT = 
+  file.path(PATH_FIGURE_OUTPUT,
+            "Kendall_tau_between_preference_matrices.csv")
 # Processing data -----------------------------------------------
 # Get the predicted preference of simulation data ---------------
 # - get the list of the predicted preference of simulation data
@@ -233,13 +238,12 @@ df_all_plot <-
       time = num_subj
     )
   )
-
-
 # Visualize the preference matrix ------------------------------
 # the predicted preference matrix
 for (file_type in c(".png", ".pdf")) {
-  df_all_plot %>%
-    filter(inference_type == "avg_prediction_probability", query_type == "qtest") %>%
+  df_all_plot  %>%
+    filter(inference_type == RESULT_INFERENCE_TYPE,
+           query_type == RESULT_QUERY_TEST) %>%
     ggplot(aes(x = target_id_reordered, y = subj_name_labeled)) +
     # geom_raster(aes(fill = predicted_u_rank))+
     geom_tile(aes(fill = predicted_u_rank)) +
@@ -294,3 +298,34 @@ for (file_type in c(".png", ".pdf")) {
       height = IMG_HEIGHT
     )
 }
+# write statistic results table ------------------------------------------
+list_tau = c()
+for (subj_index in 1:length(unique(df_all_plot$subj_name))){
+  this_subj_name = unique(df_all_plot$subj_name)[subj_index]
+  df_subj = 
+    df_all_plot %>%
+    filter(inference_type == RESULT_INFERENCE_TYPE,
+           query_type == RESULT_QUERY_TEST) %>%
+    filter(subj_name == this_subj_name)
+  # kendall tau-b
+  kenall_tau = cor.test(x=df_subj$predicted_u_rank,
+                        y=df_subj$true_u_rank,
+                        method = "kenda",
+                        exact = T)
+  list_tau[[subj_index]] =
+    kenall_tau$estimate
+}
+# test if the tau is grater than 1
+test_tau = wilcox.test(x = list_tau,exact = T)
+df_tau=
+  data.frame(
+    med_tau = median(list_tau),
+    mean_tau = mean(list_tau),
+    method = test_tau$method,
+    W = test_tau$statistic,
+    p = test_tau$p.value
+  )
+write.csv(
+  x = df_tau,
+  file = FILE_CSV_OUTPUT
+)
