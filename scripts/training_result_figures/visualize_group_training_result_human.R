@@ -77,12 +77,16 @@ FILE_RANDOM_RATE <- file.path(
   paste0("data_", TYPE), "processed",
   "summary_count_targets_2020-03-03.csv"
 )
-FILE_OUTPUT <- list(
+FILE_PLOT_OUTPUT <- list(
   no_threshold = file.path(PATH_FIGURE_OUTPUT, "all_training_results.pdf"),
   with_threshold = file.path(
     PATH_FIGURE_OUTPUT,
     paste0("all_training_results_traj", THRESHOLD_NUM_FILES)
   )
+)
+FILE_CSV_OUTPUT = file.path(
+  PATH_FIGURE_OUTPUT,
+  "stat_accuracy_test_vs_random.csv"
 )
 # Processing data -----------------------------------------------
 # - get the random rate of accuracy for each agent
@@ -172,12 +176,12 @@ for (file_type in c(".png", ".pdf")) {
         filter(total_processed_training_files >= THRESHOLD_NUM_FILES)
       # set the scale
       x_scale_minor_breaks <- seq(0, 4000, 100)
-      x_scale_breaks <- c(200, 500, 1000, 2000, 3000, 4000)
+      x_scale_breaks <- c(200, 500, 1000, 2000, 4000)
     } else {
       df_plot <- df_error_all
       # set the scale
       x_scale_minor_breaks <- seq(0, 4000, 100)
-      x_scale_breaks <- c(100, 500, 1000, 2000, 3000, 4000)
+      x_scale_breaks <- c(100, 500, 1000, 2000, 4000)
     }
     df_plot <-
       df_plot %>%
@@ -198,12 +202,12 @@ for (file_type in c(".png", ".pdf")) {
       ggplot(aes(x = total_processed_training_files, y = accuracy, group = mode)) +
       geom_point(aes(shape = mode, color = mode)) +
       geom_line(aes(linetype = mode, color = mode)) +
-      geom_text_repel(
-        data = df_plot %>%
-          filter(mode == "Test"),
-        aes(label = subj_label),
-        size = 2
-      ) +
+      # geom_text_repel(
+      #   data = df_plot %>%
+      #     filter(mode == "Test"),
+      #   aes(label = subj_label),
+      #   size = 2
+      # ) +
       coord_trans(x = "log10") +
       scale_x_continuous(
         minor_breaks = x_scale_minor_breaks,
@@ -219,9 +223,26 @@ for (file_type in c(".png", ".pdf")) {
         y = "Accuracy"
       ) +
       ggsave(
-        filename = paste0(FILE_OUTPUT[[threshold]], file_type),
+        filename = paste0(FILE_PLOT_OUTPUT[[threshold]], file_type),
         width = IMG_WIDTH,
         height = IMG_HEIGHT
       )
   }
 }
+# write statistic results table ------------------------------------------
+diff_test_random = 
+  wilcox.test(df_error_all%>%
+              filter(mode=="test")%>%
+              pull(accuracy),
+            df_error_all%>%filter(mode=="random_rate")%>%
+              pull(accuracy),
+            paired = T,exact = T)
+df_diff_test_random =
+  data.frame(
+    method = diff_test_random$method,
+    W = diff_test_random$statistic,
+    p = diff_test_random$p.value
+  )
+write.csv(
+  x = df_diff_test_random,
+  file = FILE_CSV_OUTPUT)

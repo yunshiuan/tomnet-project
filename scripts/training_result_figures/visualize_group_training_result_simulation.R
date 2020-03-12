@@ -87,10 +87,13 @@ FILE_RANDOM_RATE <- file.path(
   "processed",
   "summary_count_targets_2020-03-08.csv"
 )
-FILE_OUTPUT <- file.path(
+FILE_PLOT_OUTPUT <- file.path(
   PATH_FIGURE_OUTPUT,"all_training_results"
   )
-
+FILE_CSV_OUTPUT = file.path(
+  PATH_FIGURE_OUTPUT,
+  "stat_accuracy_test_vs_random.csv"
+)
 # Processing data -----------------------------------------------
 # - get the random rate of accuracy for each agent
 df_random_rate <- read.csv(FILE_RANDOM_RATE, header = T, stringsAsFactors = F)
@@ -276,8 +279,25 @@ for (file_type in c(".png", ".pdf")) {
       y = "Accuracy"
     ) +
     ggsave(
-      filename = paste0(FILE_OUTPUT, file_type),
+      filename = paste0(FILE_PLOT_OUTPUT, file_type),
       width = IMG_WIDTH,
       height = IMG_HEIGHT
     )
 }
+# write statistic results table ------------------------------------------
+diff_test_random = 
+  wilcox.test(df_all%>%
+                filter(mode=="test")%>%
+                pull(accuracy),
+              df_all%>%filter(mode=="random_rate")%>%
+                pull(accuracy),
+              paired = T,exact = T)
+df_diff_test_random =
+  data.frame(
+    method = diff_test_random$method,
+    W = diff_test_random$statistic,
+    p = diff_test_random$p.value
+  )
+write.csv(
+  x = df_diff_test_random,
+  file = FILE_CSV_OUTPUT)
