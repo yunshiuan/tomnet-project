@@ -35,4 +35,7 @@ ROMAN20_PreferenceLearning_0311_YunShiuan_v3.docx
 	- updated the figures
 	- included formal statistical tests
 - sent to Josh on 2020/03/12
-	
+
+ROMAN20_PreferenceLearning_0316_YunShiuan_v4.docx	
+- based on ROMAN20_PreferenceLearning_0311_YunShiuan_v3.docx
+- This is to address Josh's comment on his email on 20200316 via gmail.
