@@ -42,7 +42,7 @@ ROMAN20_PreferenceLearning_0316_YunShiuan_v4.docx
 
 ROMAN20_PreferenceLearning_0319_Josh_v4
 - based on ROMAN20_PreferenceLearning_0311_YunShiuan_v3.docx
-- received from Josh on 20200319 via gmail.
+- received from Josh on 20200318 via gmail.
 
 ROMAN20_PreferenceLearning_0316_YunShiuan_v5.docx	
 - based on 
@@ -51,6 +51,9 @@ ROMAN20_PreferenceLearning_0316_YunShiuan_v5.docx
 	- ROMAN20_PreferenceLearning_0316_YunShiuan_v4.docx	
 		- integrate some revisions I made
 - received from Josh on 20200319 via gmail.
-- TODO: 
+- (V) TODO: 
 		- (V) integrate some revisions I made in 'ROMAN20_PreferenceLearning_0316_YunShiuan_v4.docx	'
-		- () Address JOsh's comments in 'ROMAN20_PreferenceLearning_0319_Josh_v4.docx'.
+		- (V) Address Josh's comments in 'ROMAN20_PreferenceLearning_0319_Josh_v4.docx'.
+		- Others
+			- (V)Change e_pref to e_char
+- sent to Josh, Hsin-Yi, Edwinn, Yen-Ling on 2020/03/18.
