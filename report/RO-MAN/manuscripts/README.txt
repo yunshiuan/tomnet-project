@@ -39,3 +39,18 @@ ROMAN20_PreferenceLearning_0311_YunShiuan_v3.docx
 ROMAN20_PreferenceLearning_0316_YunShiuan_v4.docx	
 - based on ROMAN20_PreferenceLearning_0311_YunShiuan_v3.docx
 - This is to address Josh's comment on his email on 20200316 via gmail.
+
+ROMAN20_PreferenceLearning_0319_Josh_v4
+- based on ROMAN20_PreferenceLearning_0311_YunShiuan_v3.docx
+- received from Josh on 20200319 via gmail.
+
+ROMAN20_PreferenceLearning_0316_YunShiuan_v5.docx	
+- based on 
+	- ROMAN20_PreferenceLearning_0319_Josh_v4.docx
+		- this is the main template
+	- ROMAN20_PreferenceLearning_0316_YunShiuan_v4.docx	
+		- integrate some revisions I made
+- received from Josh on 20200319 via gmail.
+- TODO: 
+		- (V) integrate some revisions I made in 'ROMAN20_PreferenceLearning_0316_YunShiuan_v4.docx	'
+		- () Address JOsh's comments in 'ROMAN20_PreferenceLearning_0319_Josh_v4.docx'.
