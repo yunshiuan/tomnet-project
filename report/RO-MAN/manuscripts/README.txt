@@ -57,3 +57,7 @@ ROMAN20_PreferenceLearning_0316_YunShiuan_v5.docx
 		- Others
 			- (V)Change e_pref to e_char
 - sent to Josh, Hsin-Yi, Edwinn, Yen-Ling on 2020/03/18.
+
+TODO:
+(1) Should fix the preference matrix for human. Replace with the updated figure.
+(2) Fix the participant section. Should be 14 instead of 13 humans.
