@@ -276,7 +276,7 @@ for (file_type in c(".png", ".pdf")) {
     theme_bw() +
     labs(
       x = "SD of Social Support Values Across 4 Targets",
-      y = "Accuracy"
+      y = "Accuracy (%)"
     ) +
     ggsave(
       filename = paste0(FILE_PLOT_OUTPUT, file_type),

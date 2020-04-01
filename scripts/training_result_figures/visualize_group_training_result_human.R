@@ -220,7 +220,7 @@ for (file_type in c(".png", ".pdf")) {
       theme_bw() +
       labs(
         x = "Trajectories in the Training Set",
-        y = "Accuracy"
+        y = "Accuracy (%)"
       ) +
       ggsave(
         filename = paste0(FILE_PLOT_OUTPUT[[threshold]], file_type),
