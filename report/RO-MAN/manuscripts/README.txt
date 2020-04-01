@@ -86,15 +86,14 @@ ROMAN20_PreferenceLearning_20200402_YunShiuan_v6.docx
 - TODO:
 	- (V) For Fig.2, draw a box around Char Net and Pred Net and label the box ToMnet+.
 		- Replied the comment. Refused to draw such a box. Suggest revision of the figure caption instead.
-	- () Make sure the range [0,26] is correct.
+	- (V) Make sure the range [0,26] is correct.
 	- (V) Explain the difference between OG tomnet and tomnet+.
 	- (V) The nomenclature of tau_j prime is a bit confusing, maybe use another symbol to express it is a subset?
 	- (V) Maybe a figure could better convey the design of the network.
-	- () Can this be more specific (exact %)?
+	- (V) Can this be more specific (exact %)?
 	- (V) Why is Fig. 5 before Fig. 4?
   - (V) Revise the y axis text of Fig. 5 and 6. Should be 'Accuracy (%)'.
 	- (V) Should fix the preference matrix for human. Replace with the updated figure.
-	- (V) Fix the participant section. Should be 14 instead of 13 humans.
-TODO:
-(1) Should fix the preference matrix for human. Replace with the updated figure.
-(2) Fix the participant section. Should be 14 instead of 13 humans.
+	- (V) Fix the participant section. Should be 12 instead of 13 humans. Two of the humans played twice with different target set. So there are 14 human data sets.
+- Sent out on 20200401.
+
