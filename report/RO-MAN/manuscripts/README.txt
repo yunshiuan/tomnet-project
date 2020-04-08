@@ -97,3 +97,17 @@ ROMAN20_PreferenceLearning_20200402_YunShiuan_v6.docx
 	- (V) Fix the participant section. Should be 12 instead of 13 humans. Two of the humans played twice with different target set. So there are 14 human data sets.
 - Sent out on 20200401.
 
+ROMAN20_PreferenceLearning_20200403_Josh_v6.docx
+- based on
+	- ROMAN20_PreferenceLearning_20200402_YunShiuan_v6.docx
+- received from Josh on 20200403
+ 
+ROMAN20_PreferenceLearning_20200408_YunShiuan_v7.docx
+- based on
+	- ROMAN20_PreferenceLearning_20200403_Josh_v6.docx
+	- TODO:
+		- (V) Update Fig. 2 with 'ToMnet+' labeled.
+		- () Add the figure for the model details.
+		
+
+
