@@ -107,7 +107,8 @@ ROMAN20_PreferenceLearning_20200408_YunShiuan_v7.docx
 	- ROMAN20_PreferenceLearning_20200403_Josh_v6.docx
 	- TODO:
 		- (V) Update Fig. 2 with 'ToMnet+' labeled.
-		- () Add the figure for the model details.
+		- (V) Add the figure for the model details. Fig. 4. The diagrams of the character network and the prediction network architecture. 
+		- (V) We should make it clear that we are implementing ToMnet based only on the need to examine single social preferences from single shot query states rather than a more dynamic trajectory fragment. 
 		
 
 
