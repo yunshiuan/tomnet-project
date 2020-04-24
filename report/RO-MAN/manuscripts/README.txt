@@ -110,5 +110,17 @@ ROMAN20_PreferenceLearning_20200408_YunShiuan_v7.docx
 		- (V) Add the figure for the model details. Fig. 4. The diagrams of the character network and the prediction network architecture. 
 		- (V) We should make it clear that we are implementing ToMnet based only on the need to examine single social preferences from single shot query states rather than a more dynamic trajectory fragment. 
 		
+ROMAN20_PreferenceLearning_20200415_Josh_v7.docx
+- based on:
+	- ROMAN20_PreferenceLearning_20200408_YunShiuan_v7.docx
+- received from Josh on 20200403
+- this is the version sent out for co-authors for the final review
 
-
+ROMAN20_PreferenceLearning_20200415_YunShiuan_v8.docx
+- based on:
+	- ROMAN20_PreferenceLearning_20200423_Josh_v7.docx
+- this should be the version for submission to ROMAN.
+- TODO:
+	- (V) Clean up all the comments.
+	- (V) Fixed the info about age that Elaine pointed out.
+	
