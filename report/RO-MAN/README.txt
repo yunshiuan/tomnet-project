@@ -1,9 +1,1 @@
---------------------------------------
-figures/
---------------------------------------
-- the figures for the manuscript.
-
---------------------------------------
-manuscript/
---------------------------------------
-- the drafts for the manuscript.
+- See: googledrive/休養期/工作/Brain and Mind Lab/Projects/Main project/RoboHon/ROMAN conference
