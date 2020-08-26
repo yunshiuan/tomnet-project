@@ -1,0 +1,2 @@
+- Data was removed from the master branch to facilitate gihub-linguist estimating the languages.
+- For the data content, please refer to the branch 'develop'.
