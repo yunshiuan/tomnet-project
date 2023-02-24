@@ -6,7 +6,6 @@
   - [Directory Structure](#directory-structure)
     - [models](#models)
     - [scripts](#scripts)
-    - [Notes](#notes)
 
 <!-- /code_chunk_output -->
 
@@ -32,7 +31,4 @@ Contain the neural network models and also the model results
 Contain any scripts that are not the neural network model itself.
 
 
-### Notes
 
-server directory:
-/bml/Data/Bank6/Robohon_YunShiuan/tomnet-project/
