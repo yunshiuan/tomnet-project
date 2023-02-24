@@ -1,14 +1,3 @@
-
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-<!-- code_chunk_output -->
-
-- [ToMnet+ project](#tomnet-project)
-  - [Directory Structure](#directory-structure)
-    - [models](#models)
-    - [scripts](#scripts)
-
-<!-- /code_chunk_output -->
-
 # ToMnet+ project
 
 - This work has been published as:
